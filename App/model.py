@@ -50,7 +50,15 @@ def new_data_structs():
     manera vacía para posteriormente almacenar la información.
     """
     #TODO: Inicializar las estructuras de datos
-    pass
+    data = {
+        'results': None,
+        'goalscorers': None,
+        'shootouts': None
+    }
+    data['results'] = lt.newList('ARRAY_LIST')
+    data['goalscorers'] = lt.newList('ARRAY_LIST')
+    data['shootouts'] = lt.newList('ARRAY_LIST')
+    return data
 
 
 # Funciones para agregar informacion al modelo
