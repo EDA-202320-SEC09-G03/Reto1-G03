@@ -44,7 +44,7 @@ def new_controller():
     """
     #TODO: Llamar la función del controlador donde se crean las estructuras de datos
    
-    control = controller.newController()
+    control = controller.new_controller()
     return control
 
 
@@ -71,7 +71,8 @@ def load_data(control):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    pass
+    results, goalscorers, shootouts = controller.load_data(control)
+    return results, goalscorers, shootouts
 
 
 def print_data(control, id):
@@ -160,7 +161,10 @@ if __name__ == "__main__":
         inputs = input('Seleccione una opción para continuar\n')
         if int(inputs) == 1:
             print("Cargando información de los archivos ....\n")
-            data = load_data(control)
+            rsize, gsize, ssize = load_data(control)
+            print('Total de encuentros cargados: ' + str(rsize))
+            print('Total de anotaciones cargadas: ' + str(gsize))
+            print('Total de goles marcados desde el punto penal cargados: ' + str(ssize))
         elif int(inputs) == 2:
             print_req_1(control)
 

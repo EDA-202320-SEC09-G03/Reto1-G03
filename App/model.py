@@ -26,6 +26,7 @@
 
 
 import config as cf
+import datetime
 from DISClib.ADT import list as lt
 from DISClib.ADT import stack as st
 from DISClib.ADT import queue as qu
@@ -50,25 +51,26 @@ def new_data_structs():
     manera vacía para posteriormente almacenar la información.
     """
     #TODO: Inicializar las estructuras de datos
-    data = {
+    data_structs = {
         'results': None,
         'goalscorers': None,
         'shootouts': None
     }
-    data['results'] = lt.newList('ARRAY_LIST')
-    data['goalscorers'] = lt.newList('ARRAY_LIST')
-    data['shootouts'] = lt.newList('ARRAY_LIST')
-    return data
+    data_structs['results'] = lt.newList(datastructure="ARRAY_LIST")
+    data_structs['goalscorers'] = lt.newList(datastructure="ARRAY_LIST")
+    data_structs['shootouts'] = lt.newList(datastructure="ARRAY_LIST")
+    return data_structs
 
 
 # Funciones para agregar informacion al modelo
 
-def add_data(data_structs, data):
+def add_data(data_structs, data, file):
     """
     Función para agregar nuevos elementos a la lista
     """
     #TODO: Crear la función para agregar elementos a una lista
-    pass
+    lt.addLast(data_structs[file], data)
+    return data_structs
 
 
 # Funciones para creacion de datos
@@ -91,11 +93,12 @@ def get_data(data_structs, id):
     pass
 
 
-def data_size(data_structs):
+def data_size(data_structs, file):
     """
     Retorna el tamaño de la lista de datos
     """
     #TODO: Crear la función para obtener el tamaño de una lista
+    return lt.size(data_structs[file])
     pass
 
 
