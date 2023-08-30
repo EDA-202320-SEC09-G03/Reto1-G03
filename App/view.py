@@ -94,7 +94,7 @@ def load_data(control):
     lg1 = controller.get_data(control, file2, (goalscorers))
     lg2 = controller.get_data(control, file2, (goalscorers -1))
     lg3 = controller.get_data(control, file2, (goalscorers - 2))
-    table_goalscorers = [g1, g2, g3, lg1, lg2, lg3]
+    table_goalscorers = [g1, g2, g3, lg3, lg2, lg1]
     print(tabulate(table_goalscorers, headers="keys", tablefmt="fancy"), "\n")
 
 
@@ -107,7 +107,7 @@ def load_data(control):
     ls1 = controller.get_data(control, file3, (shootouts))
     ls2 = controller.get_data(control, file3, (shootouts -1))
     ls3 = controller.get_data(control, file3, (shootouts - 2))
-    table_shootouts = [s1, s2, s3, ls1, ls2, ls3]
+    table_shootouts = [s1, s2, s3, ls3, ls2, ls1]
     print(tabulate(table_shootouts, headers="keys", tablefmt="fancy"), "\n")
 
     
