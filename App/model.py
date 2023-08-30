@@ -252,3 +252,9 @@ def cmp_shootouts(shoot1, shoot2):
 
 def sort_results(data_structs):
     ins.sort(data_structs['results'], cmp_results)
+
+def sort_goalscorers(data_structs):
+    ins.sort(data_structs['goalscorers'], cmp_goalscorers)
+
+def sort_shootouts(data_structs):
+    ins.sort(data_structs['shootouts'], cmp_shootouts)
