@@ -219,11 +219,42 @@ def cmp_results(result1, result2):
 
 def cmp_goalscorers(scorer1, scorer2):
 
-    return 1
+    return 
 
 def cmp_shootouts(shoot1, shoot2):
-    
-    return 1
+    formato_fecha = "%Y-%m-%d"
+
+    fecha1 = shoot1["date"]
+    fecha2 = shoot2["date"]
+
+    fecha1 = dt.strptime(fecha1, formato_fecha)
+    fecha2 = dt.strptime(fecha2, formato_fecha)
+
+    if fecha1 > fecha2:
+        return True
+    elif fecha1 < fecha2:
+        return False
+        
+    else: 
+        nombre_1_local = shoot1["home_team"].lower()
+        nombre_2_local = shoot2["home_team"].lower()
+
+        if nombre_1_local > nombre_2_local:
+            return True
+        elif nombre_1_local < nombre_1_local:
+            return False
+        
+        else:
+            nombre_1_visitante = shoot1["away_team"].lower()
+            nombre_2_visitante = shoot2["away_team"].lower()
+
+            if nombre_1_visitante > nombre_2_visitante:
+                return True
+            elif nombre_1_visitante < nombre_1_visitante:
+                return False
+        
+
+
 
 def sort_results(data_structs):
     ins.sort(data_structs['results'], cmp_results)
