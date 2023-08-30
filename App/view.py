@@ -97,7 +97,6 @@ def load_data(control):
     table_goalscorers = [g1, g2, g3, lg3, lg2, lg1]
     print(tabulate(table_goalscorers, headers="keys", tablefmt="fancy"), "\n")
 
-
     print("Primeros y ultimos 3 goles:\n")
     file3 = "shootouts"
 
