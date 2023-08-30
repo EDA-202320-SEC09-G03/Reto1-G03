@@ -231,8 +231,8 @@ def cmp_goalscorers(scorer1, scorer2):
     elif fecha1 < fecha2:
         return False
     else:
-        min1 = int(scorer1['minute'])
-        min2 = int(scorer2['minute'])
+        min1 = (scorer1['minute'])
+        min2 = (scorer2['minute'])
 
         if min1 > min2:
             return True

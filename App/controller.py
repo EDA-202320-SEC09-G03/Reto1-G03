@@ -111,7 +111,7 @@ def get_data(control, file, id):
     Retorna un dato por su ID.
     """
     #TODO: Llamar la función del modelo para obtener un dato
-    data = model.get_data(control['model'], 'file', id)
+    data = model.get_data(control['model'], file, id)
     return data
 
 

@@ -73,15 +73,19 @@ def load_data(control):
     #TODO: Realizar la carga de datos
     results, goalscorers, shootouts = controller.load_data(control)
     print("Primeros y ultimos 3 resultados: \n")
-    r1 = controller.get_data(control, 1)
-    r2 = controller.get_data(control, 2)
-    r3 = controller.get_data(control, 3)
-    lr1 = controller.get_data(control, (results))
-    lr2 = controller.get_data(control, (results - 1))
-    lr3 = controller.get_data(control, (results - 2))
-    table_results =[r1, r2, r3, lr3, lr2, lr1]
-    print(tabulate(table_results, headers="keys", tablefmt="fancy"))
 
+    file1 = 'results'
+    r1 = controller.get_data(control,file1, 1)
+    r2 = controller.get_data(control,file1, 2)
+    r3 = controller.get_data(control,file1, 3)
+    lr1 = controller.get_data(control,file1, (results))
+    lr2 = controller.get_data(control,file1, (results - 1))
+    lr3 = controller.get_data(control,file1, (results - 2))
+    table_results =[r1, r2, r3, lr3, lr2, lr1]
+    print(tabulate(table_results, headers="keys", tablefmt="fancy"), "\n")
+
+
+    print("Primeros y ultimos 3 anotadores: \n")
     file2 = "goalscorers"
 
     g1 = controller.get_data(control, file2, 1)
@@ -91,8 +95,10 @@ def load_data(control):
     lg2 = controller.get_data(control, file2, (goalscorers -1))
     lg3 = controller.get_data(control, file2, (goalscorers - 2))
     table_goalscorers = [g1, g2, g3, lg1, lg2, lg3]
-    print(tabulate(table_goalscorers, headers="keys", tablefmt="fancy"))
+    print(tabulate(table_goalscorers, headers="keys", tablefmt="fancy"), "\n")
 
+
+    print("Primeros y ultimos 3 goles:\n")
     file3 = "shootouts"
 
     s1 = controller.get_data(control, file3, 1)
@@ -102,7 +108,7 @@ def load_data(control):
     ls2 = controller.get_data(control, file3, (shootouts -1))
     ls3 = controller.get_data(control, file3, (shootouts - 2))
     table_shootouts = [s1, s2, s3, ls1, ls2, ls3]
-    print(tabulate(table_shootouts, headers="keys", tablefmt="fancy"))
+    print(tabulate(table_shootouts, headers="keys", tablefmt="fancy"), "\n")
 
     
     return results, goalscorers, shootouts
