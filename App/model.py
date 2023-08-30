@@ -217,6 +217,13 @@ def cmp_results(result1, result2):
             else: 
                 return False
 
+def cmp_goalscorers(scorer1, scorer2):
+
+    return 1
+
+def cmp_shootouts(shoot1, shoot2):
+    
+    return 1
 
 def sort_results(data_structs):
     ins.sort(data_structs['results'], cmp_results)
