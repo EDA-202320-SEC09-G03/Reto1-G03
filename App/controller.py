@@ -55,6 +55,8 @@ def load_data(control):
     goalscorers = load_goalscorers(data_structs)
     shootouts = load_shootouts(data_structs)
     sort_results(data_structs)
+    sort_goalscorers(data_structs)
+    sort_shootouts(data_structs)
     return results, goalscorers, shootouts
 
 def load_results(data_structs):
@@ -88,6 +90,19 @@ def sort_results(data_structs):
     #TODO: Llamar la función del modelo para ordenar los datos
     model.sort_results(data_structs)
 
+def sort_goalscorers(data_structs):
+    """
+    Ordena los datos del modelo
+    """
+    #TODO: Llamar la función del modelo para ordenar los datos
+    model.sort_goalscorers(data_structs)
+
+def sort_shootouts(data_structs):
+    """
+    Ordena los datos del modelo
+    """
+    #TODO: Llamar la función del modelo para ordenar los datos
+    model.sort_shootouts(data_structs)
 
 # Funciones de consulta sobre el catálogo
 
