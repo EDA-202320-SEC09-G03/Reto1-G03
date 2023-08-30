@@ -106,12 +106,12 @@ def sort_shootouts(data_structs):
 
 # Funciones de consulta sobre el catálogo
 
-def get_data(control, id):
+def get_data(control, file, id):
     """
     Retorna un dato por su ID.
     """
     #TODO: Llamar la función del modelo para obtener un dato
-    data = model.get_data(control['model'], 'results', id)
+    data = model.get_data(control['model'], 'file', id)
     return data
 
 
