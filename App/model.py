@@ -26,7 +26,7 @@
 
 
 import config as cf
-import datetime
+from datetime import datetime as dt
 from DISClib.ADT import list as lt
 from DISClib.ADT import stack as st
 from DISClib.ADT import queue as qu
@@ -85,12 +85,12 @@ def new_data(id, info):
 
 # Funciones de consulta
 
-def get_data(data_structs, id):
+def get_data(data_structs, file, id):
     """
     Retorna un dato a partir de su ID
     """
     #TODO: Crear la función para obtener un dato de una lista
-    pass
+    return lt.getElement(data_structs[file], id)
 
 
 def data_size(data_structs, file):
@@ -178,7 +178,7 @@ def compare(data_1, data_2):
 # Funciones de ordenamiento
 
 
-def sort_criteria(data_1, data_2):
+def cmp_results(result1, result2):
     """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
 
     Args:
@@ -189,12 +189,34 @@ def sort_criteria(data_1, data_2):
         _type_: _description_
     """
     #TODO: Crear función comparadora para ordenar
-    pass
+    formato_fecha = "%Y-%m-%d"
+
+    fecha1 = result1['date']
+    fecha2 = result2['date']
+
+    fecha1 = dt.strptime(fecha1, formato_fecha)
+    fecha2 = dt.strptime(fecha2, formato_fecha)
+
+    if fecha1 > fecha2:
+        return True
+    elif fecha1 < fecha2:
+        return False
+    else:
+        hscore1 = int(result1['home_score'])
+        hscore2 = int(result2['home_score'])
+
+        if hscore1 > hscore2:
+            return True
+        elif hscore1 < hscore2:
+            return False
+        else:
+            ascore1 = int(result1['away_score'])
+            ascore2 = int(result2['away_score'])
+            if ascore1 > ascore2:
+                return True
+            else: 
+                return False
 
 
-def sort(data_structs):
-    """
-    Función encargada de ordenar la lista con los datos
-    """
-    #TODO: Crear función de ordenamiento
-    pass
+def sort_results(data_structs):
+    ins.sort(data_structs['results'], cmp_results)

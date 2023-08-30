@@ -72,6 +72,16 @@ def load_data(control):
     """
     #TODO: Realizar la carga de datos
     results, goalscorers, shootouts = controller.load_data(control)
+    print("Primeros y ultimos 3 resultados: \n")
+    r1 = controller.get_data(control, 1)
+    r2 = controller.get_data(control, 2)
+    r3 = controller.get_data(control, 3)
+    lr1 = controller.get_data(control, (results))
+    lr2 = controller.get_data(control, (results - 1))
+    lr3 = controller.get_data(control, (results - 2))
+    table_data =[r1, r2, r3, lr3, lr2, lr1]
+    print(tabulate(table_data, headers="keys", tablefmt="fancy"))
+    
     return results, goalscorers, shootouts
 
 
