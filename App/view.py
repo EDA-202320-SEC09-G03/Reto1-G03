@@ -48,10 +48,6 @@ def new_controller():
     return control
 
 
-
-
-
-
 def print_menu():
     print("Bienvenido")
     print("1- Cargar información")
@@ -72,43 +68,24 @@ def load_data(control):
     """
     #TODO: Realizar la carga de datos
     results, goalscorers, shootouts = controller.load_data(control)
+
     print("Primeros y ultimos 3 resultados: \n")
 
     file1 = 'results'
-    r1 = controller.get_data(control,file1, 1)
-    r2 = controller.get_data(control,file1, 2)
-    r3 = controller.get_data(control,file1, 3)
-    lr1 = controller.get_data(control,file1, (results))
-    lr2 = controller.get_data(control,file1, (results - 1))
-    lr3 = controller.get_data(control,file1, (results - 2))
-    table_results =[r1, r2, r3, lr3, lr2, lr1]
-    print(tabulate(table_results, headers="keys", tablefmt="fancy"), "\n")
-
+    table_results = controller.get_first_last_three_datastructs(control, file1)
+    print(tabulate(table_results['elements'], headers="keys", tablefmt="grid"), "\n")
 
     print("Primeros y ultimos 3 anotadores: \n")
-    file2 = "goalscorers"
 
-    g1 = controller.get_data(control, file2, 1)
-    g2 = controller.get_data(control, file2, 2)
-    g3 = controller.get_data(control, file2, 3)
-    lg1 = controller.get_data(control, file2, (goalscorers))
-    lg2 = controller.get_data(control, file2, (goalscorers -1))
-    lg3 = controller.get_data(control, file2, (goalscorers - 2))
-    table_goalscorers = [g1, g2, g3, lg3, lg2, lg1]
-    print(tabulate(table_goalscorers, headers="keys", tablefmt="fancy"), "\n")
+    file2 = "goalscorers"
+    table_goalscorers = controller.get_first_last_three_datastructs(control, file2)
+    print(tabulate(table_goalscorers['elements'], headers="keys", tablefmt="grid"), "\n")
 
     print("Primeros y ultimos 3 goles:\n")
+
     file3 = "shootouts"
-
-    s1 = controller.get_data(control, file3, 1)
-    s2 = controller.get_data(control, file3, 2)
-    s3 = controller.get_data(control, file3, 3)
-    ls1 = controller.get_data(control, file3, (shootouts))
-    ls2 = controller.get_data(control, file3, (shootouts -1))
-    ls3 = controller.get_data(control, file3, (shootouts - 2))
-    table_shootouts = [s1, s2, s3, ls3, ls2, ls1]
-    print(tabulate(table_shootouts, headers="keys", tablefmt="fancy"), "\n")
-
+    table_shootouts = controller.get_first_last_three_datastructs(control, file3)
+    print(tabulate(table_shootouts['elements'], headers="keys", tablefmt="grid"), "\n")
     
     return results, goalscorers, shootouts
 
@@ -120,11 +97,18 @@ def print_data(control, id):
     #TODO: Realizar la función para imprimir un elemento
     pass
 
-def print_req_1(control):
+def print_req_1(control, n_results, team_name, condition):
     """
         Función que imprime la solución del Requerimiento 1 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 1
+    list, size = controller.req_1(control, team_name, condition)
+    if size > 6:
+        sublist = lt.subList(list, 1, n_results)
+        table_req_1 = controller.get_first_last_three_list(sublist)
+        print(tabulate(table_req_1['elements'], headers="keys", tablefmt="grid"), "\n")
+    else:
+        print(tabulate(list['elements'], headers="keys", tablefmt="grid"), '\n')
     pass
 
 
@@ -204,7 +188,21 @@ if __name__ == "__main__":
             print('Total de anotaciones cargadas: ' + str(gsize))
             print('Total de goles marcados desde el punto penal cargados: ' + str(ssize))
         elif int(inputs) == 2:
-            print_req_1(control)
+            n_results = int(input('Numero de partidos de consulta: '))
+            team_name = input('Ingrese el nombre del equipo: ')
+            print('Por favor elija alguna de las siguientes opciones:')
+            print('1. Local')
+            print('2. Visitante')
+            print('3. Indiferente')
+            condition = int(input())
+            if condition == 1:
+                print_req_1(control, n_results, team_name, 'local')
+            elif condition == 2:
+                print_req_1(control, n_results, team_name, 'visitante')
+            elif condition == 3:
+                print_req_1(control, n_results, team_name, 'neutro')
+            else:
+                print("Por favor seleccione una opción válida")
 
         elif int(inputs) == 3:
             print_req_2(control)

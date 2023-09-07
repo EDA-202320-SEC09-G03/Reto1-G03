@@ -99,15 +99,49 @@ def data_size(data_structs, file):
     """
     #TODO: Crear la función para obtener el tamaño de una lista
     return lt.size(data_structs[file])
-    pass
+
+def get_first_last_three_datastructs(data_structs, file):
+    filtered = lt.newList("ARRAY_LIST")
+    for i in range(1, 4):
+        lt.addLast(filtered, get_data(data_structs, file, i))
+    for i in range(-2, 1):
+        lt.addLast(filtered, get_data(data_structs, file, i))
+
+    return filtered
+
+def get_first_last_three_list(list):
+    filtered = lt.newList("ARRAY_LIST")
+    for i in range(1, 4):
+        lt.addLast(filtered, lt.getElement(list, i))
+    for i in range(-2, 1):
+        lt.addLast(filtered, lt.getElement(list, i))
+
+    return filtered
 
 
-def req_1(data_structs):
+def req_1(data_structs, team_name, condition):
     """
     Función que soluciona el requerimiento 1
     """
     # TODO: Realizar el requerimiento 1
-    pass
+    t_name = team_name.lower()
+    results = data_structs["results"]
+    filtered_list = lt.newList("ARRAY_LIST")
+
+    for result in lt.iterator(results):
+        if condition == "local":
+            if t_name == result["home_team"].lower():
+                lt.addLast(filtered_list, result)
+
+        elif condition == "visitante":
+            if t_name == result["away_team"].lower():
+                lt.addLast(filtered_list, result)
+        elif condition == "neutro":
+            if (t_name == result["away_team"].lower()) or (t_name == result["home_team"].lower()):
+                lt.addLast(filtered_list, result)
+    
+    return filtered_list
+
 
 
 def req_2(data_structs):

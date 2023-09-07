@@ -51,33 +51,45 @@ def load_data(control):
     """
     # TODO: Realizar la carga de datos
     data_structs = control['model']
+
     results = load_results(data_structs)
     goalscorers = load_goalscorers(data_structs)
     shootouts = load_shootouts(data_structs)
+
     sort_results(data_structs)
     sort_goalscorers(data_structs)
     sort_shootouts(data_structs)
+
     return results, goalscorers, shootouts
 
 def load_results(data_structs):
+
     results_file = cf.data_dir + 'football/results-utf8-small.csv'
     input_file = csv.DictReader(open(results_file, encoding='utf-8'))
+
     for result in input_file:
         model.add_data(data_structs, result, 'results')
+
     return model.data_size(data_structs, 'results')
 
 def load_goalscorers(data_structs):
+
     goalscorers_file = cf.data_dir + 'football/goalscorers-utf8-small.csv'
     input_file = csv.DictReader(open(goalscorers_file, encoding='utf-8'))
+
     for goalscorer in input_file:
         model.add_data(data_structs, goalscorer, 'goalscorers')
+
     return model.data_size(data_structs, 'goalscorers')
 
 def load_shootouts(data_structs):
+
     shootouts_file = cf.data_dir + 'football/shootouts-utf8-small.csv'
     input_file = csv.DictReader(open(shootouts_file, encoding='utf-8'))
+
     for shootout in input_file:
         model.add_data(data_structs, shootout, 'shootouts')
+
     return model.data_size(data_structs, 'shootouts')
 
 
@@ -115,12 +127,14 @@ def get_data(control, file, id):
     return data
 
 
-def req_1(control):
+def req_1(control, team_name, condition):
     """
     Retorna el resultado del requerimiento 1
     """
     # TODO: Modificar el requerimiento 1
-    pass
+    filtered_list = model.req_1(control['model'], team_name, condition)
+    lt_size = model.lt.size(filtered_list)
+    return filtered_list, lt_size
 
 
 def req_2(control):
@@ -176,6 +190,14 @@ def req_8(control):
     """
     # TODO: Modificar el requerimiento 8
     pass
+
+def get_first_last_three_datastructs(control, file):
+    data = model.get_first_last_three_datastructs(control['model'], file)
+    return data
+
+def get_first_last_three_list(list):
+    data = model.get_first_last_three_list(list)
+    return data
 
 
 # Funciones para medir tiempos de ejecucion
