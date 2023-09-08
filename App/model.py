@@ -212,15 +212,16 @@ def compare(data_1, data_2):
 # Funciones de ordenamiento
 
 
-def cmp_results(result1, result2):
-    """sortCriteria criterio de ordenamiento para las funciones de ordenamiento
-
+def cmp_partidos_by_fecha_y_pais(result1, result2):
+    """
+    Devuelve verdadero (True) si la fecha del resultado1 es menor que en el resultado2,
+    en caso de que sean iguales tenga el nombre de la ciudad en que se disputó el partido,
+    de lo contrario devuelva falso (False).
     Args:
-        data1 (_type_): _description_
-        data2 (_type_): _description_
-
-    Returns:
-        _type_: _description_
+    Resultado1: información del primer registro de resultados FIFA que incluye 
+    “date” y el “country” 
+    impuesto2: información del segundo registro de resultados FIFA que incluye 
+    “date” y el “country” 
     """
     #TODO: Crear función comparadora para ordenar
     formato_fecha = "%Y-%m-%d"
@@ -316,7 +317,7 @@ def cmp_shootouts(shoot1, shoot2):
 
 
 def sort_results(data_structs):
-    merg.sort(data_structs['results'], cmp_results)
+    merg.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
 
 def sort_goalscorers(data_structs):
     merg.sort(data_structs['goalscorers'], cmp_goalscorers)
