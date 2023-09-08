@@ -45,7 +45,7 @@ dos listas, una para los videos, otra para las categorias de los mismos.
 # Construccion de modelos
 
 
-def new_data_structs():
+def new_data_structs(adt):
     """
     Inicializa las estructuras de datos del modelo. Las crea de
     manera vacía para posteriormente almacenar la información.
@@ -56,9 +56,9 @@ def new_data_structs():
         'goalscorers': None,
         'shootouts': None
     }
-    data_structs['results'] = lt.newList(datastructure="ARRAY_LIST")
-    data_structs['goalscorers'] = lt.newList(datastructure="ARRAY_LIST")
-    data_structs['shootouts'] = lt.newList(datastructure="ARRAY_LIST")
+    data_structs['results'] = lt.newList(datastructure=adt)
+    data_structs['goalscorers'] = lt.newList(datastructure=adt)
+    data_structs['shootouts'] = lt.newList(datastructure=adt)
     return data_structs
 
 
@@ -316,10 +316,10 @@ def cmp_shootouts(shoot1, shoot2):
 
 
 def sort_results(data_structs):
-    ins.sort(data_structs['results'], cmp_results)
+    merg.sort(data_structs['results'], cmp_results)
 
 def sort_goalscorers(data_structs):
-    ins.sort(data_structs['goalscorers'], cmp_goalscorers)
+    merg.sort(data_structs['goalscorers'], cmp_goalscorers)
 
 def sort_shootouts(data_structs):
-    ins.sort(data_structs['shootouts'], cmp_shootouts)
+    merg.sort(data_structs['shootouts'], cmp_shootouts)

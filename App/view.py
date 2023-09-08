@@ -38,13 +38,13 @@ operación solicitada
 """
 
 
-def new_controller():
+def new_controller(adt):
     """
         Se crea una instancia del controlador
     """
     #TODO: Llamar la función del controlador donde se crean las estructuras de datos
    
-    control = controller.new_controller()
+    control = controller.new_controller(adt)
     return control
 
 
@@ -96,6 +96,19 @@ def print_data(control, id):
     """
     #TODO: Realizar la función para imprimir un elemento
     pass
+
+def choose_adt():
+    print("Por favor elije el ADT que prefieras: ")
+    print('1. Single Linked List')
+    print('2. Array List')
+    user = input("Digita tu opción: ")
+    if int(user) == 1:
+        adt = 'SINGLE_LINKED'
+    elif int(user) == 2:
+        adt = 'ARRAY_LIST'
+    else:
+        adt = None
+    return adt 
 
 def print_req_1(control, n_results, team_name, condition):
     """
@@ -169,7 +182,7 @@ def print_req_8(control):
 
 
 # Se crea el controlador asociado a la vista
-control = new_controller()
+control = None
 
 # main del reto
 if __name__ == "__main__":
@@ -182,11 +195,18 @@ if __name__ == "__main__":
         print_menu()
         inputs = input('Seleccione una opción para continuar\n')
         if int(inputs) == 1:
-            print("Cargando información de los archivos ....\n")
-            rsize, gsize, ssize = load_data(control)
-            print('Total de encuentros cargados: ' + str(rsize))
-            print('Total de anotaciones cargadas: ' + str(gsize))
-            print('Total de goles marcados desde el punto penal cargados: ' + str(ssize))
+
+            adt = choose_adt()
+            if adt != None:
+                control = new_controller(adt)
+                print("Cargando información de los archivos ....\n")
+                rsize, gsize, ssize = load_data(control)
+                print('Total de encuentros cargados: ' + str(rsize))
+                print('Total de anotaciones cargadas: ' + str(gsize))
+                print('Total de goles marcados desde el punto penal cargados: ' + str(ssize))
+            else:
+                print('Por favor selecciona una opción válida')
+
         elif int(inputs) == 2:
             n_results = int(input('Numero de partidos de consulta: '))
             team_name = input('Ingrese el nombre del equipo: ')

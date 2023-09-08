@@ -31,7 +31,7 @@ El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 
-def new_controller():
+def new_controller(adt):
     """
     Crea una instancia del modelo
     """
@@ -39,13 +39,13 @@ def new_controller():
     control = {
         'model': None
     }
-    control['model'] = model.new_data_structs()
+    control['model'] = model.new_data_structs(adt)
     return control
 
 
 # Funciones para la carga de datos
 
-def load_data(control):
+def load_data(control,):
     """
     Carga los datos del reto
     """
