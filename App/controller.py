@@ -45,7 +45,7 @@ def new_controller(adt):
 
 # Funciones para la carga de datos
 
-def load_data(control, file_size, algorithm):
+def load_data(control, file_size):
     """
     Carga los datos del reto
     """
@@ -55,8 +55,6 @@ def load_data(control, file_size, algorithm):
     results = load_results(data_structs, file_size)
     goalscorers = load_goalscorers(data_structs, file_size)
     shootouts = load_shootouts(data_structs, file_size)
-    
-    sort(data_structs, algorithm)
 
     return results, goalscorers, shootouts
 
@@ -93,8 +91,14 @@ def load_shootouts(data_structs, file_size):
 
 # Funciones de ordenamiento
 
-def sort(data_structs, algorithm):
+def sort(control, algorithm):
+    data_structs = control['model']
+    start_time = get_time()
     model.sort(data_structs, algorithm)
+    end_time = get_time()
+    d_time = delta_time(start_time, end_time)
+
+    return d_time
 
 # Funciones de consulta sobre el catálogo
 

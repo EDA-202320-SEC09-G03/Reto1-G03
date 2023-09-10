@@ -49,7 +49,7 @@ def new_controller(adt):
 
 
 def print_menu():
-    print("Bienvenido")
+    print("Bienvenido\n")
     print("1- Cargar información")
     print("2- Ejecutar Requerimiento 1")
     print("3- Ejecutar Requerimiento 2")
@@ -68,8 +68,15 @@ def load_data(control, file_size, algorithm):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    results, goalscorers, shootouts = controller.load_data(control,file_size, algorithm)
+    results, goalscorers, shootouts = controller.load_data(control,file_size)
 
+    print('Total de encuentros cargados: ' + str(results))
+    print('Total de anotaciones cargadas: ' + str(goalscorers))
+    print('Total de goles marcados desde el punto penal cargados: ' + str(shootouts))
+
+    print('Ordenando los archivos...')
+
+    d_time = controller.sort(control, algorithm)
 
     print("Primeros y ultimos 3 resultados: \n")
 
@@ -89,7 +96,7 @@ def load_data(control, file_size, algorithm):
     table_shootouts = controller.get_first_last_three_datastructs(control, file3)
     print(tabulate(table_shootouts['elements'], headers="keys", tablefmt="grid"), "\n")
     
-    return results, goalscorers, shootouts
+    return d_time
 
 
 def print_data(control, id):
@@ -253,7 +260,7 @@ if __name__ == "__main__":
     #ciclo del menu
     while working:
         print_menu()
-        inputs = input('Seleccione una opción para continuar\n')
+        inputs = input('\nSeleccione una opción para continuar: ')
         if int(inputs) == 1:
 
             if file_size == None:
@@ -268,19 +275,17 @@ if __name__ == "__main__":
                 control = new_controller(adt)
                 print("Cargando información de los archivos ....\n")
 
-                rsize, gsize, ssize = load_data(control, file_size, sort)
+                d_time = load_data(control, file_size, sort)
 
-                print('Total de encuentros cargados: ' + str(rsize))
-                print('Total de anotaciones cargadas: ' + str(gsize))
-                print('Total de goles marcados desde el punto penal cargados: ' + str(ssize))
                 print('Tamaño de archivo:', file_size)
                 print('ADT:', adt)
                 print('Algoritmo de ordenamiento:', sort)
+                print('Tiempo de ordenamiento:', d_time)
 
             else:
                 print('Por favor selecciona una opción válida')
 
-        elif int(inputs) == 2:
+        elif int(inputs) == 2: 
             n_results = int(input('Numero de partidos de consulta: '))
             team_name = input('Ingrese el nombre del equipo: ')
             print('Por favor elija alguna de las siguientes opciones:')
@@ -316,9 +321,11 @@ if __name__ == "__main__":
             print_req_7(control)
 
         elif int(inputs) == 9:
-            size = choose_size()
+            file_size = choose_size()
             adt = choose_adt()
             sort = choose_sort()
+
+            print('\n' + "-"*10 + 'Ejecuta la opción 1 para actualizar los cambios' + '-'*10 + '\n')
 
         elif int(inputs) == 10:
             print_req_8(control)
