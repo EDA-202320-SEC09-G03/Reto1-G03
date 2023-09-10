@@ -58,7 +58,8 @@ def print_menu():
     print("6- Ejecutar Requerimiento 5")
     print("7- Ejecutar Requerimiento 6")
     print("8- Ejecutar Requerimiento 7")
-    print("9- Ejecutar Requerimiento 8")
+    print("9- Seleccionar tipo de algoritmo de ordenamiento")
+    print("10- Ejecutar Requerimiento 8")
     print("0- Salir")
 
 
@@ -103,12 +104,11 @@ def choose_adt():
     print('2. Array List')
     user = input("Digita tu opción: ")
     if int(user) == 1:
-        adt = 'SINGLE_LINKED'
+        return 'SINGLE_LINKED'
     elif int(user) == 2:
-        adt = 'ARRAY_LIST'
+        return 'ARRAY_LIST'
     else:
-        adt = None
-    return adt 
+        return None
 
 def print_req_1(control, n_results, team_name, condition):
     """
@@ -183,6 +183,7 @@ def print_req_8(control):
 
 # Se crea el controlador asociado a la vista
 control = None
+sort = None
 
 # main del reto
 if __name__ == "__main__":
@@ -195,7 +196,6 @@ if __name__ == "__main__":
         print_menu()
         inputs = input('Seleccione una opción para continuar\n')
         if int(inputs) == 1:
-
             adt = choose_adt()
             if adt != None:
                 control = new_controller(adt)

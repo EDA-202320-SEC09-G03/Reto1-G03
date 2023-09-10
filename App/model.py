@@ -56,7 +56,7 @@ def new_data_structs(adt):
         'goalscorers': None,
         'shootouts': None
     }
-    data_structs['results'] = lt.newList(datastructure=adt)
+    data_structs['results'] = lt.newList(datastructure=adt, cmpfunction=cmp_partidos_by_fecha_y_pais)
     data_structs['goalscorers'] = lt.newList(datastructure=adt)
     data_structs['shootouts'] = lt.newList(datastructure=adt)
     return data_structs
@@ -104,7 +104,8 @@ def get_first_last_three_datastructs(data_structs, file):
     filtered = lt.newList("ARRAY_LIST")
     for i in range(1, 4):
         lt.addLast(filtered, get_data(data_structs, file, i))
-    for i in range(-2, 1):
+    size = data_size(data_structs, file)
+    for i in range((size - 2), size + 1):
         lt.addLast(filtered, get_data(data_structs, file, i))
 
     return filtered
@@ -313,14 +314,11 @@ def cmp_shootouts(shoot1, shoot2):
             elif nombre_1_visitante < nombre_1_visitante:
                 return False
         
-
-
-
 def sort_results(data_structs):
-    merg.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
+    quk.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
 
 def sort_goalscorers(data_structs):
-    merg.sort(data_structs['goalscorers'], cmp_goalscorers)
+    quk.sort(data_structs['goalscorers'], cmp_goalscorers)
 
 def sort_shootouts(data_structs):
-    merg.sort(data_structs['shootouts'], cmp_shootouts)
+    quk.sort(data_structs['shootouts'], cmp_shootouts)
