@@ -58,17 +58,18 @@ def print_menu():
     print("6- Ejecutar Requerimiento 5")
     print("7- Ejecutar Requerimiento 6")
     print("8- Ejecutar Requerimiento 7")
-    print("9- Seleccionar tipo de algoritmo de ordenamiento")
+    print("9- Cambiar tamaño, ADT y algoritmo de ordenamiento")
     print("10- Ejecutar Requerimiento 8")
     print("0- Salir")
 
 
-def load_data(control, file_size):
+def load_data(control, file_size, algorithm):
     """
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    results, goalscorers, shootouts = controller.load_data(control,file_size)
+    results, goalscorers, shootouts = controller.load_data(control,file_size, algorithm)
+
 
     print("Primeros y ultimos 3 resultados: \n")
 
@@ -100,18 +101,18 @@ def print_data(control, id):
 
 def choose_adt():
     print("Por favor elije el ADT que prefieras: ")
-    print('1. Single Linked List')
-    print('2. Array List')
-    user = input("Digita tu opción: ")
+    print('1. Array List')
+    print('2. Single Linked List')
+    user = input("Selecciona una opción: ")
     if int(user) == 1:
-        return 'SINGLE_LINKED'
-    elif int(user) == 2:
         return 'ARRAY_LIST'
+    elif int(user) == 2:
+        return 'SINGLE_LINKED'
     else:
         return None
     
 def choose_size():
-    print('Por favor elija el tamaño de archivo a cargar')
+    print('Por favor elija el tamaño de archivo a cargar: ')
     print('1. Small')
     print('2. Large')
     print('3. 5pct')
@@ -121,7 +122,7 @@ def choose_size():
     print('7. 50pct')
     print('8. 80pct')
 
-    choice = int(input('Ingrese el número de su elección: '))
+    choice = int(input('Seleccione una opción: '))
 
     if choice == 1:
         return 'small'
@@ -141,6 +142,30 @@ def choose_size():
         return '80pct'
     else:
         return None
+
+def choose_sort():
+    print('Por favor elija el algoritmo de ordenamiento que desea:')
+    print('1. Shell Sort')
+    print('2. Insertion Sort')
+    print('3. Selection Sort')
+    print('4. Merge Sort')
+    print('5. Quick Sort')
+
+    choice = int(input('Seleccione una opción: '))
+
+    if choice == 1:
+        return 'shell'
+    elif choice == 2:
+        return 'insertion'
+    elif choice == 3:
+        return 'selection'
+    elif choice == 4:
+        return 'merge'
+    elif choice == 5:
+        return 'quick'
+    else:
+        return None
+
 
 def print_req_1(control, n_results, team_name, condition):
     """
@@ -215,6 +240,8 @@ def print_req_8(control):
 
 # Se crea el controlador asociado a la vista
 control = None
+file_size = None
+adt = None
 sort = None
 
 # main del reto
@@ -228,15 +255,28 @@ if __name__ == "__main__":
         print_menu()
         inputs = input('Seleccione una opción para continuar\n')
         if int(inputs) == 1:
-            file_size = choose_size()
-            adt = choose_adt()
-            if adt != None:
+
+            if file_size == None:
+                file_size = choose_size()
+            if adt == None:
+                adt = choose_adt()
+            if sort == None:
+                sort = choose_sort()
+
+            if file_size != None and sort != None and sort != None:
+
                 control = new_controller(adt)
                 print("Cargando información de los archivos ....\n")
-                rsize, gsize, ssize = load_data(control, file_size)
+
+                rsize, gsize, ssize = load_data(control, file_size, sort)
+
                 print('Total de encuentros cargados: ' + str(rsize))
                 print('Total de anotaciones cargadas: ' + str(gsize))
                 print('Total de goles marcados desde el punto penal cargados: ' + str(ssize))
+                print('Tamaño de archivo:', file_size)
+                print('ADT:', adt)
+                print('Algoritmo de ordenamiento:', sort)
+
             else:
                 print('Por favor selecciona una opción válida')
 
@@ -276,6 +316,11 @@ if __name__ == "__main__":
             print_req_7(control)
 
         elif int(inputs) == 9:
+            size = choose_size()
+            adt = choose_adt()
+            sort = choose_sort()
+
+        elif int(inputs) == 10:
             print_req_8(control)
 
         elif int(inputs) == 0:

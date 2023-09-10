@@ -219,9 +219,9 @@ def cmp_partidos_by_fecha_y_pais(result1, result2):
     en caso de que sean iguales tenga el nombre de la ciudad en que se disputó el partido,
     de lo contrario devuelva falso (False).
     Args:
-    Resultado1: información del primer registro de resultados FIFA que incluye 
+    result1: información del primer registro de resultados FIFA que incluye 
     “date” y el “country” 
-    impuesto2: información del segundo registro de resultados FIFA que incluye 
+    result2: información del segundo registro de resultados FIFA que incluye 
     “date” y el “country” 
     """
     #TODO: Crear función comparadora para ordenar
@@ -314,11 +314,32 @@ def cmp_shootouts(shoot1, shoot2):
             elif nombre_1_visitante < nombre_1_visitante:
                 return False
         
-def sort_results(data_structs):
-    quk.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
+def sort(data_structs, algorithm):
 
-def sort_goalscorers(data_structs):
-    quk.sort(data_structs['goalscorers'], cmp_goalscorers)
+    if algorithm == 'shell':
+        sa.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
+        sa.sort(data_structs['goalscorers'], cmp_goalscorers)
+        sa.sort(data_structs['shootouts'], cmp_shootouts)
 
-def sort_shootouts(data_structs):
-    quk.sort(data_structs['shootouts'], cmp_shootouts)
+    elif algorithm == 'insertion':
+        ins.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
+        ins.sort(data_structs['goalscorers'], cmp_goalscorers)
+        ins.sort(data_structs['shootouts'], cmp_shootouts)
+    
+    elif algorithm == 'selection':
+        se.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
+        se.sort(data_structs['goalscorers'], cmp_goalscorers)
+        se.sort(data_structs['shootouts'], cmp_shootouts)
+    
+    elif algorithm == 'merge':
+        merg.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
+        merg.sort(data_structs['goalscorers'], cmp_goalscorers)
+        merg.sort(data_structs['shootouts'], cmp_shootouts)
+    
+    elif algorithm == 'quick':
+        quk.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
+        quk.sort(data_structs['goalscorers'], cmp_goalscorers)
+        quk.sort(data_structs['shootouts'], cmp_shootouts)
+    
+    else:
+        return None
