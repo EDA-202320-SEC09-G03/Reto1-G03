@@ -63,12 +63,12 @@ def print_menu():
     print("0- Salir")
 
 
-def load_data(control):
+def load_data(control, file_size):
     """
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    results, goalscorers, shootouts = controller.load_data(control)
+    results, goalscorers, shootouts = controller.load_data(control,file_size)
 
     print("Primeros y ultimos 3 resultados: \n")
 
@@ -107,6 +107,38 @@ def choose_adt():
         return 'SINGLE_LINKED'
     elif int(user) == 2:
         return 'ARRAY_LIST'
+    else:
+        return None
+    
+def choose_size():
+    print('Por favor elija el tamaño de archivo a cargar')
+    print('1. Small')
+    print('2. Large')
+    print('3. 5pct')
+    print('4. 10pct')
+    print('5. 20pct')
+    print('6. 30pct')
+    print('7. 50pct')
+    print('8. 80pct')
+
+    choice = int(input('Ingrese el número de su elección: '))
+
+    if choice == 1:
+        return 'small'
+    elif choice == 2:
+        return 'large'
+    elif choice == 3:
+        return '5pct'
+    elif choice == 4:
+        return '10pct'
+    elif choice == 5:
+        return '20pct'
+    elif choice == 6:
+        return '30pct'
+    elif choice == 7:
+        return '50pct'
+    elif choice == 8:
+        return '80pct'
     else:
         return None
 
@@ -196,11 +228,12 @@ if __name__ == "__main__":
         print_menu()
         inputs = input('Seleccione una opción para continuar\n')
         if int(inputs) == 1:
+            file_size = choose_size()
             adt = choose_adt()
             if adt != None:
                 control = new_controller(adt)
                 print("Cargando información de los archivos ....\n")
-                rsize, gsize, ssize = load_data(control)
+                rsize, gsize, ssize = load_data(control, file_size)
                 print('Total de encuentros cargados: ' + str(rsize))
                 print('Total de anotaciones cargadas: ' + str(gsize))
                 print('Total de goles marcados desde el punto penal cargados: ' + str(ssize))

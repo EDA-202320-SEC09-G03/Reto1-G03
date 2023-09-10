@@ -45,16 +45,16 @@ def new_controller(adt):
 
 # Funciones para la carga de datos
 
-def load_data(control):
+def load_data(control, file_size):
     """
     Carga los datos del reto
     """
     # TODO: Realizar la carga de datos
     data_structs = control['model']
 
-    results = load_results(data_structs)
-    goalscorers = load_goalscorers(data_structs)
-    shootouts = load_shootouts(data_structs)
+    results = load_results(data_structs, file_size)
+    goalscorers = load_goalscorers(data_structs, file_size)
+    shootouts = load_shootouts(data_structs, file_size)
 
     sort_results(data_structs)
     sort_goalscorers(data_structs)
@@ -62,9 +62,9 @@ def load_data(control):
 
     return results, goalscorers, shootouts
 
-def load_results(data_structs):
+def load_results(data_structs, file_size):
 
-    results_file = cf.data_dir + 'football/results-utf8-small.csv'
+    results_file = cf.data_dir + 'football/results-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(results_file, encoding='utf-8'))
 
     for result in input_file:
@@ -72,9 +72,9 @@ def load_results(data_structs):
 
     return model.data_size(data_structs, 'results')
 
-def load_goalscorers(data_structs):
+def load_goalscorers(data_structs, file_size):
 
-    goalscorers_file = cf.data_dir + 'football/goalscorers-utf8-small.csv'
+    goalscorers_file = cf.data_dir + 'football/goalscorers-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(goalscorers_file, encoding='utf-8'))
 
     for goalscorer in input_file:
@@ -82,9 +82,9 @@ def load_goalscorers(data_structs):
 
     return model.data_size(data_structs, 'goalscorers')
 
-def load_shootouts(data_structs):
+def load_shootouts(data_structs, file_size):
 
-    shootouts_file = cf.data_dir + 'football/shootouts-utf8-small.csv'
+    shootouts_file = cf.data_dir + 'football/shootouts-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(shootouts_file, encoding='utf-8'))
 
     for shootout in input_file:
