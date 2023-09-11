@@ -318,18 +318,18 @@ def sort(data_structs, algorithm):
 
     if algorithm == 'shell':
         sa.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
-        sa.sort(data_structs['goalscorers'], cmp_goalscorers)
-        sa.sort(data_structs['shootouts'], cmp_shootouts)
+        #sa.sort(data_structs['goalscorers'], cmp_goalscorers)
+        #sa.sort(data_structs['shootouts'], cmp_shootouts)
 
     elif algorithm == 'insertion':
         ins.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
-        ins.sort(data_structs['goalscorers'], cmp_goalscorers)
-        ins.sort(data_structs['shootouts'], cmp_shootouts)
+        #ins.sort(data_structs['goalscorers'], cmp_goalscorers)
+        #ins.sort(data_structs['shootouts'], cmp_shootouts)
     
     elif algorithm == 'selection':
         se.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
-        se.sort(data_structs['goalscorers'], cmp_goalscorers)
-        se.sort(data_structs['shootouts'], cmp_shootouts)
+        #se.sort(data_structs['goalscorers'], cmp_goalscorers)
+        #se.sort(data_structs['shootouts'], cmp_shootouts)
     
     elif algorithm == 'merge':
         merg.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
