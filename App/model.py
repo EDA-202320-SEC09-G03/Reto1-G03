@@ -333,13 +333,13 @@ def sort(data_structs, algorithm):
     
     elif algorithm == 'merge':
         merg.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
-        merg.sort(data_structs['goalscorers'], cmp_goalscorers)
-        merg.sort(data_structs['shootouts'], cmp_shootouts)
+        #merg.sort(data_structs['goalscorers'], cmp_goalscorers)
+        #merg.sort(data_structs['shootouts'], cmp_shootouts)
     
     elif algorithm == 'quick':
         quk.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
-        quk.sort(data_structs['goalscorers'], cmp_goalscorers)
-        quk.sort(data_structs['shootouts'], cmp_shootouts)
+        #quk.sort(data_structs['goalscorers'], cmp_goalscorers)
+        #quk.sort(data_structs['shootouts'], cmp_shootouts)
     
     else:
         return None
