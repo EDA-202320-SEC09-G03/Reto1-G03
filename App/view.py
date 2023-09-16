@@ -71,8 +71,8 @@ def load_data(control, file_size, algorithm):
     results, goalscorers, shootouts = controller.load_data(control,file_size)
 
     print('Total de encuentros cargados: ' + str(results))
-    #print('Total de anotaciones cargadas: ' + str(goalscorers))
-    #print('Total de goles marcados desde el punto penal cargados: ' + str(shootouts))
+    print('Total de anotaciones cargadas: ' + str(goalscorers))
+    print('Total de goles marcados desde el punto penal cargados: ' + str(shootouts))
 
     print('Ordenando los archivos...')
 
@@ -88,13 +88,13 @@ def load_data(control, file_size, algorithm):
 
     file2 = "goalscorers"
     table_goalscorers = controller.get_first_last_three_datastructs(control, file2)
-    #print(tabulate(table_goalscorers['elements'], headers="keys", tablefmt="grid"), "\n")
+    print(tabulate(table_goalscorers['elements'], headers="keys", tablefmt="grid"), "\n")
 
     print("Primeros y ultimos 3 goles:\n")
 
     file3 = "shootouts"
     table_shootouts = controller.get_first_last_three_datastructs(control, file3)
-    #print(tabulate(table_shootouts['elements'], headers="keys", tablefmt="grid"), "\n")
+    print(tabulate(table_shootouts['elements'], headers="keys", tablefmt="grid"), "\n")
     
     return d_time
 

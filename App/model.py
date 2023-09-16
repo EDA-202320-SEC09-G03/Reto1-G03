@@ -56,9 +56,9 @@ def new_data_structs(adt):
         'goalscorers': None,
         'shootouts': None
     }
-    data_structs['results'] = lt.newList(datastructure=adt, cmpfunction=cmp_partidos_by_fecha_y_pais)
-    data_structs['goalscorers'] = lt.newList(datastructure=adt)
-    data_structs['shootouts'] = lt.newList(datastructure=adt)
+    data_structs['results'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
+    data_structs['goalscorers'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
+    data_structs['shootouts'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     return data_structs
 
 
@@ -203,12 +203,17 @@ def req_8(data_structs):
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 
-def compare(data_1, data_2):
+def compare_id(data_1, data_2):
     """
     Función encargada de comparar dos datos
     """
     #TODO: Crear función comparadora de la lista
-    pass
+    if data_1['id'] > data_2['id']:
+        return 1
+    elif data_1['id'] < data_2['id']:
+        return -1
+    else:
+        return 0
 
 # Funciones de ordenamiento
 
@@ -225,42 +230,33 @@ def cmp_partidos_by_fecha_y_pais(result1, result2):
     “date” y el “country” 
     """
     #TODO: Crear función comparadora para ordenar
-    formato_fecha = "%Y-%m-%d"
-
     fecha1 = result1['date']
     fecha2 = result2['date']
-
-    fecha1 = dt.strptime(fecha1, formato_fecha)
-    fecha2 = dt.strptime(fecha2, formato_fecha)
 
     if fecha1 > fecha2:
         return True
     elif fecha1 < fecha2:
         return False
     else:
-        hscore1 = int(result1['home_score'])
-        hscore2 = int(result2['home_score'])
+        hscore1 = result1['home_score']
+        hscore2 = result2['home_score']
 
         if hscore1 > hscore2:
             return True
         elif hscore1 < hscore2:
             return False
         else:
-            ascore1 = int(result1['away_score'])
-            ascore2 = int(result2['away_score'])
+            ascore1 = result1['away_score']
+            ascore2 = result2['away_score']
             if ascore1 > ascore2:
                 return True
             else: 
                 return False
 
 def cmp_goalscorers(scorer1, scorer2):
-    formato_fecha = "%Y-%m-%d"
 
     fecha1 = scorer1['date']
     fecha2 = scorer2['date']
-
-    fecha1 = dt.strptime(fecha1, formato_fecha)
-    fecha2 = dt.strptime(fecha2, formato_fecha)
 
     if fecha1 > fecha2:
         return True
@@ -283,13 +279,9 @@ def cmp_goalscorers(scorer1, scorer2):
                 return False
 
 def cmp_shootouts(shoot1, shoot2):
-    formato_fecha = "%Y-%m-%d"
 
     fecha1 = shoot1["date"]
     fecha2 = shoot2["date"]
-
-    fecha1 = dt.strptime(fecha1, formato_fecha)
-    fecha2 = dt.strptime(fecha2, formato_fecha)
 
     if fecha1 > fecha2:
         return True
