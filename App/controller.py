@@ -24,6 +24,7 @@ import config as cf
 import model
 import time
 import csv
+from datetime import datetime
 
 
 """
@@ -63,8 +64,13 @@ def load_results(data_structs, file_size):
     results_file = cf.data_dir + 'football/results-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(results_file, encoding='utf-8'))
 
+    id = 1
     for result in input_file:
-        model.add_data(data_structs, result, 'results')
+
+        changed = change_type(result)
+        changed['id'] = id
+        model.add_data(data_structs, changed, 'results')
+        id += 1
 
     return model.data_size(data_structs, 'results')
 
@@ -73,8 +79,13 @@ def load_goalscorers(data_structs, file_size):
     goalscorers_file = cf.data_dir + 'football/goalscorers-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(goalscorers_file, encoding='utf-8'))
 
+    id = 1
     for goalscorer in input_file:
-        model.add_data(data_structs, goalscorer, 'goalscorers')
+
+        changed = change_type(goalscorer)
+        changed['id'] = id
+        model.add_data(data_structs, changed, 'goalscorers')
+        id += 1
 
     return model.data_size(data_structs, 'goalscorers')
 
@@ -83,10 +94,26 @@ def load_shootouts(data_structs, file_size):
     shootouts_file = cf.data_dir + 'football/shootouts-utf8-' + file_size + '.csv'
     input_file = csv.DictReader(open(shootouts_file, encoding='utf-8'))
 
+    id = 1
     for shootout in input_file:
-        model.add_data(data_structs, shootout, 'shootouts')
+
+        changed = change_type(shootout)
+        changed['id'] = id
+        model.add_data(data_structs, changed, 'shootouts')
+        id += 1
 
     return model.data_size(data_structs, 'shootouts')
+
+def change_type(data):
+
+    changed = data
+    formato_fecha = "%Y-%m-%d"
+    changed['date'] == datetime.strptime(data['date'], formato_fecha)
+    if changed.get('home_score', False):
+        changed['home_score'] = int(data['home_score']) 
+        changed['away_score'] = int(data['away_score'])
+    
+    return changed
 
 
 # Funciones de ordenamiento
