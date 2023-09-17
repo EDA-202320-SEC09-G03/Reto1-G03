@@ -71,8 +71,8 @@ def load_data(control, file_size, algorithm):
     results, goalscorers, shootouts = controller.load_data(control,file_size)
 
     print('Total de encuentros cargados: ' + str(results))
-    #print('Total de anotaciones cargadas: ' + str(goalscorers))
-    #print('Total de goles marcados desde el punto penal cargados: ' + str(shootouts))
+    print('Total de anotaciones cargadas: ' + str(goalscorers))
+    print('Total de goles marcados desde el punto penal cargados: ' + str(shootouts))
 
     print('Ordenando los archivos...')
 
