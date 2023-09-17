@@ -88,13 +88,13 @@ def load_data(control, file_size, algorithm):
 
     file2 = "goalscorers"
     table_goalscorers = controller.get_first_last_three_datastructs(control, file2)
-    #print(tabulate(table_goalscorers['elements'], headers="keys", tablefmt="grid"), "\n")
+    print(tabulate(table_goalscorers['elements'], headers="keys", tablefmt="grid"), "\n")
 
     print("Primeros y ultimos 3 goles:\n")
 
     file3 = "shootouts"
     table_shootouts = controller.get_first_last_three_datastructs(control, file3)
-    #print(tabulate(table_shootouts['elements'], headers="keys", tablefmt="grid"), "\n")
+    print(tabulate(table_shootouts['elements'], headers="keys", tablefmt="grid"), "\n")
     
     return d_time
 
@@ -210,7 +210,23 @@ def print_req_4(control):
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
-    pass
+    nombre_torneo = "Copa América" #input("Diga el nombre del torneo: ")
+    fecha_inicial = "1955-06-01" #input("Ingrese la fecha inicial: ")
+    fecha_final = "2022-06-30" #input("Ingrese la fecha final: ")
+    data, ciudades, paises, total_matches = controller.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
+
+    headers = ["date", "tournament", "country", "city", "home_team", "away_team", "home_score", "away_score", "winner"]
+    lista_datos = []
+    for dato in lt.iterator(data):
+        lista_dato = []
+        for llave in dato.keys() :
+            if llave in headers:
+                lista_dato.append(dato[llave])
+        lista_datos.append(lista_dato)
+
+    print(tabulate(lista_datos, headers, tablefmt="grid"))
+    print(ciudades)
+    print(paises)
 
 
 def print_req_5(control):
