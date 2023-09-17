@@ -57,7 +57,7 @@ def load_data(control, file_size):
     goalscorers = load_goalscorers(data_structs, file_size)
     shootouts = load_shootouts(data_structs, file_size)
 
-    return results, goalscorers, shootouts
+    return (results, goalscorers, shootouts)
 
 def load_results(data_structs, file_size):
 
@@ -164,12 +164,13 @@ def req_3(control):
     pass
 
 
-def req_4(control):
+def req_4(control, nombre_torneo, fecha_inicial, fecha_final ):
     """
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
-    pass
+    data, ciudades, paises, total_matches = model.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
+    return data, ciudades, paises, total_matches
 
 
 def req_5(control):

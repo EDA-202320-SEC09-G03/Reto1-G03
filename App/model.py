@@ -161,12 +161,38 @@ def req_3(data_structs):
     pass
 
 
-def req_4(data_structs):
+def req_4(control, nombre_torneo, fecha_inicial, fecha_final):
     """
     Función que soluciona el requerimiento 4
     """
-    # TODO: Realizar el requerimiento 4
-    pass
+    lista_results = control["model"]["results"]
+    formato_fecha = "%Y-%m-%d"
+    fecha_inicial = dt.strptime(fecha_inicial, formato_fecha)
+    fecha_final = dt.strptime(fecha_final, formato_fecha)
+    lista_final = lt.newList("ARRAY_LIST")
+
+    for dato in lt.iterator(lista_results):
+        fecha_dato = dato["date"]
+        fecha_dato = dt.strptime(fecha_dato, formato_fecha)
+        if fecha_dato <= fecha_final and fecha_dato >= fecha_inicial and dato["tournament"] == nombre_torneo:
+            lt.addLast(lista_final, dato)
+
+    lista_cities = lt.newList("ARRAY_LIST")
+    lista_countries = lt.newList("ARRAY_LIST")
+    for dato in lt.iterator(lista_final):
+        ciudad_dato = dato["city"]
+        pais_dato = dato["country"]
+        if not lt.isPresent(lista_cities, ciudad_dato):
+            lt.addLast(lista_cities, ciudad_dato)
+        if not lt.isPresent(lista_countries, pais_dato):
+            lt.addLast(lista_countries, pais_dato)
+
+    num_ciudades = lt.size(lista_cities)
+    num_paises = lt.size(lista_countries)
+    total_matches = lt.size(lista_final)
+
+    return lista_final, num_ciudades, num_paises, total_matches
+    
 
 
 def req_5(data_structs):
