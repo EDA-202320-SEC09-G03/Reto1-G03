@@ -64,12 +64,30 @@ def new_data_structs(adt):
 
 # Funciones para agregar informacion al modelo
 
-def add_data(data_structs, data, file):
+def add_results(data_structs, data):
     """
     Función para agregar nuevos elementos a la lista
     """
     #TODO: Crear la función para agregar elementos a una lista
-    lt.addLast(data_structs[file], data)
+    data['winner'] = 'Unknown'
+    data['penalty']
+    lt.addLast(data_structs['results'], data)
+    return data_structs
+
+def add_goalscorers(data_structs, data):
+    """
+    Función para agregar nuevos elementos a la lista
+    """
+    #TODO: Crear la función para agregar elementos a una lista
+    lt.addLast(data_structs['goalscorers'], data)
+    return data_structs
+
+def add_shootouts(data_structs, data):
+    """
+    Función para agregar nuevos elementos a la lista
+    """
+    #TODO: Crear la función para agregar elementos a una lista
+    lt.addLast(data_structs['shootouts'], data)
     return data_structs
 
 

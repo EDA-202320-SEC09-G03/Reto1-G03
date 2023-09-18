@@ -69,7 +69,7 @@ def load_results(data_structs, file_size):
 
         changed = change_type(result)
         changed['id'] = id
-        model.add_data(data_structs, changed, 'results')
+        model.add_results(data_structs, changed)
         id += 1
 
     return model.data_size(data_structs, 'results')
@@ -84,7 +84,7 @@ def load_goalscorers(data_structs, file_size):
 
         changed = change_type(goalscorer)
         changed['id'] = id
-        model.add_data(data_structs, changed, 'goalscorers')
+        model.add_goalscorers(data_structs, changed)
         id += 1
 
     return model.data_size(data_structs, 'goalscorers')
@@ -99,7 +99,7 @@ def load_shootouts(data_structs, file_size):
 
         changed = change_type(shootout)
         changed['id'] = id
-        model.add_data(data_structs, changed, 'shootouts')
+        model.add_shootouts(data_structs, changed)
         id += 1
 
     return model.data_size(data_structs, 'shootouts')
