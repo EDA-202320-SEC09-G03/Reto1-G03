@@ -54,11 +54,13 @@ def new_data_structs(adt):
     data_structs = {
         'results': None,
         'goalscorers': None,
-        'shootouts': None
+        'shootouts': None,
+        'teams': None
     }
     data_structs['results'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['goalscorers'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['shootouts'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
+    data_structs['teams'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
     return data_structs
 
 
@@ -69,9 +71,9 @@ def add_results(data_structs, data):
     Función para agregar nuevos elementos a la lista
     """
     #TODO: Crear la función para agregar elementos a una lista
-    data['winner'] = 'Unknown'
-    data['penalty']
     lt.addLast(data_structs['results'], data)
+    add_teams(data_structs, data['home_team'], data)
+    add_teams(data_structs, data['away_team'], data)
     return data_structs
 
 def add_goalscorers(data_structs, data):
@@ -90,6 +92,16 @@ def add_shootouts(data_structs, data):
     lt.addLast(data_structs['shootouts'], data)
     return data_structs
 
+def add_teams(data_structs, teamname, data):
+    teams = data_structs['teams']
+    posteam = lt.isPresent(teams, teamname)
+    if posteam > 0:
+        team = lt.getElement(teams, posteam)
+    else:
+        team = new_team(teamname)
+        lt.addLast(teams, team)
+    lt.addLast(team['results'], data)
+    return data_structs
 
 # Funciones para creacion de datos
 
@@ -100,6 +112,11 @@ def new_data(id, info):
     #TODO: Crear la función para estructurar los datos
     pass
 
+def new_team(name):
+    team = {'name': '', 'results': None}
+    team['name'] = name
+    team['results'] = lt.newList('ARRAY_LIST')
+    return team
 
 # Funciones de consulta
 
@@ -258,6 +275,17 @@ def compare_id(data_1, data_2):
         return -1
     else:
         return 0
+    
+def compare_team(team1, team2):
+    t1 = team1.lower()
+    t2 = team2['name'].lower()
+
+    if t1 > t2:
+        return 1
+    elif t1 < t2:
+        return -1
+    else:
+        return 0
 
 # Funciones de ordenamiento
 
@@ -349,33 +377,32 @@ def cmp_shootouts(shoot1, shoot2):
                 return True
             elif nombre_1_visitante < nombre_1_visitante:
                 return False
+
+def cmp_teams(team1, team2):
+
+    t1 = team1['name'].lower()
+    t2 = team2['name'].lower()
+
+    if t1 < t2:
+        return True
+    else:
+        return False
         
 def sort(data_structs, algorithm):
+    sort_algorithms = {
+        'shell': sa.sort,
+        'insertion': ins.sort,
+        'selection': se.sort,
+        'merge': merg.sort,
+        'quick': quk.sort,
+    }
 
-    if algorithm == 'shell':
-        sa.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
-        #sa.sort(data_structs['goalscorers'], cmp_goalscorers)
-        #sa.sort(data_structs['shootouts'], cmp_shootouts)
-
-    elif algorithm == 'insertion':
-        ins.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
-        #ins.sort(data_structs['goalscorers'], cmp_goalscorers)
-        #ins.sort(data_structs['shootouts'], cmp_shootouts)
+    sort_algorithm = sort_algorithms.get(algorithm)
     
-    elif algorithm == 'selection':
-        se.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
-        #se.sort(data_structs['goalscorers'], cmp_goalscorers)
-        #se.sort(data_structs['shootouts'], cmp_shootouts)
-    
-    elif algorithm == 'merge':
-        merg.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
-        #merg.sort(data_structs['goalscorers'], cmp_goalscorers)
-        #merg.sort(data_structs['shootouts'], cmp_shootouts)
-    
-    elif algorithm == 'quick':
-        quk.sort(data_structs['results'], cmp_partidos_by_fecha_y_pais)
-        #quk.sort(data_structs['goalscorers'], cmp_goalscorers)
-        #quk.sort(data_structs['shootouts'], cmp_shootouts)
-    
-    else:
-        return None
+    if sort_algorithm:
+        sort_algorithm(data_structs['results'], cmp_partidos_by_fecha_y_pais)
+        sort_algorithm(data_structs['goalscorers'], cmp_goalscorers)
+        sort_algorithm(data_structs['shootouts'], cmp_shootouts)
+        sort_algorithm(data_structs['teams'], cmp_teams)
+        for team in lt.iterator(data_structs['teams']):
+            sort_algorithm(team['results'], cmp_partidos_by_fecha_y_pais)
