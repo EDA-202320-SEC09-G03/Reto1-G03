@@ -82,6 +82,15 @@ def add_goalscorers(data_structs, data):
     """
     #TODO: Crear la función para agregar elementos a una lista
     lt.addLast(data_structs['goalscorers'], data)
+    date = data['date']
+    hometeam = data['home_team'].lower()
+    awayteam = data['away_team'].lower()
+    pos_result = binary_search_general(data_structs['results'], date, hometeam, awayteam)
+    if pos_result != -1:
+        result = lt.getElement(data_structs['results'], pos_result)
+        result['own_goal'] = data['own_goal']
+        result['penalty'] = data['penalty']
+        lt.changeInfo(data_structs['results'], pos_result, result)
     return data_structs
 
 def add_shootouts(data_structs, data):
@@ -154,6 +163,48 @@ def get_first_last_three_list(list):
 
     return filtered
 
+def binary_search_general(data_structs, date, hometeam, awayteam):
+    low = 1
+    high = lt.size(data_structs)
+
+    while low <= high:
+        mid = (low + high) // 2
+        result = lt.getElement(data_structs, mid)
+        datemid = result['date']
+        if datemid < date:
+            high = mid -1
+        elif datemid > date:
+            low = mid + 1
+        else:
+            hometeam_mid = result['home_team'].lower()
+            if hometeam_mid < hometeam:
+                high = mid - 1
+            elif hometeam_mid > hometeam:
+                low = mid + 1
+            else:
+                awayteam_mid = result['away_team'].lower()
+                if awayteam_mid < awayteam:
+                    high = mid + 1
+                elif awayteam_mid > awayteam:
+                    low = mid + 1
+                else:
+                    return mid
+    return -1
+
+def binary_search_team(data_structs, name):
+    low = 1
+    high = lt.size(data_structs)
+
+    while low <= high:
+        mid = (low + high) // 2
+        team = lt.getElement(data_structs, mid)
+        mid_name = team['name'].lower()
+        if mid_name == name:
+            return mid
+        elif mid_name < name:
+            low = mid + 1
+
+
 
 def req_1(data_structs, team_name, condition):
     """
@@ -188,12 +239,35 @@ def req_2(data_structs):
     pass
 
 
-def req_3(data_structs):
+def req_3(data_structs, name, inicial, final):
     """
     Función que soluciona el requerimiento 3
     """
     # TODO: Realizar el requerimiento 3
-    pass
+    teams = data_structs['teams']
+    team_results = lt.getElement
+
+    filtered = lt.newList('ARRAY_LIST')
+    home = 0
+    away = 0
+    finish = False
+    i = 1
+    max = lt.size(team_results)
+
+    while finish == False and inicial <= final and i <= max:
+        result = lt.getElement(team_results, i)
+        date = result['date']
+        if date >= inicial:
+            if date <= final:
+                lt.addLast(filtered, result)
+                if result['home_team'] == name:
+                    home += 1
+                else:
+                    away += 1
+        else:
+            finish = True
+        i += 1
+    return (filtered, home, away)
 
 
 def req_4(control, nombre_torneo, fecha_inicial, fecha_final):
@@ -388,7 +462,7 @@ def cmp_teams(team1, team2):
     else:
         return False
         
-def sort(data_structs, algorithm):
+def sort(data_structs, algorithm, file):
     sort_algorithms = {
         'shell': sa.sort,
         'insertion': ins.sort,
@@ -398,11 +472,15 @@ def sort(data_structs, algorithm):
     }
 
     sort_algorithm = sort_algorithms.get(algorithm)
-    
+
     if sort_algorithm:
-        sort_algorithm(data_structs['results'], cmp_partidos_by_fecha_y_pais)
-        sort_algorithm(data_structs['goalscorers'], cmp_goalscorers)
-        sort_algorithm(data_structs['shootouts'], cmp_shootouts)
-        sort_algorithm(data_structs['teams'], cmp_teams)
-        for team in lt.iterator(data_structs['teams']):
-            sort_algorithm(team['results'], cmp_partidos_by_fecha_y_pais)
+        if file == 'results':
+            sort_algorithm(data_structs['results'], cmp_partidos_by_fecha_y_pais)
+        elif file == 'goalscorers':
+            sort_algorithm(data_structs['goalscorers'], cmp_goalscorers)
+        elif file == 'shootouts':
+            sort_algorithm(data_structs['shootouts'], cmp_shootouts)
+        elif file == 'teams':
+            sort_algorithm(data_structs['teams'], cmp_teams)
+            for team in lt.iterator(data_structs['teams']):
+                sort_algorithm(team['results'], cmp_partidos_by_fecha_y_pais)

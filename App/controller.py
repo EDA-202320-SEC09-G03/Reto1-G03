@@ -46,7 +46,7 @@ def new_controller(adt):
 
 # Funciones para la carga de datos
 
-def load_data(control, file_size):
+def load_data(control, file_size, algorithm):
     """
     Carga los datos del reto
     """
@@ -54,10 +54,13 @@ def load_data(control, file_size):
     data_structs = control['model']
 
     results = load_results(data_structs, file_size)
+    d_time1 = sort(control, algorithm, 'results')
     goalscorers = load_goalscorers(data_structs, file_size)
+    d_time2 = sort(control, algorithm, 'goalscorers')
     shootouts = load_shootouts(data_structs, file_size)
+    d_time3 = sort(control, algorithm, 'shootouts')
 
-    return (results, goalscorers, shootouts)
+    return (results, goalscorers, shootouts, (d_time1 + d_time2 + d_time3))
 
 def load_results(data_structs, file_size):
 
@@ -69,6 +72,9 @@ def load_results(data_structs, file_size):
 
         changed = change_type(result)
         changed['id'] = id
+        changed['penalty'] = 'Unknown'
+        changed['own_goal'] = 'Unknown'
+        changed['winner'] = 'Unknown'
         model.add_results(data_structs, changed)
         id += 1
 
@@ -118,10 +124,10 @@ def change_type(data):
 
 # Funciones de ordenamiento
 
-def sort(control, algorithm):
+def sort(control, algorithm, file):
     data_structs = control['model']
     start_time = get_time()
-    model.sort(data_structs, algorithm)
+    model.sort(data_structs, algorithm, file)
     end_time = get_time()
     d_time = delta_time(start_time, end_time)
 
@@ -156,12 +162,21 @@ def req_2(control):
     pass
 
 
-def req_3(control):
+def req_3(control, name, inicial, final):
     """
     Retorna el resultado del requerimiento 3
     """
     # TODO: Modificar el requerimiento 3
-    pass
+    name = name.lower()
+    formato_fecha = "%Y-%m-%d"
+    inicial = datetime.strptime(inicial, formato_fecha)
+    final = datetime.strptime(final, formato_fecha)
+    if final >= inicial:
+        filtered_list, home, away = model.req_3(control['model'], name, inicial, final)
+        lt_size = model.lt.size(filtered_list)
+        return filtered_list, lt_size
+    else:
+        return (None, 0)
 
 
 def req_4(control, nombre_torneo, fecha_inicial, fecha_final ):

@@ -68,15 +68,13 @@ def load_data(control, file_size, algorithm):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    results, goalscorers, shootouts = controller.load_data(control,file_size)
+    results, goalscorers, shootouts, d_time = controller.load_data(control,file_size, algorithm)
 
     print('Total de encuentros cargados: ' + str(results))
     print('Total de anotaciones cargadas: ' + str(goalscorers))
     print('Total de goles marcados desde el punto penal cargados: ' + str(shootouts))
 
-    print('Ordenando los archivos...')
-
-    d_time = controller.sort(control, algorithm)
+    print('Tiempo de ordenamiento: ', d_time)
 
     print("Primeros y ultimos 3 resultados: \n")
 
@@ -197,11 +195,18 @@ def print_req_2(control):
     pass
 
 
-def print_req_3(control):
+def print_req_3(control, name, inicial, final):
     """
         Función que imprime la solución del Requerimiento 3 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 3
+    list, size = controller.req_3(control, name, inicial, final)
+    if size > 6:
+        sublist = lt.subList(list, 1, n_results)
+        table_req_1 = controller.get_first_last_three_list(sublist)
+        print(tabulate(table_req_1['elements'], headers="keys", tablefmt="grid"), "\n")
+    else:
+        print(tabulate(list['elements'], headers="keys", tablefmt="grid"), '\n')
     pass
 
 
@@ -319,7 +324,11 @@ if __name__ == "__main__":
             print_req_2(control)
 
         elif int(inputs) == 4:
-            print_req_3(control)
+            name = input('Ingrese el nombre del equipo: ')
+            print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
+            inicial = input('Ingrese la fecha inicial: ')
+            final = input('Ingrese la fecha final: ')
+            print_req_3(control, name, inicial, final)
 
         elif int(inputs) == 5:
             print_req_4(control)
