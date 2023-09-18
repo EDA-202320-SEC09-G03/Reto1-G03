@@ -257,7 +257,7 @@ def print_req_8(control):
     pass
 
 
-# Se crea el controlador asociado a la vista
+ # Se crea el controlador asociado a la vista
 control = None
 file_size = None
 adt = None
