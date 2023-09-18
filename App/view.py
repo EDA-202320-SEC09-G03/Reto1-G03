@@ -210,23 +210,19 @@ def print_req_4(control):
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
-    nombre_torneo = "Copa América" #input("Diga el nombre del torneo: ")
-    fecha_inicial = "1955-06-01" #input("Ingrese la fecha inicial: ")
-    fecha_final = "2022-06-30" #input("Ingrese la fecha final: ")
+    nombre_torneo = input("Diga el nombre del torneo: ")
+    fecha_inicial = input("Ingrese la fecha inicial: ")
+    fecha_final = input("Ingrese la fecha final: ")
     data, ciudades, paises, total_matches = controller.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
 
-    headers = ["date", "tournament", "country", "city", "home_team", "away_team", "home_score", "away_score", "winner"]
-    lista_datos = []
-    for dato in lt.iterator(data):
-        lista_dato = []
-        for llave in dato.keys() :
-            if llave in headers:
-                lista_dato.append(dato[llave])
-        lista_datos.append(lista_dato)
+    if total_matches > 6:
+        sublist = controller.get_first_last_three_list(data)
+    else:
+        sublist = data
 
-    print(tabulate(lista_datos, headers, tablefmt="grid"))
-    print(ciudades)
-    print(paises)
+    print(tabulate(sublist['elements'], headers='keys', tablefmt="grid"), '\n')
+    print('Ciudades:', ciudades)
+    print('Paises:',paises)
 
 
 def print_req_5(control):
