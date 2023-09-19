@@ -207,7 +207,11 @@ def print_req_3(control, name, inicial, final):
         Función que imprime la solución del Requerimiento 3 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 3
-    list, size = controller.req_3(control, name, inicial, final)
+    list, size, home, away = controller.req_3(control, name, inicial, final)
+    print('Numero de datos encontrados: ', size)
+    print('Numero de datos como local: ', home)
+    print('Numero de datos como visitante: ', away)
+    
     if size > 6:
         sublist = lt.subList(list, 1, n_results)
         table_req_1 = controller.get_first_last_three_list(sublist)

@@ -118,7 +118,7 @@ def change_type(data):
 
     changed = data
     formato_fecha = "%Y-%m-%d"
-    changed['date'] == datetime.strptime(data['date'], formato_fecha)
+    changed['date'] = datetime.strptime(data['date'], formato_fecha)
     if changed.get('home_score', False):
         changed['home_score'] = int(data['home_score']) 
         changed['away_score'] = int(data['away_score'])
@@ -178,9 +178,9 @@ def req_3(control, name, inicial, final):
     if final >= inicial:
         filtered_list, home, away = model.req_3(control['model'], name, inicial, final)
         lt_size = model.lt.size(filtered_list)
-        return filtered_list, lt_size
+        return filtered_list, lt_size, home, away
     else:
-        return (None, 0)
+        return (None, 0, 0, 0)
 
 
 def req_4(control, nombre_torneo, fecha_inicial, fecha_final ):

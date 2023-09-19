@@ -128,6 +128,7 @@ def add_teams(data_structs, teamname, data):
     else:
         team = new_team(teamname)
         lt.addLast(teams, team)
+
     lt.addLast(team['results'], data)
     return data_structs
 
@@ -238,7 +239,21 @@ def binary_search_team(data_structs, name):
             return mid
         elif mid_name < name:
             low = mid + 1
+        else:
+            high = mid - 1
 
+def find_pos_start_date(data_structs, start):
+    for i in range(lt.size(data_structs), 0, -1):
+        data = lt.getElement(data_structs, i)
+        if data['date'] >= start:
+            return i
+    return -1
+def find_pos_finish_date(data_structs, finish):
+    for i in range(1, lt.size(data_structs)):
+        data = lt.getElement(data_structs, i)
+        if data['date'] <= finish:
+            return i
+    return -1
 
 
 def req_1(data_structs, team_name, condition):
@@ -280,30 +295,25 @@ def req_3(data_structs, name, inicial, final):
     """
     # TODO: Realizar el requerimiento 3
     teams = data_structs['teams']
-    team_results = lt.getElement
 
-    filtered = lt.newList('ARRAY_LIST')
+    pos_team = binary_search_team(teams, name)
+    results_team = lt.getElement(teams, pos_team)
+
+    pos_date_inicial = find_pos_start_date(results_team['results'], inicial)
+    pos_date_final = find_pos_finish_date(results_team['results'], final)
+    size = (pos_date_inicial - pos_date_final) + 1
+    sublist = lt.subList(results_team['results'], pos_date_final, size)
+
     home = 0
     away = 0
-    finish = False
-    i = 1
-    max = lt.size(team_results)
-
-    while finish == False and inicial <= final and i <= max:
-        result = lt.getElement(team_results, i)
-        date = result['date']
-        if date >= inicial:
-            if date <= final:
-                lt.addLast(filtered, result)
-                if result['home_team'] == name:
-                    home += 1
-                else:
-                    away += 1
+    nlower = name.lower()
+    for result in lt.iterator(sublist):
+        if result['home_team'].lower() == nlower:
+            home += 1
         else:
-            finish = True
-        i += 1
-    return (filtered, home, away)
-
+            away +=1
+    
+    return (sublist, home, away)
 
 def req_4(control, nombre_torneo, fecha_inicial, fecha_final):
     """
