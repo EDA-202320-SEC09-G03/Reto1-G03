@@ -80,7 +80,14 @@ def load_data(control, file_size, algorithm):
 
     file1 = 'results'
     table_results = controller.get_first_last_three_datastructs(control, file1)
-    print(tabulate(table_results['elements'], headers="keys", tablefmt="grid"), "\n")
+    keys_result = ['date', 'home_team', 'away_team', 'home_score', 'away_score', 'country', 'city', 'tournament']
+    reduced_table = []
+    for dict in table_results['elements']:
+        line = []
+        for key in keys_result:
+            line.append(dict[key])
+        reduced_table.append(line)
+    print(tabulate(reduced_table, headers=keys_result, tablefmt="grid"), "\n")
 
     print("Primeros y ultimos 3 anotadores: \n")
 

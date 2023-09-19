@@ -59,6 +59,7 @@ def load_data(control, file_size, algorithm):
     d_time2 = sort(control, algorithm, 'goalscorers')
     shootouts = load_shootouts(data_structs, file_size)
     d_time3 = sort(control, algorithm, 'shootouts')
+    model.load_auxiliar(data_structs, algorithm)
 
     return (results, goalscorers, shootouts, (d_time1 + d_time2 + d_time3))
 
@@ -72,6 +73,9 @@ def load_results(data_structs, file_size):
 
         changed = change_type(result)
         changed['id'] = id
+        changed['team'] = 'Unknown'
+        changed['scorer'] = 'Unknown'
+        changed['minute'] = 'Unknown'
         changed['penalty'] = 'Unknown'
         changed['own_goal'] = 'Unknown'
         changed['winner'] = 'Unknown'
