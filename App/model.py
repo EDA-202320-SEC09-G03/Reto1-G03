@@ -163,6 +163,14 @@ def new_tournament(name):
     tournament['results'] = lt.newList('ARRAY_LIST')
     return tournament
 
+def new_scorrer(name):
+    scorrer = {'name': '', 'results': None}
+    scorrer['name'] = name
+    scorrer['results'] = lt.newList('ARRAY_LIST')
+    return scorrer
+
+
+
 # Funciones de consulta
 
 def get_data(data_structs, file, id):
