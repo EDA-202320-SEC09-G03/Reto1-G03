@@ -285,11 +285,12 @@ if __name__ == "__main__":
     """
     Menu principal
     """
+    default_limit = 1000
     working = True
     threading.stack_size(67108864*2) # 128MB stack
     sys.setrecursionlimit(default_limit*1000000)
-    thread = threading.Thread(target=menu_cycle)
-    thread.start()
+    #thread = threading.Thread(target=menu_cycle)
+    #thread.start()
     #ciclo del menu
     while working:
         print_menu()
