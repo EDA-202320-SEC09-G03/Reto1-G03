@@ -29,6 +29,7 @@ from DISClib.ADT import queue as qu
 assert cf
 from tabulate import tabulate
 import traceback
+import threading
 
 """
 La vista se encarga de la interacción con el usuario
@@ -285,6 +286,10 @@ if __name__ == "__main__":
     Menu principal
     """
     working = True
+    threading.stack_size(67108864*2) # 128MB stack
+    sys.setrecursionlimit(default_limit*1000000)
+    thread = threading.Thread(target=menu_cycle)
+    thread.start()
     #ciclo del menu
     while working:
         print_menu()
