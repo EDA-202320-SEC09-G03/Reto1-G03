@@ -30,12 +30,7 @@ assert cf
 from tabulate import tabulate
 import traceback
 import threading
-
 default_limit = 1000
-threading.stack_size(67108864*2) # 128MB stack
-sys.setrecursionlimit(default_limit*1000000)
-thread = threading.Thread(target=menu_cycle)
-thread.start()
 
 """
 La vista se encarga de la interacción con el usuario
