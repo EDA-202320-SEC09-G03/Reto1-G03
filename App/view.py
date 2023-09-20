@@ -29,6 +29,13 @@ from DISClib.ADT import queue as qu
 assert cf
 from tabulate import tabulate
 import traceback
+import threading
+
+default_limit = 1000
+threading.stack_size(67108864*2) # 128MB stack
+sys.setrecursionlimit(default_limit*1000000)
+thread = threading.Thread(target=menu_cycle)
+thread.start()
 
 """
 La vista se encarga de la interacción con el usuario
@@ -264,7 +271,7 @@ adt = None
 sort = None
 
 # main del reto
-if __name__ == "__main__":
+def menu_cycle():
     """
     Menu principal
     """
@@ -349,3 +356,10 @@ if __name__ == "__main__":
         else:
             print("Opción errónea, vuelva a elegir.\n")
     sys.exit(0)
+
+if __name__ == "__main__":
+    threading.stack_size(67108864*2) # 128MB stack
+    sys.setrecursionlimit(default_limit*1000000)
+    thread = threading.Thread(target=menu_cycle)
+    thread.start()
+    menu_cycle()
