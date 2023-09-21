@@ -199,12 +199,13 @@ def req_5(control):
     # TODO: Modificar el requerimiento 5
     pass
 
-def req_6(control):
+def req_6(control, n_equipos, torneo, fecha_inicial, fecha_final):
     """
     Retorna el resultado del requerimiento 6
     """
     # TODO: Modificar el requerimiento 6
-    pass
+    data = model.req4(control['model'], n_equipos, torneo, fecha_inicial, fecha_final)
+    return data
 
 
 def req_7(control):

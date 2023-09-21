@@ -56,13 +56,15 @@ def new_data_structs(adt):
         'goalscorers': None,
         'shootouts': None,
         'teams': None,
-        'tournaments': None
+        'tournaments': None,
+        'tourn_teams': None
     }
     data_structs['results'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['goalscorers'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['shootouts'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['teams'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
     data_structs['tournaments'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
+    data_structs['tourn_teams'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
     return data_structs
 
 
@@ -117,11 +119,14 @@ def load_auxiliar(data_structs, algorithm):
         add_teams(data_structs, data['home_team'], data)
         add_teams(data_structs, data['away_team'], data)
         add_tournaments(data_structs, data['tournament'], data)
+        add_tournaments_teams(data_structs, data['tournament'], data['home_team'], data)
+        add_tournaments_teams(data_structs, data['tournament'], data['away_team'], data)
     sort(data_structs, algorithm, 'teams')
     sort(data_structs, algorithm, 'tournaments')
+    sort(data_structs, algorithm, 'tourn_teams')
 
-def add_teams(data_structs, teamname, data):
-    teams = data_structs['teams']
+def add_teams(catalog, teamname, data):
+    teams = catalog['teams']
     posteam = lt.isPresent(teams, teamname)
     if posteam > 0:
         team = lt.getElement(teams, posteam)
@@ -130,7 +135,7 @@ def add_teams(data_structs, teamname, data):
         lt.addLast(teams, team)
 
     lt.addLast(team['results'], data)
-    return data_structs
+    return catalog
 
 def add_tournaments(data_structs, name, data):
     tournaments = data_structs['tournaments']
@@ -141,6 +146,16 @@ def add_tournaments(data_structs, name, data):
         tournament = new_tournament(name)
         lt.addLast(tournaments, tournament)
     lt.addLast(tournament['results'], data)
+
+def add_tournaments_teams(data_structs,  tournament, team, data):
+    tournaments = data_structs['tourn_teams']
+    postournament = lt.isPresent(tournaments, tournament)
+    if postournament > 0:
+        tourn = lt.getElement(tournaments, postournament)
+    else:
+        tourn = new_tournament_team(tournament)
+        lt.addLast(tournaments, tourn)
+    add_teams(tourn, team, data)    
 
 # Funciones para creacion de datos
 
@@ -161,6 +176,12 @@ def new_tournament(name):
     tournament = {'name': '', 'results': None}
     tournament['name'] = name
     tournament['results'] = lt.newList('ARRAY_LIST')
+    return tournament
+
+def new_tournament_team(nametournament):
+    tournament = {'name': '', 'teams': None}
+    tournament['name'] = nametournament
+    tournament['teams'] = lt.newList('ARRAY_LIST', cmpfunction=compare_team)
     return tournament
 
 # Funciones de consulta
@@ -248,6 +269,7 @@ def find_pos_start_date(data_structs, start):
         if data['date'] >= start:
             return i
     return -1
+
 def find_pos_finish_date(data_structs, finish):
     for i in range(1, lt.size(data_structs)):
         data = lt.getElement(data_structs, i)
@@ -302,7 +324,10 @@ def req_3(data_structs, name, inicial, final):
     pos_date_inicial = find_pos_start_date(results_team['results'], inicial)
     pos_date_final = find_pos_finish_date(results_team['results'], final)
     size = (pos_date_inicial - pos_date_final) + 1
-    sublist = lt.subList(results_team['results'], pos_date_final, size)
+    if pos_date_inicial >= pos_date_inicial:
+        sublist = lt.subList(results_team['results'], pos_date_final, size)
+    else:
+        return None
 
     home = 0
     away = 0
@@ -357,11 +382,23 @@ def req_5(data_structs):
     pass
 
 
-def req_6(data_structs):
+def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
     """
     Función que soluciona el requerimiento 6
     """
     # TODO: Realizar el requerimiento 6
+    tourn_teams = data_structs['tourn_teams']
+    postournament = binary_search_team(tourn_teams, torneo)
+    tournament = lt.getElement(tourn_teams, postournament)
+    teams = tournament['teams']
+    filtered = lt.newList('ARRAY_LIST')
+    for team in lt.iterator(teams):
+        sublist, home, away = req_3(tournament, team['name'], fecha_inicial, fecha_final)
+        if not lt.isEmpty(sublist):
+            lt.addLast(filtered, {'name': team, 'results': sublist})
+    for fteam in lt.iterator(filtered):
+        pass
+
     pass
 
 
@@ -531,3 +568,12 @@ def sort(data_structs, algorithm, file):
                 sort_algorithm(team['results'], cmp_partidos_by_fecha_y_pais)
         elif file == 'tournaments':
             sort_algorithm(data_structs['tournaments'], cmp_teams)
+            for tourn in lt.iterator(data_structs['tournaments']):
+                sort_algorithm(tourn['results'], cmp_partidos_by_fecha_y_pais)
+        elif file == 'tourn_teams':
+            sort_algorithm(data_structs['tourn_teams'], cmp_teams)
+            for tourn in lt.iterator(data_structs['tourn_teams']):
+                sort_algorithm(tourn['teams'], cmp_teams)
+                for team in lt.iterator(tourn['teams']):
+                    sort_algorithm(team['results'], cmp_partidos_by_fecha_y_pais)
+        

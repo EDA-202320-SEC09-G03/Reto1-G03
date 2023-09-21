@@ -255,6 +255,11 @@ def print_req_6(control):
         Función que imprime la solución del Requerimiento 6 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 6
+    n_equipos = input('Ingrese el numero de equipos para la consulta: ')
+    torneo = input('Ingrese el nombre del torneo: ')
+    fecha_inicial = input("Ingrese la fecha inicial: ")
+    fecha_final = input("Ingrese la fecha final: ")
+    data = controller.req_6(control, n_equipos, torneo, fecha_final, fecha_final)
     pass
 
 
