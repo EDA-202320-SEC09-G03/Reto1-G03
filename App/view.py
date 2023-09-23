@@ -266,7 +266,7 @@ adt = None
 sort = None
 
 # main del reto
-def menu_cycle():
+def menu_cycle(control, file_size, adt, sort):
     """
     Menu principal
     """
@@ -355,6 +355,5 @@ def menu_cycle():
 if __name__ == "__main__":
     threading.stack_size(67108864*2) # 128MB stack
     sys.setrecursionlimit(default_limit*1000000)
-    thread = threading.Thread(target=menu_cycle)
+    thread = threading.Thread(target=menu_cycle, args=[control, file_size, adt, sort])
     thread.start()
-    menu_cycle()
