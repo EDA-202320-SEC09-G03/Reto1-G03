@@ -70,21 +70,26 @@ def load_data(control, file_size, algorithm):
     Carga los datos
     """
     #TODO: Realizar la carga de datos
-    results, goalscorers, shootouts = controller.load_data(control,file_size)
+    results, goalscorers, shootouts, d_time = controller.load_data(control,file_size, algorithm)
 
     print('Total de encuentros cargados: ' + str(results))
     print('Total de anotaciones cargadas: ' + str(goalscorers))
     print('Total de goles marcados desde el punto penal cargados: ' + str(shootouts))
 
-    print('Ordenando los archivos...')
-
-    d_time = controller.sort(control, algorithm)
+    print('Tiempo de ordenamiento: ', d_time)
 
     print("Primeros y ultimos 3 resultados: \n")
 
     file1 = 'results'
     table_results = controller.get_first_last_three_datastructs(control, file1)
-    print(tabulate(table_results['elements'], headers="keys", tablefmt="grid"), "\n")
+    keys_result = ['date', 'home_team', 'away_team', 'home_score', 'away_score', 'country', 'city', 'tournament']
+    reduced_table = []
+    for dict in table_results['elements']:
+        line = []
+        for key in keys_result:
+            line.append(dict[key])
+        reduced_table.append(line)
+    print(tabulate(reduced_table, headers=keys_result, tablefmt="grid"), "\n")
 
     print("Primeros y ultimos 3 anotadores: \n")
 
@@ -199,11 +204,22 @@ def print_req_2(control):
     pass
 
 
-def print_req_3(control):
+def print_req_3(control, name, inicial, final):
     """
         Función que imprime la solución del Requerimiento 3 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 3
+    list, size, home, away = controller.req_3(control, name, inicial, final)
+    print('Numero de datos encontrados: ', size)
+    print('Numero de datos como local: ', home)
+    print('Numero de datos como visitante: ', away)
+    
+    if size > 6:
+        sublist = lt.subList(list, 1, n_results)
+        table_req_1 = controller.get_first_last_three_list(sublist)
+        print(tabulate(table_req_1['elements'], headers="keys", tablefmt="grid"), "\n")
+    else:
+        print(tabulate(list['elements'], headers="keys", tablefmt="grid"), '\n')
     pass
 
 
@@ -240,6 +256,11 @@ def print_req_6(control):
         Función que imprime la solución del Requerimiento 6 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 6
+    n_equipos = input('Ingrese el numero de equipos para la consulta: ')
+    torneo = input('Ingrese el nombre del torneo: ')
+    fecha_inicial = input("Ingrese la fecha inicial: ")
+    fecha_final = input("Ingrese la fecha final: ")
+    data = controller.req_6(control, n_equipos, torneo, fecha_final, fecha_final)
     pass
 
 
@@ -270,7 +291,12 @@ def menu_cycle(control, file_size, adt, sort):
     """
     Menu principal
     """
+    default_limit = 1000
     working = True
+    threading.stack_size(67108864*2) # 128MB stack
+    sys.setrecursionlimit(default_limit*1000000)
+    #thread = threading.Thread(target=menu_cycle)
+    #thread.start()
     #ciclo del menu
     while working:
         print_menu()
@@ -321,7 +347,11 @@ def menu_cycle(control, file_size, adt, sort):
             print_req_2(control)
 
         elif int(inputs) == 4:
-            print_req_3(control)
+            name = input('Ingrese el nombre del equipo: ')
+            print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
+            inicial = input('Ingrese la fecha inicial: ')
+            final = input('Ingrese la fecha final: ')
+            print_req_3(control, name, inicial, final)
 
         elif int(inputs) == 5:
             print_req_4(control)
