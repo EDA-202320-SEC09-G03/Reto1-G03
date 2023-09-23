@@ -27,6 +27,7 @@
 
 import config as cf
 from datetime import datetime as dt
+from datetime import timedelta
 from DISClib.ADT import list as lt
 from DISClib.ADT import stack as st
 from DISClib.ADT import queue as qu
@@ -269,6 +270,85 @@ def find_pos_finish_date(data_structs, finish):
             return i
     return -1
 
+def binary_search_start_date(data_structs, start):
+
+    low = 1
+    high = lt.size(data_structs)
+
+    recent = (lt.firstElement(data_structs))['date']
+    oldest = (lt.lastElement(data_structs))['date']
+
+    if start >= oldest and start <= recent:
+        prev = start - timedelta(days=1)
+        prev_id = None
+        while low <= high:
+            mid = (low + high) // 2
+            team = lt.getElement(data_structs, mid)
+            mid_date = team['date']
+            if mid_date == prev:
+                prev_id = mid
+                pass
+
+            elif mid_date > prev:
+                low = mid + 1
+            else:
+                high = mid - 1
+            
+            if low == high:
+                prev_id = mid
+                pass
+        
+        find = False
+        i = prev_id
+        while not find:
+            date = (lt.getElement(data_structs, i))['date']
+            if date >= start:
+                return i
+            else:
+                i -= 1
+    else:
+        return -1
+
+def binary_search_end_date(data_structs, end):
+
+    low = 1
+    high = lt.size(data_structs)
+
+    recent = (lt.firstElement(data_structs))['date']
+    oldest = (lt.lastElement(data_structs))['date']
+
+    if end >= oldest and end <= recent:
+        next = end + timedelta(days=1)
+        next_id = None
+        while low <= high:
+            mid = (low + high) // 2
+            team = lt.getElement(data_structs, mid)
+            mid_date = team['date']
+            if mid_date == next:
+                next_id = mid
+                pass
+
+            elif mid_date > next:
+                low = mid + 1
+            else:
+                high = mid - 1
+            
+            if low == high:
+                next_id = mid
+                pass
+        
+        find = False
+        i = next_id
+        while not find:
+            date = (lt.getElement(data_structs, i))['date']
+            if date <= end:
+                return i
+            else:
+                i += 1
+    else:
+        return -1
+
+
 
 def req_1(data_structs, n_teams, team_name, condition):
     """
@@ -317,8 +397,8 @@ def req_3(data_structs, name, inicial, final):
     pos_team = binary_search_team(teams, name)
     results_team = lt.getElement(teams, pos_team)
 
-    pos_date_inicial = find_pos_start_date(results_team['results'], inicial)
-    pos_date_final = find_pos_finish_date(results_team['results'], final)
+    pos_date_inicial = binary_search_start_date(results_team['results'], inicial)
+    pos_date_final = binary_search_end_date(results_team['results'], final)
     size = (pos_date_inicial - pos_date_final) + 1
     if pos_date_inicial >= pos_date_inicial:
         sublist = lt.subList(results_team['results'], pos_date_final, size)
@@ -383,19 +463,9 @@ def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
     Función que soluciona el requerimiento 6
     """
     # TODO: Realizar el requerimiento 6
-    tourn_teams = data_structs['tourn_teams']
-    postournament = binary_search_team(tourn_teams, torneo)
-    tournament = lt.getElement(tourn_teams, postournament)
-    teams = tournament['teams']
-    filtered = lt.newList('ARRAY_LIST')
-    for team in lt.iterator(teams):
-        sublist, home, away = req_3(tournament, team['name'], fecha_inicial, fecha_final)
-        if not lt.isEmpty(sublist):
-            lt.addLast(filtered, {'name': team, 'results': sublist})
-    for fteam in lt.iterator(filtered):
-        pass
-
-    pass
+    tournaments = data_structs['tournaments']
+    pos_tourn = binary_search_team(tournaments, torneo)
+    results = (lt.getElement(tournaments, pos_tourn))['results']
 
 
 def req_7(data_structs):
@@ -560,16 +630,10 @@ def sort(data_structs, algorithm, file):
             sort_algorithm(data_structs['shootouts'], cmp_shootouts)
         elif file == 'teams':
             sort_algorithm(data_structs['teams'], cmp_teams)
-            for team in lt.iterator(data_structs['teams']):
-                sort_algorithm(team['results'], cmp_partidos_by_fecha_y_pais)
         elif file == 'tournaments':
             sort_algorithm(data_structs['tournaments'], cmp_teams)
-            for tourn in lt.iterator(data_structs['tournaments']):
-                sort_algorithm(tourn['results'], cmp_partidos_by_fecha_y_pais)
         elif file == 'tourn_teams':
             sort_algorithm(data_structs['tourn_teams'], cmp_teams)
             for tourn in lt.iterator(data_structs['tourn_teams']):
                 sort_algorithm(tourn['teams'], cmp_teams)
-                for team in lt.iterator(tourn['teams']):
-                    sort_algorithm(team['results'], cmp_partidos_by_fecha_y_pais)
         
