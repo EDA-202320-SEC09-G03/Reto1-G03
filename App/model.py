@@ -201,17 +201,7 @@ def data_size(data_structs, file):
     #TODO: Crear la función para obtener el tamaño de una lista
     return lt.size(data_structs[file])
 
-def get_first_last_three_datastructs(data_structs, file):
-    filtered = lt.newList("ARRAY_LIST")
-    for i in range(1, 4):
-        lt.addLast(filtered, get_data(data_structs, file, i))
-    size = data_size(data_structs, file)
-    for i in range((size - 2), size + 1):
-        lt.addLast(filtered, get_data(data_structs, file, i))
-
-    return filtered
-
-def get_first_last_three_list(list):
+def get_first_last_three(list):
     filtered = lt.newList("ARRAY_LIST")
     for i in range(1, 4):
         lt.addLast(filtered, lt.getElement(list, i))
@@ -262,6 +252,8 @@ def binary_search_team(data_structs, name):
             low = mid + 1
         else:
             high = mid - 1
+    
+    return -1
 
 def find_pos_start_date(data_structs, start):
     for i in range(lt.size(data_structs), 0, -1):
@@ -278,14 +270,16 @@ def find_pos_finish_date(data_structs, finish):
     return -1
 
 
-def req_1(data_structs, team_name, condition):
+def req_1(data_structs, n_teams, team_name, condition):
     """
     Función que soluciona el requerimiento 1
     """
     # TODO: Realizar el requerimiento 1
     t_name = team_name.lower()
-    pos_team = binary_search_team(data_structs['teams'], team_name)
-    team_data = lt.getElement(data_structs['teams'], pos_team)
+
+    teams = data_structs['teams']
+    pos_team = binary_search_team(teams, t_name)
+    team_data = (lt.getElement(data_structs['teams'], pos_team))['results']
     filtered_list = lt.newList("ARRAY_LIST")
 
     for result in lt.iterator(team_data):
@@ -297,8 +291,11 @@ def req_1(data_structs, team_name, condition):
                 lt.addLast(filtered_list, result)
         else:
             lt.addLast(filtered_list, result)
+
+    sublist = lt.subList(filtered_list, 1, n_teams)
+    total = lt.size(filtered_list)
     
-    return filtered_list
+    return sublist, total
 
 
 

@@ -28,6 +28,7 @@ from DISClib.ADT import stack as st
 from DISClib.ADT import queue as qu
 assert cf
 from tabulate import tabulate
+from datetime import datetime as dt
 import traceback
 import threading
 default_limit = 1000
@@ -80,28 +81,21 @@ def load_data(control, file_size, algorithm):
 
     print("Primeros y ultimos 3 resultados: \n")
 
-    file1 = 'results'
-    table_results = controller.get_first_last_three_datastructs(control, file1)
     keys_result = ['date', 'home_team', 'away_team', 'home_score', 'away_score', 'country', 'city', 'tournament']
-    reduced_table = []
-    for dict in table_results['elements']:
-        line = []
-        for key in keys_result:
-            line.append(dict[key])
-        reduced_table.append(line)
-    print(tabulate(reduced_table, headers=keys_result, tablefmt="grid"), "\n")
+    table_results = print_tabulate(control['model']['results'], keys_result)
+    print(table_results, "\n")
 
     print("Primeros y ultimos 3 anotadores: \n")
 
-    file2 = "goalscorers"
-    table_goalscorers = controller.get_first_last_three_datastructs(control, file2)
-    print(tabulate(table_goalscorers['elements'], headers="keys", tablefmt="grid"), "\n")
+    keys_goalscorers = ['date', 'home_team', 'away_team', 'scorer', 'team', 'minute', 'penalty', 'own_goal']
+    table_goalscorers = print_tabulate(control['model']['goalscorers'], keys_goalscorers)
+    print(table_goalscorers, "\n")
 
     print("Primeros y ultimos 3 goles:\n")
 
-    file3 = "shootouts"
-    table_shootouts = controller.get_first_last_three_datastructs(control, file3)
-    print(tabulate(table_shootouts['elements'], headers="keys", tablefmt="grid"), "\n")
+    keys_shootouts = ['date', 'home_team', 'away_team', 'winner']
+    table_shootouts = print_tabulate(control['model']['shootouts'], keys_shootouts)
+    print(table_shootouts, "\n")
     
     return d_time
 
@@ -179,6 +173,21 @@ def choose_sort():
         return 'quick'
     else:
         return None
+    
+def print_tabulate(data_struct, columns):
+    data = data_struct
+    if lt.size(data_struct) > 6:
+        data = controller.get_first_last_three(data_struct)
+    reduced = []
+    for result in data['elements']:
+        line = []
+        formato_fecha = "%Y-%m-%d"
+        result['date'] = dt.strftime(result['date'], formato_fecha)
+        for column in columns:
+            line.append(result[column])
+        reduced.append(line)
+    table = tabulate(reduced, headers=columns, tablefmt="grid")
+    return table
 
 
 def print_req_1(control, n_results, team_name, condition):
@@ -186,15 +195,18 @@ def print_req_1(control, n_results, team_name, condition):
         Función que imprime la solución del Requerimiento 1 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 1
-    list, size = controller.req_1(control, team_name, condition)
-    if size > 6:
-        sublist = lt.subList(list, 1, n_results)
-        table_req_1 = controller.get_first_last_three_list(sublist)
-        print(tabulate(table_req_1['elements'], headers="keys", tablefmt="grid"), "\n")
-    else:
-        print(tabulate(list['elements'], headers="keys", tablefmt="grid"), '\n')
-    pass
+    list, total = controller.req_1(control, n_results, team_name, condition)
+    print(("="*15) + "Req No. 1 Inputs" + ("="*15))
+    print('Team name:', team_name)
+    print('Team condition:', condition)
 
+    print(("="*15) + "Req No. 1 Results" + ("="*15))
+    print('Total matches found:', str(total))
+    print('Selecting', str(n_results), 'matches...')
+
+    columns = ['date', 'home_team', 'away_team', 'home_score', 'away_score', 'country', 'city', 'tournament']
+    table = print_tabulate(list, columns)
+    print(table)
 
 def print_req_2(control):
     """
@@ -210,16 +222,19 @@ def print_req_3(control, name, inicial, final):
     """
     # TODO: Imprimir el resultado del requerimiento 3
     list, size, home, away = controller.req_3(control, name, inicial, final)
-    print('Numero de datos encontrados: ', size)
-    print('Numero de datos como local: ', home)
-    print('Numero de datos como visitante: ', away)
-    
-    if size > 6:
-        table_req_1 = controller.get_first_last_three_list(list)
-        print(tabulate(table_req_1['elements'], headers="keys", tablefmt="grid"), "\n")
-    else:
-        print(tabulate(list['elements'], headers="keys", tablefmt="grid"), '\n')
-    pass
+    print(("="*15) + "Req No. 3 Inputs" + ("="*15))
+    print('Team name:', name)
+    print('Start date:', inicial)
+    print('End date:', final)
+
+    print(("="*15) + "Req No. 3 Results" + ("="*15))
+    print(name, 'Total games:', str(size))
+    print(name, 'Total home games:', str(home))
+    print(name, 'Total away games:', str(away))
+
+    columns = ['date', 'home_score', 'away_score', 'home_team', 'away_team', 'country', 'city', 'tournament', 'penalty', 'own_goal']
+    table = print_tabulate(list, columns)
+    print(table)
 
 
 def print_req_4(control):

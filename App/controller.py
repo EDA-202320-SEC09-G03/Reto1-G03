@@ -148,14 +148,13 @@ def get_data(control, file, id):
     return data
 
 
-def req_1(control, team_name, condition):
+def req_1(control, n_results, team_name, condition):
     """
     Retorna el resultado del requerimiento 1
     """
     # TODO: Modificar el requerimiento 1
-    filtered_list = model.req_1(control['model'], team_name, condition)
-    lt_size = model.lt.size(filtered_list)
-    return filtered_list, lt_size
+    filtered_list, total = model.req_1(control['model'], n_results, team_name, condition)
+    return filtered_list, total 
 
 
 def req_2(control):
@@ -223,12 +222,8 @@ def req_8(control):
     # TODO: Modificar el requerimiento 8
     pass
 
-def get_first_last_three_datastructs(control, file):
-    data = model.get_first_last_three_datastructs(control['model'], file)
-    return data
-
-def get_first_last_three_list(list):
-    data = model.get_first_last_three_list(list)
+def get_first_last_three(list):
+    data = model.get_first_last_three(list)
     return data
 
 
