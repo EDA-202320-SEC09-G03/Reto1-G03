@@ -284,20 +284,19 @@ def req_1(data_structs, team_name, condition):
     """
     # TODO: Realizar el requerimiento 1
     t_name = team_name.lower()
-    results = data_structs["results"]
+    pos_team = binary_search_team(data_structs['teams'], team_name)
+    team_data = lt.getElement(data_structs['teams'], pos_team)
     filtered_list = lt.newList("ARRAY_LIST")
 
-    for result in lt.iterator(results):
+    for result in lt.iterator(team_data):
         if condition == "local":
             if t_name == result["home_team"].lower():
                 lt.addLast(filtered_list, result)
-
         elif condition == "visitante":
             if t_name == result["away_team"].lower():
                 lt.addLast(filtered_list, result)
-        elif condition == "neutro":
-            if (t_name == result["away_team"].lower()) or (t_name == result["home_team"].lower()):
-                lt.addLast(filtered_list, result)
+        else:
+            lt.addLast(filtered_list, result)
     
     return filtered_list
 
