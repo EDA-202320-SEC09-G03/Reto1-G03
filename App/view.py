@@ -215,8 +215,7 @@ def print_req_3(control, name, inicial, final):
     print('Numero de datos como visitante: ', away)
     
     if size > 6:
-        sublist = lt.subList(list, 1, n_results)
-        table_req_1 = controller.get_first_last_three_list(sublist)
+        table_req_1 = controller.get_first_last_three_list(list)
         print(tabulate(table_req_1['elements'], headers="keys", tablefmt="grid"), "\n")
     else:
         print(tabulate(list['elements'], headers="keys", tablefmt="grid"), '\n')
