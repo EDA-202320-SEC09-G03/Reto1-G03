@@ -169,8 +169,8 @@ def req_4(control, nombre_torneo, fecha_inicial, fecha_final ):
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
-    data, ciudades, paises, total_matches = model.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
-    return data, ciudades, paises, total_matches
+    data, ciudades, paises, total_matches, penaltis = model.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
+    return data, ciudades, paises, total_matches, penaltis
 
 
 def req_5(control):

@@ -166,20 +166,37 @@ def req_4(control, nombre_torneo, fecha_inicial, fecha_final):
     Función que soluciona el requerimiento 4
     """
     lista_results = control["model"]["results"]
+    lista_shootouts = control["model"]["shootouts"]
+
     formato_fecha = "%Y-%m-%d"
     fecha_inicial = dt.strptime(fecha_inicial, formato_fecha)
     fecha_final = dt.strptime(fecha_final, formato_fecha)
-    lista_final = lt.newList("ARRAY_LIST")
+    lista_final_results = lt.newList("ARRAY_LIST")
+    lista_final_shootouts = lt.newList("ARRAY_LIST")
 
     for dato in lt.iterator(lista_results):
         fecha_dato = dato["date"]
         fecha_dato = dt.strptime(fecha_dato, formato_fecha)
         if fecha_dato <= fecha_final and fecha_dato >= fecha_inicial and dato["tournament"] == nombre_torneo:
-            lt.addLast(lista_final, dato)
+            dato["winner"] = "Unknown"
+            lt.addLast(lista_final_results, dato)
+
+    for dato in lt.iterator(lista_shootouts):
+        fecha_dato = dato["date"]
+        fecha_dato = dt.strptime(fecha_dato, formato_fecha)
+        if fecha_dato <= fecha_final and fecha_dato >= fecha_inicial :
+            lt.addLast(lista_final_shootouts, dato)
+
+    penaltis = 0
+    for dato in lt.iterator(lista_final_shootouts):
+        for dato_result in lt.iterator(lista_final_results):
+            if dato["home_team"] == dato_result["home_team"] and dato["away_team"] == dato_result["away_team"]:
+                penaltis += 1
+                dato_result["winner"] = dato["winner"]
 
     lista_cities = lt.newList("ARRAY_LIST")
     lista_countries = lt.newList("ARRAY_LIST")
-    for dato in lt.iterator(lista_final):
+    for dato in lt.iterator(lista_final_results):
         ciudad_dato = dato["city"]
         pais_dato = dato["country"]
         if not lt.isPresent(lista_cities, ciudad_dato):
@@ -189,9 +206,9 @@ def req_4(control, nombre_torneo, fecha_inicial, fecha_final):
 
     num_ciudades = lt.size(lista_cities)
     num_paises = lt.size(lista_countries)
-    total_matches = lt.size(lista_final)
+    total_matches = lt.size(lista_final_results)
 
-    return lista_final, num_ciudades, num_paises, total_matches
+    return lista_final_results, num_ciudades, num_paises, total_matches, penaltis
     
 
 
