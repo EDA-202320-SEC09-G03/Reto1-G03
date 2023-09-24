@@ -491,33 +491,63 @@ def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
     Función que soluciona el requerimiento 6
     """
     # TODO: Realizar el requerimiento 6
+
+    #Data struct con la información separada por torneos
     tournaments = data_structs['tournaments']
+
+    #Posiciones del torneo
     pos_tourn = binary_search_team(tournaments, torneo.lower())
+
+    #Resultados en el torneo
     results = (lt.getElement(tournaments, pos_tourn))['results']
+
+    #Posiciones para el rango de fechas
     pos_start = binary_search_start_date(results, fecha_inicial)
     pos_end = binary_search_end_date(results, fecha_final)
 
 
+    #Listas auxiliares
     meetings = {'cities' : lt.newList('ARRAY_LIST', cmpfunction=compare_team), 'countries': lt.newList('ARRAY_LIST', cmpfunction=compare_team)}
     teams = lt.newList(datastructure="ARRAY_LIST", cmpfunction=compare_team)
     
     n_results = 0
     for i in range(pos_end, pos_start + 1):
-        result = lt.getElement(results, i)
-        add_team_req6(teams, 'home', result)
-        add_team_req6(teams, 'away', result)
 
+        #Obtención de posición en teams y creación si no existe
+        result = lt.getElement(results, i)
+        poshome = add_team_req6(teams, 'home', result)
+        posaway = add_team_req6(teams, 'away', result)
+        
+        #Cambiar la información con la nueva de la iteración
+        changedhome = change_info_req6(teams, poshome, 'home', result)
+        changedaway = change_info_req6(teams, posaway, 'away', result)
+        
+        #Añadir los cambios en teams
+        lt.changeInfo(teams, poshome, changedhome)
+        lt.changeInfo(teams, posaway, changedaway)
+
+        #Contadores de paises y ciudades
+
+        #Obtención de la posición y creación si no existe
         poscountry = lt.isPresent(meetings['countries'], result['country'])
         poscity = lt.isPresent(meetings['cities'], result['city'])
+
         if poscity > 0:
             city = lt.getElement(meetings['cities'], poscity)
+
         else:
+
             city = {'name': result['city'], 'meetings': 0}
             lt.addLast(meetings['cities'], city)
             poscity = lt.size(meetings['cities'])
+        
+        #Actualización de encuentros en esa ciudad
         city['meetings'] += 1
+
+        #Añadir cambios a meetings en la sección de ciudades
         lt.changeInfo(meetings['cities'], poscity, city)
 
+        #Lo mismo de arriba pero con paises
         if poscountry > 0:
             country = lt.getElement(meetings['countries'], poscountry)
         else:
@@ -529,17 +559,24 @@ def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
     
         n_results += 1
 
+    #Ordenamiento de teams por orden de puntos
     sort(teams, 'merge', 'req6')
+    #Ordenamiento de ciudades por cantidad de encuentros
     merg.sort(meetings['cities'], cmp_cities)
+
+    #Tamaño de datos para devolver en el return
     n_teams = lt.size(teams)
     n_countries = lt.size(meetings['countries'])
     n_cities = lt.size(meetings['cities'])
+    #Ciudad con más encuentros
     mostmatches = (lt.getElement(meetings['cities'], 1))['name']
 
-    
+    #Sublista con los N mejores equipos
     sublist = lt.subList(teams, 1, n_equipos)
 
+    #Ciclo para obtener el mejor jugador en cada equipo
     for team in lt.iterator(sublist):
+
         merg.sort(team['scorers'], cmp_top_scorer)
         team['top_scorer'] = lt.getElement(team['scorers'], 1)
 
@@ -569,8 +606,7 @@ def add_team_req6(data_struct, condition, data):
         }
         lt.addLast(data_struct, info)
         posteam = lt.size(data_struct)
-    changed = change_info_req6(data_struct, posteam, condition, data)
-    lt.changeInfo(data_struct, posteam,changed)
+    return posteam
 
 def change_info_req6(data_struct, pos, condition, data):
     againstcondition = None
@@ -607,8 +643,11 @@ def change_info_req6(data_struct, pos, condition, data):
 
     #Change Info Scorers
     if data['scorer'] != 'Unknown' and data['team'] == name:
+
+        #Encontrar / crear el goleador
         scorers = changed['scorers']
         posscorer = lt.isPresent(scorers, data['scorer'])
+
         if posscorer > 0:
             infoscorer = lt.getElement(data_struct, posscorer)
         else:
@@ -616,6 +655,7 @@ def change_info_req6(data_struct, pos, condition, data):
             lt.addLast(scorers, infoscorer)
             posscorer = lt.size(scorers)
 
+        
         scorer = lt.getElement(scorers, posscorer)
         changedscorer = scorer
         changedscorer['matches'] += 1
@@ -623,6 +663,7 @@ def change_info_req6(data_struct, pos, condition, data):
         changedscorer['temp_time'] += data['minute']
         changedscorer['avg_time'] = changedscorer['temp_time'] / changedscorer['matches']
         lt.changeInfo(scorers, posscorer, changedscorer)
+    
     return changed
 
 def req_7(data_structs, fecha_inicial, fecha_final, top_jugadores):
