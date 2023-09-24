@@ -467,18 +467,25 @@ def req_2(data_structs, n_goals, name):
     Función que soluciona el requerimiento 2
     """
     # TODO: Realizar el requerimiento 2
+
+    #Filtrar los partidos del jugador
     scorers = data_structs['scorers']
     posscorer = binary_search_by_name(scorers, name)
     results = (lt.getElement(scorers, posscorer))['results']
-    size = lt.size(results)
+
+    #Lista auxiliar
     goals = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_id)
+
+    #Iteración hacia atrás para obtener de más antiguo a más reciente
+    size = lt.size(results)
     for i in range(size, (size - n_goals) + 1, -1):
         if i < 1:
+            #Caso en el que se llega al final de la lista
             return goals, lt.size(goals)
         else:
             result = lt.getElement(results, i)
             lt.addLast(goals, result)
-    pass
+    return None, -1
 
 
 def req_3(data_structs, name, inicial, final):
