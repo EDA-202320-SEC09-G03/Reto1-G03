@@ -192,6 +192,14 @@ def print_tabulate(data_struct, columns):
                 list = [keys_scorer, topscorer]
                 table_scorer = tabulate(list, headers='firstrow', tablefmt='grid')
                 line.append(table_scorer)
+            elif column == 'last_goal':
+                last_goal = []
+                keys = ['date', 'tournament', 'home_team', 'away_team', 'home_score', 'away_score', 'minute', 'penalty', 'own_goal']
+                for key in keys:
+                    last_goal.append(result[column][key])
+                list = [keys, last_goal]
+                subtable = tabulate(list, headers='firstrow', tablefmt='grid')
+                line.append(subtable)
             else:
                 line.append(result[column])
 
@@ -309,13 +317,10 @@ def print_req_7(control):
     top_jugadores = 17 #input("Diga el número (N) de jugadores para consulta: ")
     fecha_inicial =  "2002-03-25" #input("Ingrese la fecha inicial: ")
     fecha_final = "2021-11-23" #input("Ingrese la fecha final: ")
-    num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, lista_tabla = controller.req_7(control, fecha_inicial, fecha_final, top_jugadores)
-    print(num_jugadores)
-    print(num_partidos)
-    print(num_goles)
-    print(num_penales)
-    print(num_autogoles)
-    print(lista_tabla)
+    sublist, num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, num_tourns = controller.req_7(control, fecha_inicial, fecha_final, top_jugadores)
+    keys = ['name', 'total_points', 'total_goals', 'penalty_goals', 'own_goals', 'avg_time', 'total_tournaments', 'scored_in_wins', 'scored_in_losses', 'scored_in_draws', 'last_goal']
+    table = print_tabulate(sublist, keys)
+    print(table)
 
 
 def print_req_8(control):

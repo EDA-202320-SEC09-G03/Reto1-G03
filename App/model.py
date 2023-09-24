@@ -58,14 +58,14 @@ def new_data_structs(adt):
         'shootouts': None,
         'teams': None,
         'tournaments': None,
-        'scorers_tourns': None
+        'official_results': None
     }
     data_structs['results'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['goalscorers'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['shootouts'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['teams'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
     data_structs['tournaments'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
-    data_structs['scorers_tourns'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
+    data_structs['official_results'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
     return data_structs
 
 
@@ -122,10 +122,11 @@ def load_auxiliar(data_structs, algorithm):
         add_tournaments(data_structs, data['tournament'], data)
         #add_tournaments_teams(data_structs, data['tournament'], data['home_team'], data)
         #add_tournaments_teams(data_structs, data['tournament'], data['away_team'], data)
-        if data['tournament'] != 'Friendly' and data['scorer'] != 'Unknown':
-            add_scorerstourns(data_structs, data['scorer'], data)
+        if data['tournament'] != 'Friendly':
+            add_officialresults(data_structs, data)
     sort(data_structs, algorithm, 'teams')
     sort(data_structs, algorithm, 'tournaments')
+    merg.sort(data_structs['official_results'], cmp_partidos_by_fecha_y_pais)
     #sort(data_structs, algorithm, 'tourn_teams')
 
 def add_teams(catalog, teamname, data):
@@ -150,15 +151,8 @@ def add_tournaments(data_structs, name, data):
         lt.addLast(tournaments, tournament)
     lt.addLast(tournament['results'], data)
 
-def add_scorerstourns(data_structs, name, data):
-    scorers = data_structs['scorers_tourns']
-    posscorer = lt.isPresent(scorers, name)
-    if posscorer > 0:
-        scorer = lt.getElement(scorers, posscorer)
-    else:
-        scorer = new_scorertourns(name)
-        lt.addLast(scorers, scorer)
-    lt.addLast(scorer['results'], data)
+def add_officialresults(data_structs, data):
+    lt.addLast(data_structs['official_results'], data)
 
 def add_tournaments_teams(data_structs,  tournament, team, data):
     tournaments = data_structs['tourn_teams']
@@ -546,7 +540,7 @@ def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
     sublist = lt.subList(teams, 1, n_equipos)
 
     for team in lt.iterator(sublist):
-        merg.sort(team['scorers'], cmp_scorers)
+        merg.sort(team['scorers'], cmp_top_scorer)
         team['top_scorer'] = lt.getElement(team['scorers'], 1)
 
     return sublist, n_teams, n_results, n_countries, n_cities, mostmatches
@@ -557,7 +551,22 @@ def add_team_req6(data_struct, condition, data):
     if posteam > 0:
         info = lt.getElement(data_struct, posteam)
     else:
-        info = {'name': name, 'total_points': 0, 'penalty_points': 0, 'matches': 0, 'own_goal_points': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0, 'goals_against': 0, 'top_scorer': lt.newList("ARRAY_LIST", cmpfunction=compare_team), 'scorers': lt.newList("ARRAY_LIST", cmpfunction=compare_team), 'own_goals': 0, 'goal_difference': 0}
+        info = {
+            'name': name,
+            'total_points': 0,
+            'penalty_points': 0,
+            'matches': 0,
+            'own_goal_points':0,
+            'wins': 0,
+            'draws': 0,
+            'losses': 0,
+            'goals_for':0,
+            'goals_against':0,
+            'top_scorer': {},
+            'scorers': lt.newList("ARRAY_LIST", cmpfunction=compare_team),
+            'own_goals': 0,
+            'goal_difference': 0
+        }
         lt.addLast(data_struct, info)
         posteam = lt.size(data_struct)
     changed = change_info_req6(data_struct, posteam, condition, data)
@@ -616,94 +625,135 @@ def change_info_req6(data_struct, pos, condition, data):
         lt.changeInfo(scorers, posscorer, changedscorer)
     return changed
 
-def req_7(control, fecha_inicial, fecha_final, top_jugadores):
+def req_7(data_structs, fecha_inicial, fecha_final, top_jugadores):
     """
     Función que soluciona el requerimiento 7
     """
-    lista_results = control["model"]["results"]
-    lista_shootouts = control["model"]["shootouts"]
-    lista_goalscorers = control["model"]["goalscorers"]
+   
+    #Data_struct con solo torneos oficiales
+    results = data_structs['official_results']
 
-    formato_fecha = "%Y-%m-%d"
-    fecha_inicial = dt.strptime(fecha_inicial, formato_fecha)
-    fecha_final = dt.strptime(fecha_final, formato_fecha)
-    lista_final_results = lt.newList("ARRAY_LIST")
-    lista_final_shootouts = lt.newList("ARRAY_LIST")
-    lista_final_goalscorers = lt.newList("ARRAY_LIST")
+    #Encontrar rangos de fechas
+    posstart = binary_search_start_date(results, fecha_inicial)
+    posend = binary_search_end_date(results, fecha_final)
 
-    for dato in lt.iterator(lista_shootouts):
-        fecha_dato= dt.strptime(dato["date"], formato_fecha)
-        ht = dato["home_team"]
-        at = dato["away_team"]
-        dato["id"] = f"{fecha_dato}_{ht}_{at}"
-        if fecha_dato >= fecha_inicial and fecha_dato <= fecha_final:
-            lt.addLast(lista_final_shootouts, dato)
+    #Creación de lista donde se guardará la información de cada scorer
+    scorers = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_team)
+    tournaments = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_team)
     
-    for dato in lt.iterator(lista_goalscorers):
-        fecha_dato = dt.strptime(dato["date"], formato_fecha)
-        ht = dato["home_team"]
-        at = dato["away_team"]
-        dato["id"] = f"{fecha_dato}_{ht}_{at}"
-        if fecha_dato >= fecha_inicial and fecha_dato <= fecha_final:
-            lt.addLast(lista_final_goalscorers, dato)    
-
+    num_partidos = 0
+    num_goles = 0
     num_penales = 0
     num_autogoles = 0
-    lista_nombres = lt.newList("ARRAY_LIST")
-    lista_ids = lt.newList("ARRAY_LIST")
-    for dato in lt.iterator(lista_final_goalscorers):
-        nombre_dato = dato["scorer"]
-        if not lt.isPresent(lista_nombres, nombre_dato):
-            lt.addLast(lista_nombres, nombre_dato)
-            lt.addLast(lista_ids, dato["id"])
-            if dato["penalty"] == "True":
+    #Iterar solo en el rango de fechas
+    for i in range(posend, posstart + 1):
+        result = lt.getElement(results, i)
+        if result['scorer'] != 'Unknown':
+
+            posscorer = add_scorer_req7(scorers, result['scorer'])
+            #Cambio de información en la iteración
+            changed = change_info_scorer(scorers, posscorer, result)
+            lt.changeInfo(scorers, posscorer, changed)
+
+            #Cambiar datos
+            num_partidos += 1
+            num_goles += result['home_score'] + result['away_score']
+            if result['penalty'] == 'True':
                 num_penales += 1
-            if dato["own_goal"] == "True":
+            if result['own_goal'] == 'True':
                 num_autogoles += 1
-    num_goles = 0
-    for dato in lt.iterator(lista_results):
-        fecha_dato= dt.strptime(dato["date"], formato_fecha)
-        ht = dato["home_team"]
-        at = dato["away_team"]
-        dato["id"] = f"{fecha_dato}_{ht}_{at}"
-        if fecha_dato >= fecha_inicial and fecha_dato <= fecha_final and dato["tournament"] != "Friendly" and lt.isPresent(lista_ids, dato["id"]) :
-            lt.addLast(lista_final_results, dato)
-            goles_partido = dato["home_score"] + dato["away_score"]
-            num_goles += goles_partido
+            
+            #Añadir si es necesario el torneo para obtener el total de torneos
+            postournament = lt.isPresent(tournaments, result['tournament'])
+            if postournament != 0:
+                lt.addLast(tournaments, {'name': result['tournament']})
+    
+    for scorer in lt.iterator(scorers):
+        scorer
 
-    lista_tabla = lt.newList("ARRAY_LIST")
-    for jugador in lt.iterator(lista_nombres):
-        lista_jugador = lt.newList("ARRAY_LIST")
-        total_goals = 0
-        penalty_goals = 0
-        own_goals = 0
-        total_time = 0
-        apariciones = 0
-        for dato in lt.iterator(lista_final_goalscorers):
-            if dato["scorer"] == jugador:
-                apariciones += 1
-                if dato["penalty"] == "True":
-                    penalty_goals += 1
-                if dato["own_goal"] == "True":
-                    own_goals += 1
-                else:
-                    total_goals += 1
-                total_time += float(dato["minute"])
-        avg_time = total_time/apariciones
-        total_points = total_goals + penalty_goals - own_goals
-        lt.addLast(lista_jugador, jugador)
-        lt.addLast(lista_jugador, total_points)
-        lt.addLast(lista_jugador, total_goals)
-        lt.addLast(lista_jugador, penalty_goals)
-        lt.addLast(lista_jugador, own_goals)
-        lt.addLast(lista_jugador, avg_time)
-        lt.addLast(lista_tabla, lista_jugador)
+    merg.sort(scorers, cmp_scorer_points)
+    sublist = lt.subList(scorers, 1, top_jugadores)
 
+    num_jugadores = lt.size(scorers)
+    num_tourns = lt.size(tournaments)
 
+    return sublist, num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, num_tourns
 
-    num_jugadores = lt.size(lista_nombres)
-    num_partidos = lt.size(lista_final_results)
-    return num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, lista_tabla
+def add_scorer_req7(data_struct, name):
+    posscorer = lt.isPresent(data_struct, name)
+    if posscorer <= 0:
+        #Esqueleto scorer desde 0
+        scorer = {
+            'name': name,
+            'total_points': 0,
+            'total_goals': 0,
+            'penalty_goals':0,
+            'own_goals': 0,
+            'avg_time': 0,
+            'total_time': 0,
+            'total_tournaments': 0,
+            'tournaments': lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_team),
+            'scored_in_wins': 0,
+            'scored_in_losses': 0,
+            'scored_in_draws': 0,
+            'last_goal': None,
+        }
+        lt.addLast(data_struct, scorer)
+        posscorer = lt.size(data_struct)
+    return posscorer
+
+def change_info_scorer(data_struct, pos, data):
+    changed = lt.getElement(data_struct, pos)
+
+    #penalty_points
+    if data['penalty'] == 'True':
+        changed['penalty_goals'] += 1
+    
+    #own_goals
+    if data['own_goal'] == 'True':
+        changed['own_goals'] += 1
+    
+    #Comprobar si el goleador es del home_team o del away_team
+    condition = None
+    againstcondition = None
+    if data['team'] == data['home_team']:
+        condition = 'home'
+        againstcondition = 'away'
+    else:
+        condition = 'away'
+        againstcondition = 'home'
+
+    #Scores in Wins - Draws - Losses
+    selfscore = data[(condition) + '_score']
+    againstscore = data[(againstcondition + '_score')]
+    if selfscore > againstscore:
+        changed['scored_in_wins'] += 1
+    elif selfscore < againstscore:
+        changed['scored_in_losses'] += 1
+    else:
+        changed['scored_in_draws'] += 1
+    
+    #Total goals
+    changed['total_goals'] = changed['scored_in_wins'] + changed['scored_in_losses'] + changed['scored_in_draws']
+
+    #Total points
+    changed['total_points'] = changed['total_goals'] + changed['penalty_goals'] - changed['own_goals']
+
+    #Avg time
+    changed['total_time'] += data['minute']
+    changed['avg_time'] = changed['total_time'] / changed['total_goals']
+
+    #Total tournaments
+    postournament = lt.isPresent(changed['tournaments'], data['tournament'])
+    if postournament != 0:
+        lt.addLast(changed['tournaments'], {'name': data['tournament']})
+    changed['total_tournaments'] = lt.size(changed['tournaments'])
+
+    #Last goal
+    if changed['last_goal'] == None:
+        changed['last_goal'] = data
+
+    return changed
 
 def req_8(data_structs):
     """
@@ -876,7 +926,7 @@ def cmp_stats(team1, team2):
                     else:
                         return False
                     
-def cmp_scorers(scorer1, scorer2):
+def cmp_top_scorer(scorer1, scorer2):
     if scorer1['goals'] > scorer2['goals']:
         return True
     elif scorer1['goals'] < scorer2['goals']:
@@ -903,6 +953,36 @@ def cmp_cities(city1, city2):
         else:
             return False
 
+def cmp_scorer_points(scorer1, scorer2):
+    if scorer1['total_points'] > scorer2['total_points']:
+        return True
+    elif scorer1['total_points'] < scorer2['total_points']:
+        return False
+    else:
+        if scorer1['total_goals'] > scorer2['total_goals']:
+            return True
+        elif scorer1['total_goals'] < scorer2['total_goals']:
+            return False
+        else:
+            if scorer1['penalty_goals'] > scorer2['penalty_goals']:
+                return True
+            elif scorer1['penalty_goals'] < scorer2['penalty_goals']:
+                return False
+            else:
+                if scorer1['own_goals'] < scorer2['own_goals']:
+                    return True
+                elif scorer1['own_goals'] > scorer2['own_goals']:
+                    return False
+                else:
+                    if scorer1['avg_time'] < scorer2['avg_time']:
+                        return True
+                    elif scorer1['avg_time'] > scorer2['avg_time']:
+                        return False
+                    else:
+                        if scorer1['name'] < scorer2['name']:
+                            return True
+                        else:
+                            return False                    
 
 def sort(data_structs, algorithm, file):
     sort_algorithms = {

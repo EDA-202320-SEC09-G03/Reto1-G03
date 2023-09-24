@@ -219,8 +219,11 @@ def req_7(control, fecha_inicial, fecha_final, top_jugadores):
     """
     Retorna el resultado del requerimiento 7
     """
-    num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, lista_tabla = model.req_7(control, fecha_inicial, fecha_final, top_jugadores)
-    return num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, lista_tabla
+    formato_fecha = "%Y-%m-%d"
+    inicial = datetime.strptime(fecha_inicial, formato_fecha)
+    final = datetime.strptime(fecha_final, formato_fecha)
+    sublist, num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, num_tourns = model.req_7(control['model'], inicial, final, top_jugadores)
+    return sublist, num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, num_tourns
     
 
 
