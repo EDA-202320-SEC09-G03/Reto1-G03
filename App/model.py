@@ -412,27 +412,35 @@ def req_3(data_structs, name, inicial, final):
     Función que soluciona el requerimiento 3
     """
     # TODO: Realizar el requerimiento 3
+
+    #Estructura separada por equipos
     teams = data_structs['teams']
 
+    #Búsqueda del equipo deseado
     pos_team = binary_search_team(teams, name)
-    results_team = lt.getElement(teams, pos_team)
+    results_team = (lt.getElement(teams, pos_team))['results']
 
-    pos_date_inicial = binary_search_start_date(results_team['results'], inicial)
-    pos_date_final = binary_search_end_date(results_team['results'], final)
-    size = (pos_date_inicial - pos_date_final) + 1
-    if pos_date_inicial >= pos_date_inicial:
-        sublist = lt.subList(results_team['results'], pos_date_final, size)
-    else:
-        return None
+    #Búsqueda de rangos de fechas
+    pos_date_inicial = binary_search_start_date(results_team, inicial)
+    pos_date_final = binary_search_end_date(results_team, final)
 
+    #Iniciar contadores de local y visitante
     home = 0
     away = 0
     nlower = name.lower()
-    for result in lt.iterator(sublist):
+
+    #Sublista filtrada
+    sublist = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_id)
+
+    #Añadir resultados y sumar contadores
+    for i in range(pos_date_final, pos_date_inicial + 1):
+
+        result = lt.getElement(results_team, i)
         if result['home_team'].lower() == nlower:
             home += 1
         else:
             away +=1
+        lt.addLast(sublist, result)
     
     return (sublist, home, away)
 
