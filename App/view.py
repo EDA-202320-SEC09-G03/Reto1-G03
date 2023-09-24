@@ -184,7 +184,17 @@ def print_tabulate(data_struct, columns):
         formato_fecha = "%Y-%m-%d"
         #result['date'] = dt.strftime(result['date'], formato_fecha)
         for column in columns:
-            line.append(result[column])
+            if column == 'top_scorer':
+                topscorer = []
+                keys_scorer = ['name', 'goals', 'matches', 'avg_time']
+                for column_scorer in keys_scorer:
+                    topscorer.append(result[column][column_scorer])
+                list = [keys_scorer, topscorer]
+                table_scorer = tabulate(list, headers='firstrow', tablefmt='grid')
+                line.append(table_scorer)
+            else:
+                line.append(result[column])
+
         reduced.append(line)
     table = tabulate(reduced, headers=columns, tablefmt="grid")
     return table

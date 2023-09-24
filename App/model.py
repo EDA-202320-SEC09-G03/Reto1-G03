@@ -58,14 +58,14 @@ def new_data_structs(adt):
         'shootouts': None,
         'teams': None,
         'tournaments': None,
-        'tourn_teams': None
+        'scorers_tourns': None
     }
     data_structs['results'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['goalscorers'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['shootouts'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['teams'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
     data_structs['tournaments'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
-    data_structs['tourn_teams'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
+    data_structs['scorers_tourns'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
     return data_structs
 
 
@@ -120,11 +120,13 @@ def load_auxiliar(data_structs, algorithm):
         add_teams(data_structs, data['home_team'], data)
         add_teams(data_structs, data['away_team'], data)
         add_tournaments(data_structs, data['tournament'], data)
-        add_tournaments_teams(data_structs, data['tournament'], data['home_team'], data)
-        add_tournaments_teams(data_structs, data['tournament'], data['away_team'], data)
+        #add_tournaments_teams(data_structs, data['tournament'], data['home_team'], data)
+        #add_tournaments_teams(data_structs, data['tournament'], data['away_team'], data)
+        if data['tournament'] != 'Friendly' and data['scorer'] != 'Unknown':
+            add_scorerstourns(data_structs, data['scorer'], data)
     sort(data_structs, algorithm, 'teams')
     sort(data_structs, algorithm, 'tournaments')
-    sort(data_structs, algorithm, 'tourn_teams')
+    #sort(data_structs, algorithm, 'tourn_teams')
 
 def add_teams(catalog, teamname, data):
     teams = catalog['teams']
@@ -147,6 +149,16 @@ def add_tournaments(data_structs, name, data):
         tournament = new_tournament(name)
         lt.addLast(tournaments, tournament)
     lt.addLast(tournament['results'], data)
+
+def add_scorerstourns(data_structs, name, data):
+    scorers = data_structs['scorers_tourns']
+    posscorer = lt.isPresent(scorers, name)
+    if posscorer > 0:
+        scorer = lt.getElement(scorers, posscorer)
+    else:
+        scorer = new_scorertourns(name)
+        lt.addLast(scorers, scorer)
+    lt.addLast(scorer['results'], data)
 
 def add_tournaments_teams(data_structs,  tournament, team, data):
     tournaments = data_structs['tourn_teams']
@@ -178,6 +190,12 @@ def new_tournament(name):
     tournament['name'] = name
     tournament['results'] = lt.newList('ARRAY_LIST')
     return tournament
+
+def new_scorertourns(name):
+    scorer = {'name': '', 'results': None}
+    scorer['name'] = name
+    scorer['results'] = lt.newList('ARRAY_LIST')
+    return scorer 
 
 def new_tournament_team(nametournament):
     tournament = {'name': '', 'teams': None}
@@ -761,10 +779,20 @@ def cmp_stats(team1, team2):
                         return False
                     
 def cmp_scorers(scorer1, scorer2):
-    if scorer1['matches'] > scorer2['matches']:
+    if scorer1['goals'] > scorer2['goals']:
         return True
-    else:
+    elif scorer1['goals'] < scorer2['goals']:
         return False
+    else:
+        if scorer1['avg_time'] < scorer2['avg_time']:
+            return True
+        elif scorer1['avg_time'] > scorer2['avg_time']:
+            return False
+        else:
+            if scorer1['name']  < scorer2['name']:
+                return True
+            else:
+                return False
     
 def cmp_cities(city1, city2):
     if city1['meetings'] > city2['meetings']:
