@@ -271,7 +271,7 @@ def print_req_6(control, n_equipos, torneo, fecha_inicial, fecha_final):
     """
     # TODO: Imprimir el resultado del requerimiento 6
     data = controller.req_6(control, n_equipos, torneo, fecha_inicial, fecha_final)
-    keys = ['name', 'total_points', 'goal_difference', 'penalty_points', 'matches', 'wins', 'draws', 'losses', 'goals_for', 'goals_against']
+    keys = ['name', 'total_points', 'goal_difference', 'penalty_points', 'matches', 'wins', 'draws', 'losses', 'goals_for', 'goals_against', 'top_scorer']
     table = print_tabulate(data, keys)
     print(table)
 

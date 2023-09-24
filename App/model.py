@@ -478,6 +478,9 @@ def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
     sort(teams, 'merge', 'req6')
     sublist = lt.subList(teams, 1, n_equipos)
 
+    for team in lt.iterator(sublist):
+        merg.sort(team['scorers'], cmp_scorers)
+        team['top_scorer'] = lt.getElement(team['scorers'], 1)
     return sublist
 
 def add_team_req6(data_struct, condition, data):
@@ -505,15 +508,15 @@ def change_info_req6(data_struct, pos, condition, data):
         changed['total_points'] += 3
         changed['wins'] += 1
     elif data[(condition + '_score')] < data[(againstcondition + '_score')]:
-        changed['total_points'] += 1
         changed['losses'] += 1
     else:
+        changed['total_points'] += 1
         changed['draws'] += 1
     #Goals for + Goals Against
     changed['goals_for'] += data[(condition) + '_score']
     changed['goals_against'] += data[(againstcondition) + '_score']
     #Penalty points
-    if data['winner'] == name or (data['penalty'] == True and (data[(condition + '_score')] > data[(againstcondition) + '_score'])):
+    if data['winner'] == name or (data['penalty'] == "True" and data['team'] == name):
         changed['penalty_points'] += 1
     #Matches
     changed['matches'] += 1
@@ -723,6 +726,12 @@ def cmp_stats(team1, team2):
                         return True
                     else:
                         return False
+                    
+def cmp_scorers(scorer1, scorer2):
+    if scorer1['matches'] > scorer2['matches']:
+        return True
+    else:
+        return False
 
 def sort(data_structs, algorithm, file):
     sort_algorithms = {
