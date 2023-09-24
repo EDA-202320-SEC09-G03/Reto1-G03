@@ -361,18 +361,26 @@ def binary_search_end_date(data_structs, end):
 
 
 
-def req_1(data_structs, n_teams, team_name, condition):
+def req_1(data_structs, n_results, team_name, condition):
     """
     Función que soluciona el requerimiento 1
     """
     # TODO: Realizar el requerimiento 1
     t_name = team_name.lower()
 
+    #Estructura separada por equipos
     teams = data_structs['teams']
+
+    #Busqueda binaria para encontrar el equipo que busca el usuario
     pos_team = binary_search_team(teams, t_name)
+
+    #Solo los partidos del equipo
     team_data = (lt.getElement(data_structs['teams'], pos_team))['results']
+
+    #Creación lista auxiliar
     filtered_list = lt.newList("ARRAY_LIST")
 
+    #Filtrar búsqueda por condición
     for result in lt.iterator(team_data):
         if condition == "local":
             if t_name == result["home_team"].lower():
@@ -383,7 +391,8 @@ def req_1(data_structs, n_teams, team_name, condition):
         else:
             lt.addLast(filtered_list, result)
 
-    sublist = lt.subList(filtered_list, 1, n_teams)
+    #Filtrar ultimos N partidos
+    sublist = lt.subList(filtered_list, 1, n_results)
     total = lt.size(filtered_list)
     
     return sublist, total
