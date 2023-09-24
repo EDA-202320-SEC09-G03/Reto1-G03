@@ -468,20 +468,53 @@ def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
     pos_start = binary_search_start_date(results, fecha_inicial)
     pos_end = binary_search_end_date(results, fecha_final)
 
+
+    meetings = {'cities' : lt.newList('ARRAY_LIST', cmpfunction=compare_team), 'countries': lt.newList('ARRAY_LIST', cmpfunction=compare_team)}
     teams = lt.newList(datastructure="ARRAY_LIST", cmpfunction=compare_team)
     
+    n_results = 0
     for i in range(pos_end, pos_start + 1):
         result = lt.getElement(results, i)
         add_team_req6(teams, 'home', result)
         add_team_req6(teams, 'away', result)
+
+        poscountry = lt.isPresent(meetings['countries'], result['country'])
+        poscity = lt.isPresent(meetings['cities'], result['city'])
+        if poscity > 0:
+            city = lt.getElement(meetings['cities'], poscity)
+        else:
+            city = {'name': result['city'], 'meetings': 0}
+            lt.addLast(meetings['cities'], city)
+            poscity = lt.size(meetings['cities'])
+        city['meetings'] += 1
+        lt.changeInfo(meetings['cities'], poscity, city)
+
+        if poscountry > 0:
+            country = lt.getElement(meetings['countries'], poscountry)
+        else:
+            country = {'name': result['country'], 'meetings': 0}
+            lt.addLast(meetings['countries'], country)
+            poscountry = lt.size(meetings['countries'])
+        country['meetings'] += 1
+        lt.changeInfo(meetings['countries'], poscountry, country)
     
+        n_results += 1
+
     sort(teams, 'merge', 'req6')
+    merg.sort(meetings['cities'], cmp_cities)
+    n_teams = lt.size(teams)
+    n_countries = lt.size(meetings['countries'])
+    n_cities = lt.size(meetings['cities'])
+    mostmatches = (lt.getElement(meetings['cities'], 1))['name']
+
+    
     sublist = lt.subList(teams, 1, n_equipos)
 
     for team in lt.iterator(sublist):
         merg.sort(team['scorers'], cmp_scorers)
         team['top_scorer'] = lt.getElement(team['scorers'], 1)
-    return sublist
+
+    return sublist, n_teams, n_results, n_countries, n_cities, mostmatches
 
 def add_team_req6(data_struct, condition, data):
     name = data[(condition + '_team')]
@@ -732,6 +765,18 @@ def cmp_scorers(scorer1, scorer2):
         return True
     else:
         return False
+    
+def cmp_cities(city1, city2):
+    if city1['meetings'] > city2['meetings']:
+        return True
+    elif city1['meetings'] < city2['meetings']:
+        return False
+    else:
+        if city1['name'] < city2['name']:
+            return True
+        else:
+            return False
+
 
 def sort(data_structs, algorithm, file):
     sort_algorithms = {

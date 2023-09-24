@@ -270,8 +270,13 @@ def print_req_6(control, n_equipos, torneo, fecha_inicial, fecha_final):
         Función que imprime la solución del Requerimiento 6 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 6
-    data = controller.req_6(control, n_equipos, torneo, fecha_inicial, fecha_final)
+    data, n_teams, n_results, n_countries, n_cities, mostmatches = controller.req_6(control, n_equipos, torneo, fecha_inicial, fecha_final)
     keys = ['name', 'total_points', 'goal_difference', 'penalty_points', 'matches', 'wins', 'draws', 'losses', 'goals_for', 'goals_against', 'top_scorer']
+    print(torneo, 'Total teams:', str(n_teams))
+    print(torneo, 'Total matches:', str(n_results))
+    print(torneo, 'Total countries:', str(n_countries))
+    print(torneo, 'Total cities:', str(n_cities))
+    print(torneo, 'with most matches:', mostmatches)
     table = print_tabulate(data, keys)
     print(table)
 

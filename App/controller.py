@@ -211,8 +211,8 @@ def req_6(control, n_equipos, torneo, fecha_inicial, fecha_final):
     formato_fecha = "%Y-%m-%d"
     inicial = datetime.strptime(fecha_inicial, formato_fecha)
     final = datetime.strptime(fecha_final, formato_fecha)
-    data = model.req_6(control['model'], n_equipos, torneo, inicial, final)
-    return data
+    data, n_teams, n_results, n_countries, n_cities, mostmatches = model.req_6(control['model'], n_equipos, torneo, inicial, final)
+    return data, n_teams, n_results, n_countries, n_cities, mostmatches
 
 
 def req_7(control):
