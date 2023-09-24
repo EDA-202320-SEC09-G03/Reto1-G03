@@ -470,12 +470,15 @@ def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
 
     teams = lt.newList(datastructure="ARRAY_LIST", cmpfunction=compare_team)
     
-    for i in range(pos_start, pos_end + 1):
+    for i in range(pos_end, pos_start + 1):
         result = lt.getElement(results, i)
         add_team_req6(teams, 'home', result)
         add_team_req6(teams, 'away', result)
+    
+    sort(teams, 'merge', 'req6')
+    sublist = lt.subList(teams, 1, n_equipos)
 
-    return teams
+    return sublist
 
 def add_team_req6(data_struct, condition, data):
     name = data[(condition + '_team')]
@@ -483,11 +486,11 @@ def add_team_req6(data_struct, condition, data):
     if posteam > 0:
         info = lt.getElement(data_struct, posteam)
     else:
-        info = {'name': name, 'total_points': 0, 'penalty_points': 0, 'matches': 0, 'own_goal_points': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0, 'goals_against': 0, 'top_scorer': lt.newList("ARRAY_LIST", cmpfunction=compare_team), 'scorers': lt.newList("ARRAY_LIST", cmpfunction=compare_team)}
+        info = {'name': name, 'total_points': 0, 'penalty_points': 0, 'matches': 0, 'own_goal_points': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0, 'goals_against': 0, 'top_scorer': lt.newList("ARRAY_LIST", cmpfunction=compare_team), 'scorers': lt.newList("ARRAY_LIST", cmpfunction=compare_team), 'own_goals': 0, 'goal_difference': 0}
         lt.addLast(data_struct, info)
         posteam = lt.size(data_struct)
     changed = change_info_req6(data_struct, posteam, condition, data)
-    lt.changeInfo(data_struct, posteam, name, changed)
+    lt.changeInfo(data_struct, posteam,changed)
 
 def change_info_req6(data_struct, pos, condition, data):
     againstcondition = None
@@ -510,17 +513,21 @@ def change_info_req6(data_struct, pos, condition, data):
     changed['goals_for'] += data[(condition) + '_score']
     changed['goals_against'] += data[(againstcondition) + '_score']
     #Penalty points
-    if data['winner'] == name:
+    if data['winner'] == name or (data['penalty'] == True and (data[(condition + '_score')] > data[(againstcondition) + '_score'])):
         changed['penalty_points'] += 1
     #Matches
     changed['matches'] += 1
     #Own goal points
-    if data['own_goal'] == 'True' and data['team'] == data[(againstcondition + '_name')]:
+    if data['own_goal'] == 'True' and data['team'] == data[(againstcondition + '_team')]:
         changed['own_goal_points'] += 1
+    else:
+        changed['own_goals'] += 1
+    #Goal difference
+    changed['goal_difference'] = changed['goals_for'] - changed['goals_against']
 
     #Change Info Scorers
     if data['scorer'] != 'Unknown' and data['team'] == name:
-        scorers = data_struct['scorers']
+        scorers = changed['scorers']
         posscorer = lt.isPresent(scorers, data['scorer'])
         if posscorer > 0:
             infoscorer = lt.getElement(data_struct, posscorer)
@@ -679,7 +686,44 @@ def cmp_teams(team1, team2):
         return True
     else:
         return False
-        
+    
+def cmp_stats(team1, team2):
+    points1 = team1['total_points']
+    points2 = team2['total_points']
+
+    if points1 > points2:
+        return True
+    elif points1 < points2:
+        return False
+    else:
+        difgoals1 = team1['goal_difference']
+        difgoals2 = team2['goal_difference']
+        if difgoals1 > difgoals2:
+            return True
+        elif difgoals1 < difgoals2:
+            return False
+        else:
+            penaltgoals1 = team1['penalty_points']
+            penaltygoals2 = team2['penalty_points']
+            if penaltgoals1 > penaltygoals2:
+                return True
+            elif penaltgoals1 < penaltygoals2:
+                return False
+            else:
+                matches1 = team1['matches']
+                matches2 = team2['matches']
+                if matches1 < matches2:
+                    return True
+                elif matches1 > matches2:
+                    return False
+                else:
+                    owngoals1 = team1['own_goals']
+                    owngoals2 = team2['own_goals']
+                    if owngoals1 < owngoals2:
+                        return True
+                    else:
+                        return False
+
 def sort(data_structs, algorithm, file):
     sort_algorithms = {
         'shell': sa.sort,
@@ -706,4 +750,6 @@ def sort(data_structs, algorithm, file):
             sort_algorithm(data_structs['tourn_teams'], cmp_teams)
             for tourn in lt.iterator(data_structs['tourn_teams']):
                 sort_algorithm(tourn['teams'], cmp_teams)
+        elif file == 'req6':
+            sort_algorithm(data_structs, cmp_stats)
         

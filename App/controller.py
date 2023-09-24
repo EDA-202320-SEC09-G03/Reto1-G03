@@ -91,7 +91,9 @@ def load_goalscorers(data_structs, file_size):
 
     id = 1
     for goalscorer in input_file:
-
+        
+        if goalscorer['minute'] == "" or goalscorer['minute'] == None:
+            goalscorer['minute'] = 'Unknown'
         changed = change_type(goalscorer)
         changed['id'] = id
         model.add_goalscorers(data_structs, changed)
@@ -122,6 +124,9 @@ def change_type(data):
     if changed.get('home_score', False):
         changed['home_score'] = int(data['home_score']) 
         changed['away_score'] = int(data['away_score'])
+    if changed.get('scorer', False):
+        if changed['minute'] != 'Unknown':
+            changed['minute'] = float(data['minute'])
     
     return changed
 
