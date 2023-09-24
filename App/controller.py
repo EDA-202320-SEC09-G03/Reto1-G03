@@ -192,8 +192,8 @@ def req_7(control, fecha_inicial, fecha_final, top_jugadores):
     """
     Retorna el resultado del requerimiento 7
     """
-    num_jugadores = model.req_7(control, fecha_inicial, fecha_final, top_jugadores)
-    return num_jugadores
+    num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, lista_tabla = model.req_7(control, fecha_inicial, fecha_final, top_jugadores)
+    return num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, lista_tabla
     
 
 

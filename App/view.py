@@ -261,8 +261,13 @@ def print_req_7(control):
     top_jugadores = 17 #input("Diga el número (N) de jugadores para consulta: ")
     fecha_inicial =  "2002-03-25" #input("Ingrese la fecha inicial: ")
     fecha_final = "2021-11-23" #input("Ingrese la fecha final: ")
-    num_jugadores = controller.req_7(control, fecha_inicial, fecha_final, top_jugadores)
+    num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, lista_tabla = controller.req_7(control, fecha_inicial, fecha_final, top_jugadores)
     print(num_jugadores)
+    print(num_partidos)
+    print(num_goles)
+    print(num_penales)
+    print(num_autogoles)
+    print(lista_tabla)
 
 
 def print_req_8(control):
