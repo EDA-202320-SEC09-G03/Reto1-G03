@@ -93,7 +93,7 @@ def load_goalscorers(data_structs, file_size):
     for goalscorer in input_file:
         
         if goalscorer['minute'] == "" or goalscorer['minute'] == None:
-            goalscorer['minute'] = 'Unknown'
+            goalscorer['minute'] = -1
         changed = change_type(goalscorer)
         changed['id'] = id
         model.add_goalscorers(data_structs, changed)

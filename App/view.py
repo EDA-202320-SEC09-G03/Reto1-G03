@@ -176,14 +176,21 @@ def choose_sort():
     
 def print_tabulate(data_struct, columns):
     data = data_struct
+
+    #Filtrar solo ultimos y primeros 3 datos si es muy grande la lista
     if lt.size(data_struct) > 6:
         data = controller.get_first_last_three(data_struct)
+
+    #Lista vacía para crear la tabla
     reduced = []
+
+    #Iterar cada línea de la lista
     for result in data['elements']:
         line = []
-        formato_fecha = "%Y-%m-%d"
-        #result['date'] = dt.strftime(result['date'], formato_fecha)
+        #Iterar las columnas para solo imprimir las deseadas
         for column in columns:
+
+            #Creación de subtabla para el requerimiento 6
             if column == 'top_scorer':
                 topscorer = []
                 keys_scorer = ['name', 'goals', 'matches', 'avg_time']
@@ -192,6 +199,8 @@ def print_tabulate(data_struct, columns):
                 list = [keys_scorer, topscorer]
                 table_scorer = tabulate(list, headers='firstrow', tablefmt='grid')
                 line.append(table_scorer)
+
+            #Creación de subtabla para el requerimiento 7
             elif column == 'last_goal':
                 last_goal = []
                 keys = ['date', 'tournament', 'home_team', 'away_team', 'home_score', 'away_score', 'minute', 'penalty', 'own_goal']
@@ -216,11 +225,11 @@ def print_req_1(control, n_results, team_name, condition):
     list, total = controller.req_1(control, n_results, team_name, condition)
     print(("="*15) + "Req No. 1 Inputs" + ("="*15))
     print('Team name:', team_name)
-    print('Team condition:', condition)
+    print('Team condition:', condition + '\n')
 
     print(("="*15) + "Req No. 1 Results" + ("="*15))
     print('Total matches found:', str(total))
-    print('Selecting', str(n_results), 'matches...')
+    print('Selecting', str(n_results), 'matches...' + '\n')
 
     columns = ['date', 'home_team', 'away_team', 'home_score', 'away_score', 'country', 'city', 'tournament']
     table = print_tabulate(list, columns)
@@ -243,12 +252,12 @@ def print_req_3(control, name, inicial, final):
     print(("="*15) + "Req No. 3 Inputs" + ("="*15))
     print('Team name:', name)
     print('Start date:', inicial)
-    print('End date:', final)
+    print('End date:', final, '\n')
 
     print(("="*15) + "Req No. 3 Results" + ("="*15))
     print(name, 'Total games:', str(size))
     print(name, 'Total home games:', str(home))
-    print(name, 'Total away games:', str(away))
+    print(name, 'Total away games:', str(away), '\n')
 
     columns = ['date', 'home_score', 'away_score', 'home_team', 'away_team', 'country', 'city', 'tournament', 'penalty', 'own_goal']
     table = print_tabulate(list, columns)
@@ -265,18 +274,9 @@ def print_req_4(control):
     fecha_final = "2022-06-30" #input("Ingrese la fecha final: ")
     data, ciudades, paises, total_matches, penaltis = controller.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
     partidos = lt.size(data)
-    if total_matches > 6:
-        sublist = controller.get_first_last_three_list(data)
-    else:
-        sublist = data
     
     lista_llaves = ["date", "tournament", "country", "city", "home_team", "away_team", "home_score", "away_score", "winner"]
-    lista_ultimate = []
-    for dato in lt.iterator(sublist):
-        lista_dato = []
-        for llave in lista_llaves:
-            lista_dato.append(dato[llave])
-        lista_ultimate.append(lista_dato)
+    lista_ultimate = print_tabulate(data, lista_llaves)
 # Se filtran los datos para que queden en orden como en el pdf 
 
     print("Partidos: ", partidos)
@@ -384,7 +384,7 @@ def menu_cycle(control, file_size, adt, sort):
             print('1. Local')
             print('2. Visitante')
             print('3. Indiferente')
-            condition = int(input())
+            condition = int(input('Digite su opción: '))
             if condition == 1:
                 print_req_1(control, n_results, team_name, 'local')
             elif condition == 2:

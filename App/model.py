@@ -56,6 +56,7 @@ def new_data_structs(adt):
         'results': None,
         'goalscorers': None,
         'shootouts': None,
+        'scorers': None,
         'teams': None,
         'tournaments': None,
         'official_results': None
@@ -63,6 +64,7 @@ def new_data_structs(adt):
     data_structs['results'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['goalscorers'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['shootouts'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
+    data_structs['scorers'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
     data_structs['teams'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
     data_structs['tournaments'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
     data_structs['official_results'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
@@ -141,6 +143,10 @@ def load_auxiliar(data_structs, algorithm):
     #Recorrer cada linea de resultados para crear estructuras auxiliares
     for data in lt.iterator(data_structs['results']):
 
+        #Partidos por goleador
+        if data['scorer'] != 'Unknown':
+            add_scorer(data_structs, data['scorer'], data)
+
         #Partidos por equipos
         add_teams(data_structs, data['home_team'], data)
         add_teams(data_structs, data['away_team'], data)
@@ -156,6 +162,22 @@ def load_auxiliar(data_structs, algorithm):
     sort(data_structs, algorithm, 'teams')
     sort(data_structs, algorithm, 'tournaments')
     merg.sort(data_structs['official_results'], cmp_partidos_by_fecha_y_pais)
+
+def add_scorer(catalog, name, data):
+    """
+    Función para agregar nuevos elementos a la lista separada por goleadores
+    """
+
+    scorers = catalog['scorers']
+    posscorer = lt.isPresent(scorers, name)
+    if posscorer > 0:
+        scorer = lt.getElement(scorers, posscorer)
+    else:
+        scorer = new_scorer(name)
+        lt.addLast(scorers, scorer)
+
+    lt.addLast(scorer['results'], data)
+    return catalog
 
 def add_teams(catalog, teamname, data):
     """
@@ -191,6 +213,15 @@ def add_officialresults(data_structs, data):
     lt.addLast(data_structs['official_results'], data)
 
 # Funciones para creacion de datos
+
+def new_scorer(name):
+    """
+    Crea una nueva estructura para modelar los datos por goleadores
+    """
+    scorer = {'name': '', 'results': None}
+    scorer['name'] = name
+    scorer['results'] = lt.newList('ARRAY_LIST')
+    return scorer
 
 def new_team(name):
     """
