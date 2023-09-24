@@ -203,7 +203,10 @@ def req_6(control, n_equipos, torneo, fecha_inicial, fecha_final):
     Retorna el resultado del requerimiento 6
     """
     # TODO: Modificar el requerimiento 6
-    data = model.req4(control['model'], n_equipos, torneo, fecha_inicial, fecha_final)
+    formato_fecha = "%Y-%m-%d"
+    inicial = datetime.strptime(fecha_inicial, formato_fecha)
+    final = datetime.strptime(fecha_final, formato_fecha)
+    data = model.req_6(control['model'], n_equipos, torneo, inicial, final)
     return data
 
 

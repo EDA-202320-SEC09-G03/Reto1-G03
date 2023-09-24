@@ -277,35 +277,34 @@ def binary_search_start_date(data_structs, start):
 
     recent = (lt.firstElement(data_structs))['date']
     oldest = (lt.lastElement(data_structs))['date']
-
+    i = lt.size(data_structs)
     if start >= oldest and start <= recent:
         prev = start - timedelta(days=1)
-        prev_id = None
         while low <= high:
             mid = (low + high) // 2
             team = lt.getElement(data_structs, mid)
             mid_date = team['date']
             if mid_date == prev:
-                prev_id = mid
+                i = mid
                 pass
-
             elif mid_date > prev:
                 low = mid + 1
             else:
                 high = mid - 1
             
             if low == high:
-                prev_id = mid
-                pass
-        
+                i = mid
+            i = mid        
         find = False
-        i = prev_id
         while not find:
-            date = (lt.getElement(data_structs, i))['date']
+            result = lt.getElement(data_structs, i)
+            date = result['date']
             if date >= start:
                 return i
             else:
                 i -= 1
+            if i == 0:
+                find = True
     else:
         return -1
 
@@ -464,9 +463,80 @@ def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
     """
     # TODO: Realizar el requerimiento 6
     tournaments = data_structs['tournaments']
-    pos_tourn = binary_search_team(tournaments, torneo)
+    pos_tourn = binary_search_team(tournaments, torneo.lower())
     results = (lt.getElement(tournaments, pos_tourn))['results']
+    pos_start = binary_search_start_date(results, fecha_inicial)
+    pos_end = binary_search_end_date(results, fecha_final)
 
+    teams = lt.newList(datastructure="ARRAY_LIST", cmpfunction=compare_team)
+    
+    for i in range(pos_start, pos_end + 1):
+        result = lt.getElement(results, i)
+        add_team_req6(teams, 'home', result)
+        add_team_req6(teams, 'away', result)
+
+    return teams
+
+def add_team_req6(data_struct, condition, data):
+    name = data[(condition + '_team')]
+    posteam = lt.isPresent(data_struct, name)
+    if posteam > 0:
+        info = lt.getElement(data_struct, posteam)
+    else:
+        info = {'name': name, 'total_points': 0, 'penalty_points': 0, 'matches': 0, 'own_goal_points': 0, 'wins': 0, 'draws': 0, 'losses': 0, 'goals_for': 0, 'goals_against': 0, 'top_scorer': lt.newList("ARRAY_LIST", cmpfunction=compare_team), 'scorers': lt.newList("ARRAY_LIST", cmpfunction=compare_team)}
+        lt.addLast(data_struct, info)
+        posteam = lt.size(data_struct)
+    changed = change_info_req6(data_struct, posteam, condition, data)
+    lt.changeInfo(data_struct, posteam, name, changed)
+
+def change_info_req6(data_struct, pos, condition, data):
+    againstcondition = None
+    if condition == 'home':
+        againstcondition = 'away'
+    else:
+        againstcondition = 'home'
+    changed = lt.getElement(data_struct, pos)
+    name = changed['name']
+    #Total points + Wins + Losses + Draws
+    if data[(condition + '_score')] > data[(againstcondition + '_score')]:
+        changed['total_points'] += 3
+        changed['wins'] += 1
+    elif data[(condition + '_score')] < data[(againstcondition + '_score')]:
+        changed['total_points'] += 1
+        changed['losses'] += 1
+    else:
+        changed['draws'] += 1
+    #Goals for + Goals Against
+    changed['goals_for'] += data[(condition) + '_score']
+    changed['goals_against'] += data[(againstcondition) + '_score']
+    #Penalty points
+    if data['winner'] == name:
+        changed['penalty_points'] += 1
+    #Matches
+    changed['matches'] += 1
+    #Own goal points
+    if data['own_goal'] == 'True' and data['team'] == data[(againstcondition + '_name')]:
+        changed['own_goal_points'] += 1
+
+    #Change Info Scorers
+    if data['scorer'] != 'Unknown' and data['team'] == name:
+        scorers = data_struct['scorers']
+        posscorer = lt.isPresent(scorers, data['scorer'])
+        if posscorer > 0:
+            infoscorer = lt.getElement(data_struct, posscorer)
+        else:
+            infoscorer = {'name': data['scorer'], 'goals': 0, 'matches': 0, 'avg_time': 0, 'temp_time': 0}
+            lt.addLast(scorers, infoscorer)
+            posscorer = lt.size(scorers)
+
+        scorer = lt.getElement(scorers, posscorer)
+        changedscorer = scorer
+        changedscorer['matches'] += 1
+        changedscorer['goals'] += 1
+        changedscorer['temp_time'] += data['minute']
+        changedscorer['avg_time'] = changedscorer['temp_time'] / changedscorer['matches']
+        lt.changeInfo(scorers, posscorer, changedscorer)
+    return changed
 
 def req_7(data_structs):
     """

@@ -182,7 +182,7 @@ def print_tabulate(data_struct, columns):
     for result in data['elements']:
         line = []
         formato_fecha = "%Y-%m-%d"
-        result['date'] = dt.strftime(result['date'], formato_fecha)
+        #result['date'] = dt.strftime(result['date'], formato_fecha)
         for column in columns:
             line.append(result[column])
         reduced.append(line)
@@ -265,17 +265,13 @@ def print_req_5(control):
     pass
 
 
-def print_req_6(control):
+def print_req_6(control, n_equipos, torneo, fecha_inicial, fecha_final):
     """
         Función que imprime la solución del Requerimiento 6 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 6
-    n_equipos = input('Ingrese el numero de equipos para la consulta: ')
-    torneo = input('Ingrese el nombre del torneo: ')
-    fecha_inicial = input("Ingrese la fecha inicial: ")
-    fecha_final = input("Ingrese la fecha final: ")
-    data = controller.req_6(control, n_equipos, torneo, fecha_final, fecha_final)
-    pass
+    data = controller.req_6(control, n_equipos, torneo, fecha_inicial, fecha_final)
+    print(data)
 
 
 def print_req_7(control):
@@ -374,7 +370,11 @@ def menu_cycle(control, file_size, adt, sort):
             print_req_5(control)
 
         elif int(inputs) == 7:
-            print_req_6(control)
+            n_equipos = int(input('Digite la cantidad de equipos para la consulta: '))
+            torneo = input('Escriba el nombre del torneo: ')
+            inicial = input('Ingrese la fecha inicial: ')
+            final = input('Ingrese la fecha final: ')
+            print_req_6(control, n_equipos, torneo, inicial, final)
 
         elif int(inputs) == 8:
             print_req_7(control)
