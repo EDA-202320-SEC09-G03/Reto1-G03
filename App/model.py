@@ -228,12 +228,47 @@ def req_6(data_structs):
     pass
 
 
-def req_7(data_structs):
+def req_7(control, fecha_inicial, fecha_final, top_jugadores):
     """
     Función que soluciona el requerimiento 7
     """
-    # TODO: Realizar el requerimiento 7
-    pass
+    lista_results = control["model"]["results"]
+    lista_shootouts = control["model"]["shootouts"]
+    lista_goalscorers = control["model"]["goalscorers"]
+
+    formato_fecha = "%Y-%m-%d"
+    fecha_inicial = dt.strptime(fecha_inicial, formato_fecha)
+    fecha_final = dt.strptime(fecha_final, formato_fecha)
+    lista_final_results = lt.newList("ARRAY_LIST")
+    lista_final_shootouts = lt.newList("ARRAY_LIST")
+    lista_final_goalscorers = lt.newList("ARRAY_LIST")
+
+    for dato in lt.iterator(lista_shootouts):
+        fecha_dato= dt.strptime(dato["date"], formato_fecha)
+        if fecha_dato >= fecha_inicial and fecha_dato <= fecha_final:
+            lt.addLast(lista_final_shootouts, dato)
+    
+    for dato in lt.iterator(lista_goalscorers):
+        fecha_dato = dt.strptime(dato["date"], formato_fecha)
+        if fecha_dato >= fecha_inicial and fecha_dato <= fecha_final:
+            lt.addLast(lista_final_goalscorers, dato)    
+    
+    for dato in lt.iterator(lista_results):
+        fecha_dato= dt.strptime(dato["date"], formato_fecha)
+        if fecha_dato >= fecha_inicial and fecha_dato <= fecha_final and dato["tournament"] != "Friendly":
+            lt.addLast(lista_final_results, dato)
+    
+
+    
+    lista_nombres = lt.newList("ARRAY_LIST")
+    for dato in lt.iterator(lista_final_goalscorers):
+        nombre_dato = dato["scorer"]
+        if not lt.isPresent(lista_nombres, nombre_dato):
+            lt.addLast(lista_nombres, nombre_dato)
+            
+    num_jugadores = lt.size(lista_nombres)
+    num_partidos = lt.size(lista_final_results)
+    return num_jugadores
 
 
 def req_8(data_structs):
@@ -348,7 +383,12 @@ def cmp_shootouts(shoot1, shoot2):
                 return True
             elif nombre_1_visitante < nombre_1_visitante:
                 return False
-        
+
+def cmp_nom(d1,d2):
+    if d1 < d2:
+        return True
+    else:
+        return False
 def sort(data_structs, algorithm):
 
     if algorithm == 'shell':

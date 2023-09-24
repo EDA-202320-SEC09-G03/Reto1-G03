@@ -258,8 +258,11 @@ def print_req_7(control):
     """
         Función que imprime la solución del Requerimiento 7 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 7
-    pass
+    top_jugadores = 17 #input("Diga el número (N) de jugadores para consulta: ")
+    fecha_inicial =  "2002-03-25" #input("Ingrese la fecha inicial: ")
+    fecha_final = "2021-11-23" #input("Ingrese la fecha final: ")
+    num_jugadores = controller.req_7(control, fecha_inicial, fecha_final, top_jugadores)
+    print(num_jugadores)
 
 
 def print_req_8(control):
