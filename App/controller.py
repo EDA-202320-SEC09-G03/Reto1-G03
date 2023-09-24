@@ -192,8 +192,8 @@ def req_4(control, nombre_torneo, fecha_inicial, fecha_final ):
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
-    data, ciudades, paises, total_matches = model.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
-    return data, ciudades, paises, total_matches
+    data, ciudades, paises, total_matches, penaltis = model.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
+    return data, ciudades, paises, total_matches, penaltis
 
 
 def req_5(control):
@@ -215,12 +215,13 @@ def req_6(control, n_equipos, torneo, fecha_inicial, fecha_final):
     return data, n_teams, n_results, n_countries, n_cities, mostmatches
 
 
-def req_7(control):
+def req_7(control, fecha_inicial, fecha_final, top_jugadores):
     """
     Retorna el resultado del requerimiento 7
     """
-    # TODO: Modificar el requerimiento 7
-    pass
+    num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, lista_tabla = model.req_7(control, fecha_inicial, fecha_final, top_jugadores)
+    return num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, lista_tabla
+    
 
 
 def req_8(control):

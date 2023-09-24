@@ -438,20 +438,37 @@ def req_4(control, nombre_torneo, fecha_inicial, fecha_final):
     Función que soluciona el requerimiento 4
     """
     lista_results = control["model"]["results"]
+    lista_shootouts = control["model"]["shootouts"]
+
     formato_fecha = "%Y-%m-%d"
     fecha_inicial = dt.strptime(fecha_inicial, formato_fecha)
     fecha_final = dt.strptime(fecha_final, formato_fecha)
-    lista_final = lt.newList("ARRAY_LIST")
+    lista_final_results = lt.newList("ARRAY_LIST")
+    lista_final_shootouts = lt.newList("ARRAY_LIST")
 
     for dato in lt.iterator(lista_results):
         fecha_dato = dato["date"]
         fecha_dato = dt.strptime(fecha_dato, formato_fecha)
         if fecha_dato <= fecha_final and fecha_dato >= fecha_inicial and dato["tournament"] == nombre_torneo:
-            lt.addLast(lista_final, dato)
+            dato["winner"] = "Unknown"
+            lt.addLast(lista_final_results, dato)
+
+    for dato in lt.iterator(lista_shootouts):
+        fecha_dato = dato["date"]
+        fecha_dato = dt.strptime(fecha_dato, formato_fecha)
+        if fecha_dato <= fecha_final and fecha_dato >= fecha_inicial :
+            lt.addLast(lista_final_shootouts, dato)
+
+    penaltis = 0
+    for dato in lt.iterator(lista_final_shootouts):
+        for dato_result in lt.iterator(lista_final_results):
+            if dato["home_team"] == dato_result["home_team"] and dato["away_team"] == dato_result["away_team"]:
+                penaltis += 1
+                dato_result["winner"] = dato["winner"]
 
     lista_cities = lt.newList("ARRAY_LIST")
     lista_countries = lt.newList("ARRAY_LIST")
-    for dato in lt.iterator(lista_final):
+    for dato in lt.iterator(lista_final_results):
         ciudad_dato = dato["city"]
         pais_dato = dato["country"]
         if not lt.isPresent(lista_cities, ciudad_dato):
@@ -461,9 +478,9 @@ def req_4(control, nombre_torneo, fecha_inicial, fecha_final):
 
     num_ciudades = lt.size(lista_cities)
     num_paises = lt.size(lista_countries)
-    total_matches = lt.size(lista_final)
+    total_matches = lt.size(lista_final_results)
 
-    return lista_final, num_ciudades, num_paises, total_matches
+    return lista_final_results, num_ciudades, num_paises, total_matches, penaltis
     
 
 
@@ -599,13 +616,94 @@ def change_info_req6(data_struct, pos, condition, data):
         lt.changeInfo(scorers, posscorer, changedscorer)
     return changed
 
-def req_7(data_structs):
+def req_7(control, fecha_inicial, fecha_final, top_jugadores):
     """
     Función que soluciona el requerimiento 7
     """
-    # TODO: Realizar el requerimiento 7
-    pass
+    lista_results = control["model"]["results"]
+    lista_shootouts = control["model"]["shootouts"]
+    lista_goalscorers = control["model"]["goalscorers"]
 
+    formato_fecha = "%Y-%m-%d"
+    fecha_inicial = dt.strptime(fecha_inicial, formato_fecha)
+    fecha_final = dt.strptime(fecha_final, formato_fecha)
+    lista_final_results = lt.newList("ARRAY_LIST")
+    lista_final_shootouts = lt.newList("ARRAY_LIST")
+    lista_final_goalscorers = lt.newList("ARRAY_LIST")
+
+    for dato in lt.iterator(lista_shootouts):
+        fecha_dato= dt.strptime(dato["date"], formato_fecha)
+        ht = dato["home_team"]
+        at = dato["away_team"]
+        dato["id"] = f"{fecha_dato}_{ht}_{at}"
+        if fecha_dato >= fecha_inicial and fecha_dato <= fecha_final:
+            lt.addLast(lista_final_shootouts, dato)
+    
+    for dato in lt.iterator(lista_goalscorers):
+        fecha_dato = dt.strptime(dato["date"], formato_fecha)
+        ht = dato["home_team"]
+        at = dato["away_team"]
+        dato["id"] = f"{fecha_dato}_{ht}_{at}"
+        if fecha_dato >= fecha_inicial and fecha_dato <= fecha_final:
+            lt.addLast(lista_final_goalscorers, dato)    
+
+    num_penales = 0
+    num_autogoles = 0
+    lista_nombres = lt.newList("ARRAY_LIST")
+    lista_ids = lt.newList("ARRAY_LIST")
+    for dato in lt.iterator(lista_final_goalscorers):
+        nombre_dato = dato["scorer"]
+        if not lt.isPresent(lista_nombres, nombre_dato):
+            lt.addLast(lista_nombres, nombre_dato)
+            lt.addLast(lista_ids, dato["id"])
+            if dato["penalty"] == "True":
+                num_penales += 1
+            if dato["own_goal"] == "True":
+                num_autogoles += 1
+    num_goles = 0
+    for dato in lt.iterator(lista_results):
+        fecha_dato= dt.strptime(dato["date"], formato_fecha)
+        ht = dato["home_team"]
+        at = dato["away_team"]
+        dato["id"] = f"{fecha_dato}_{ht}_{at}"
+        if fecha_dato >= fecha_inicial and fecha_dato <= fecha_final and dato["tournament"] != "Friendly" and lt.isPresent(lista_ids, dato["id"]) :
+            lt.addLast(lista_final_results, dato)
+            goles_partido = dato["home_score"] + dato["away_score"]
+            num_goles += goles_partido
+
+    lista_tabla = lt.newList("ARRAY_LIST")
+    for jugador in lt.iterator(lista_nombres):
+        lista_jugador = lt.newList("ARRAY_LIST")
+        total_goals = 0
+        penalty_goals = 0
+        own_goals = 0
+        total_time = 0
+        apariciones = 0
+        for dato in lt.iterator(lista_final_goalscorers):
+            if dato["scorer"] == jugador:
+                apariciones += 1
+                if dato["penalty"] == "True":
+                    penalty_goals += 1
+                if dato["own_goal"] == "True":
+                    own_goals += 1
+                else:
+                    total_goals += 1
+                total_time += float(dato["minute"])
+        avg_time = total_time/apariciones
+        total_points = total_goals + penalty_goals - own_goals
+        lt.addLast(lista_jugador, jugador)
+        lt.addLast(lista_jugador, total_points)
+        lt.addLast(lista_jugador, total_goals)
+        lt.addLast(lista_jugador, penalty_goals)
+        lt.addLast(lista_jugador, own_goals)
+        lt.addLast(lista_jugador, avg_time)
+        lt.addLast(lista_tabla, lista_jugador)
+
+
+
+    num_jugadores = lt.size(lista_nombres)
+    num_partidos = lt.size(lista_final_results)
+    return num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, lista_tabla
 
 def req_8(data_structs):
     """

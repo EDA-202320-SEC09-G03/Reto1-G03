@@ -252,19 +252,30 @@ def print_req_4(control):
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
-    nombre_torneo = input("Diga el nombre del torneo: ")
-    fecha_inicial = input("Ingrese la fecha inicial: ")
-    fecha_final = input("Ingrese la fecha final: ")
-    data, ciudades, paises, total_matches = controller.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
-
+    nombre_torneo = "Copa América" #input("Diga el nombre del torneo: ")
+    fecha_inicial =  "1955-06-01" #input("Ingrese la fecha inicial: ")
+    fecha_final = "2022-06-30" #input("Ingrese la fecha final: ")
+    data, ciudades, paises, total_matches, penaltis = controller.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
+    partidos = lt.size(data)
     if total_matches > 6:
         sublist = controller.get_first_last_three_list(data)
     else:
         sublist = data
+    
+    lista_llaves = ["date", "tournament", "country", "city", "home_team", "away_team", "home_score", "away_score", "winner"]
+    lista_ultimate = []
+    for dato in lt.iterator(sublist):
+        lista_dato = []
+        for llave in lista_llaves:
+            lista_dato.append(dato[llave])
+        lista_ultimate.append(lista_dato)
+# Se filtran los datos para que queden en orden como en el pdf 
 
-    print(tabulate(sublist['elements'], headers='keys', tablefmt="grid"), '\n')
-    print('Ciudades:', ciudades)
+    print("Partidos: ", partidos)
     print('Paises:',paises)
+    print('Ciudades:', ciudades)
+    print("Penaltis: ", penaltis)
+    print(tabulate(lista_ultimate, headers=lista_llaves, tablefmt="grid"))
 
 
 def print_req_5(control):
@@ -295,8 +306,16 @@ def print_req_7(control):
     """
         Función que imprime la solución del Requerimiento 7 en consola
     """
-    # TODO: Imprimir el resultado del requerimiento 7
-    pass
+    top_jugadores = 17 #input("Diga el número (N) de jugadores para consulta: ")
+    fecha_inicial =  "2002-03-25" #input("Ingrese la fecha inicial: ")
+    fecha_final = "2021-11-23" #input("Ingrese la fecha final: ")
+    num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, lista_tabla = controller.req_7(control, fecha_inicial, fecha_final, top_jugadores)
+    print(num_jugadores)
+    print(num_partidos)
+    print(num_goles)
+    print(num_penales)
+    print(num_autogoles)
+    print(lista_tabla)
 
 
 def print_req_8(control):
