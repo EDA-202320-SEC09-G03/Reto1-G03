@@ -159,6 +159,7 @@ def load_auxiliar(data_structs, algorithm):
             add_officialresults(data_structs, data)
 
     #Ordenar estructuras auxiliares
+    merg.sort(data_structs['scorers'], cmp_name)
     sort(data_structs, algorithm, 'teams')
     sort(data_structs, algorithm, 'tournaments')
     merg.sort(data_structs['official_results'], cmp_partidos_by_fecha_y_pais)
@@ -461,11 +462,22 @@ def req_1(data_structs, n_results, team_name, condition):
 
 
 
-def req_2(data_structs):
+def req_2(data_structs, n_goals, name):
     """
     Función que soluciona el requerimiento 2
     """
     # TODO: Realizar el requerimiento 2
+    scorers = data_structs['scorers']
+    posscorer = binary_search_by_name(scorers, name)
+    results = (lt.getElement(scorers, posscorer))['results']
+    size = lt.size(results)
+    goals = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_id)
+    for i in range(size, (size - n_goals) + 1, -1):
+        if i < 1:
+            return goals, lt.size(goals)
+        else:
+            result = lt.getElement(results, i)
+            lt.addLast(goals, result)
     pass
 
 
@@ -1002,7 +1014,7 @@ def cmp_shootouts(shoot1, shoot2):
             elif nombre_1_visitante < nombre_1_visitante:
                 return False
 
-def cmp_teams(team1, team2):
+def cmp_name(team1, team2):
 
     t1 = team1['name'].lower()
     t2 = team2['name'].lower()
@@ -1126,13 +1138,9 @@ def sort(data_structs, algorithm, file):
         elif file == 'shootouts':
             sort_algorithm(data_structs['shootouts'], cmp_shootouts)
         elif file == 'teams':
-            sort_algorithm(data_structs['teams'], cmp_teams)
+            sort_algorithm(data_structs['teams'], cmp_name)
         elif file == 'tournaments':
-            sort_algorithm(data_structs['tournaments'], cmp_teams)
-        elif file == 'tourn_teams':
-            sort_algorithm(data_structs['tourn_teams'], cmp_teams)
-            for tourn in lt.iterator(data_structs['tourn_teams']):
-                sort_algorithm(tourn['teams'], cmp_teams)
+            sort_algorithm(data_structs['tournaments'], cmp_name)
         elif file == 'req6':
             sort_algorithm(data_structs, cmp_stats)
         

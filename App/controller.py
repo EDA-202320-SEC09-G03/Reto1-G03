@@ -162,12 +162,14 @@ def req_1(control, n_results, team_name, condition):
     return filtered_list, total 
 
 
-def req_2(control):
+def req_2(control, n_goals, name):
     """
     Retorna el resultado del requerimiento 2
     """
     # TODO: Modificar el requerimiento 2
-    pass
+    nlower = name.lower()
+    data, total = model.req_2(control['model'], n_goals, nlower)
+    return data, total
 
 
 def req_3(control, name, inicial, final):

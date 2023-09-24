@@ -235,12 +235,16 @@ def print_req_1(control, n_results, team_name, condition):
     table = print_tabulate(list, columns)
     print(table)
 
-def print_req_2(control):
+def print_req_2(control, n_goals, name):
     """
         Función que imprime la solución del Requerimiento 2 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 2
-    pass
+    data, total = controller.req_2(control, n_goals, name)
+    keys = ['date', 'home_team', 'away_team', 'team', 'scorer', 'minute', 'own_goal', 'penalty']
+    table = print_tabulate(data, keys)
+    print('Total scorers found:', total, '\n')
+    print(table)
 
 
 def print_req_3(control, name, inicial, final):
@@ -395,7 +399,9 @@ def menu_cycle(control, file_size, adt, sort):
                 print("Por favor seleccione una opción válida")
 
         elif int(inputs) == 3:
-            print_req_2(control)
+            n_goals = int(input('Numero de goles: '))
+            name = input('Nombre completo del jugador: ')
+            print_req_2(control, n_goals, name)
 
         elif int(inputs) == 4:
             name = input('Ingrese el nombre del equipo: ')
