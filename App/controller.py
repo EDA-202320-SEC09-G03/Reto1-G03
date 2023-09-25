@@ -205,11 +205,16 @@ def req_4(control, nombre_torneo, fecha_inicial, fecha_final ):
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
+    formato_fecha = "%Y-%m-%d"
+    inicial = datetime.strptime(fecha_inicial, formato_fecha)
+    final = datetime.strptime(fecha_final, formato_fecha)
     start_time = get_time()
-    data, ciudades, paises, total_matches, penaltis = model.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
-    end_time = get_time()
-    d_time = delta_time(start_time, end_time)
+    if final >= inicial:
+        data, ciudades, paises, total_matches, penaltis = model.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
+        end_time = get_time()
+        d_time = delta_time(start_time, end_time)
     return data, ciudades, paises, total_matches, penaltis, d_time
+     
 
 
 def req_5(control):

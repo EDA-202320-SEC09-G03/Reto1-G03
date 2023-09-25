@@ -546,23 +546,20 @@ def req_4(control, nombre_torneo, fecha_inicial, fecha_final):
     """
     lista_results = control["model"]["results"]
     lista_shootouts = control["model"]["shootouts"]
-
-    formato_fecha = "%Y-%m-%d"
-    fecha_inicial = dt.strptime(fecha_inicial, formato_fecha)
-    fecha_final = dt.strptime(fecha_final, formato_fecha)
+    
     lista_final_results = lt.newList("ARRAY_LIST")
     lista_final_shootouts = lt.newList("ARRAY_LIST")
 
     for dato in lt.iterator(lista_results):
         fecha_dato = dato["date"]
-        fecha_dato = dt.strptime(fecha_dato, formato_fecha)
+        
         if fecha_dato <= fecha_final and fecha_dato >= fecha_inicial and dato["tournament"] == nombre_torneo:
             dato["winner"] = "Unknown"
             lt.addLast(lista_final_results, dato)
 
     for dato in lt.iterator(lista_shootouts):
         fecha_dato = dato["date"]
-        fecha_dato = dt.strptime(fecha_dato, formato_fecha)
+        
         if fecha_dato <= fecha_final and fecha_dato >= fecha_inicial :
             lt.addLast(lista_final_shootouts, dato)
 
