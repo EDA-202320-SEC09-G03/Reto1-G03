@@ -441,7 +441,7 @@ def menu_cycle(control, file_size, adt, sort):
             name = 'Germany' #input('Ingrese el nombre del equipo: ')
             print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
             inicial = '1939-01-01'# input('Ingrese la fecha inicial: ')
-            final = '1980-12-31'#input('Ingrese la fecha final: ')
+            final = '2022-12-31'#input('Ingrese la fecha final: ')
             print_req_3(control, name, inicial, final)
 
         elif int(inputs) == 5:
@@ -454,14 +454,14 @@ def menu_cycle(control, file_size, adt, sort):
             n_equipos = 11#int(input('Digite la cantidad de equipos para la consulta: '))
             torneo = 'UEFA Euro qualification'#input('Escriba el nombre del torneo: ')
             print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
-            inicial = '2002-03-25'#input('Ingrese la fecha inicial: ')
+            inicial = '1950-03-25'#input('Ingrese la fecha inicial: ')
             final = '2021-11-23'#input('Ingrese la fecha final: ')
             print_req_6(control, n_equipos, torneo, inicial, final)
 
         elif int(inputs) == 8:
             top_jugadores = 17 #input("Diga el número (N) de jugadores para consulta: ")
             #print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
-            fecha_inicial =  "2002-03-25" #input("Ingrese la fecha inicial: ")
+            fecha_inicial =  "1950-03-25" #input("Ingrese la fecha inicial: ")
             fecha_final = "2021-11-23" #input("Ingrese la fecha final: ")
             print_req_7(control, fecha_inicial, fecha_final, top_jugadores)
 
@@ -469,8 +469,8 @@ def menu_cycle(control, file_size, adt, sort):
             equipo1 = 'Argentina'#input('Nombre del primer equipo: ')
             equipo2 = 'Chile'#input('Nombre del segundo equipo: ')
             print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
-            inicial = ''#input('Ingrese la fecha inicial: ')
-            final = input('Ingrese la fecha final: ')
+            inicial = '1950-01-01'#input('Ingrese la fecha inicial: ')
+            final = '2022-12-30'#input('Ingrese la fecha final: ')
 
             print_req_8(control, equipo1, equipo2, inicial, final)
 
