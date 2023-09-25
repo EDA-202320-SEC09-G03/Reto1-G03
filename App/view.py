@@ -433,8 +433,8 @@ def menu_cycle(control, file_size, adt, sort):
                 print("Por favor seleccione una opción válida")
 
         elif int(inputs) == 3:
-            n_goals = int(input('Numero de goles: '))
-            name = input('Nombre completo del jugador: ')
+            n_goals = 7 #int(input('Numero de goles: '))
+            name = 'Michael Ballack' #input('Nombre completo del jugador: ')
             print_req_2(control, n_goals, name)
 
         elif int(inputs) == 4:
