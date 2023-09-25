@@ -312,7 +312,7 @@ def binary_search_general(data_structs, date, hometeam, awayteam):
             else:
                 awayteam_mid = result['away_team'].lower()
                 if awayteam_mid < awayteam:
-                    high = mid + 1
+                    high = mid - 1
                 elif awayteam_mid > awayteam:
                     low = mid + 1
                 else:
