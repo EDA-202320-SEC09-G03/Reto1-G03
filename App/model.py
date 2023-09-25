@@ -59,15 +59,17 @@ def new_data_structs(adt):
         'scorers': None,
         'teams': None,
         'tournaments': None,
-        'official_results': None
+        'official_results': None,
+        'official_teams': None
     }
     data_structs['results'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['goalscorers'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
     data_structs['shootouts'] = lt.newList(datastructure=adt, cmpfunction=compare_id)
-    data_structs['scorers'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
-    data_structs['teams'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
-    data_structs['tournaments'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
-    data_structs['official_results'] = lt.newList(datastructure=adt, cmpfunction=compare_team)
+    data_structs['scorers'] = lt.newList(datastructure=adt, cmpfunction=compare_name)
+    data_structs['teams'] = lt.newList(datastructure=adt, cmpfunction=compare_name)
+    data_structs['tournaments'] = lt.newList(datastructure=adt, cmpfunction=compare_name)
+    data_structs['official_results'] = lt.newList(datastructure=adt, cmpfunction=compare_name)
+    data_structs['official_teams'] = lt.newList(datastructure=adt, cmpfunction=compare_name)
     return data_structs
 
 
@@ -157,12 +159,15 @@ def load_auxiliar(data_structs, algorithm):
         #Solo resultados de partidos oficiales (no amistosos)
         if data['tournament'] != 'Friendly':
             add_officialresults(data_structs, data)
+            add_official_teams(data_structs, data['home_team'], data)
+            add_official_teams(data_structs, data['away_team'], data)
 
     #Ordenar estructuras auxiliares
     merg.sort(data_structs['scorers'], cmp_name)
     sort(data_structs, algorithm, 'teams')
     sort(data_structs, algorithm, 'tournaments')
     merg.sort(data_structs['official_results'], cmp_partidos_by_fecha_y_pais)
+    merg.sort(data_structs['official_teams'], cmp_name)
 
 def add_scorer(catalog, name, data):
     """
@@ -212,6 +217,16 @@ def add_tournaments(data_structs, name, data):
 
 def add_officialresults(data_structs, data):
     lt.addLast(data_structs['official_results'], data)
+
+def add_official_teams(data_structs, name, data):
+    official_teams = data_structs['official_teams']
+    posteam = lt.isPresent(official_teams, name)
+    if posteam > 0:
+        team = lt.getElement(official_teams, posteam)
+    else:
+        team = new_team(name)
+        lt.addLast(official_teams, team)
+    lt.addLast(team['results'], data)
 
 # Funciones para creacion de datos
 
@@ -373,7 +388,7 @@ def binary_search_start_date(data_structs, start):
             if i == 0:
                 find = True
     else:
-        return -1
+        return lt.size(data_structs)
 
 def binary_search_end_date(data_structs, end):
     """
@@ -420,7 +435,7 @@ def binary_search_end_date(data_structs, end):
             else:
                 i += 1
     else:
-        return -1
+        return 1
 
 
 
@@ -605,16 +620,16 @@ def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
 
 
     #Listas auxiliares
-    meetings = {'cities' : lt.newList('ARRAY_LIST', cmpfunction=compare_team), 'countries': lt.newList('ARRAY_LIST', cmpfunction=compare_team)}
-    teams = lt.newList(datastructure="ARRAY_LIST", cmpfunction=compare_team)
+    meetings = {'cities' : lt.newList('ARRAY_LIST', cmpfunction=compare_name), 'countries': lt.newList('ARRAY_LIST', cmpfunction=compare_name)}
+    teams = lt.newList(datastructure="ARRAY_LIST", cmpfunction=compare_name)
     
     n_results = 0
     for i in range(pos_end, pos_start + 1):
 
         #Obtención de posición en teams y creación si no existe
         result = lt.getElement(results, i)
-        poshome = add_team_req6(teams, 'home', result)
-        posaway = add_team_req6(teams, 'away', result)
+        poshome = add_team_req6(teams, result['home_team'])
+        posaway = add_team_req6(teams, result['away_team'])
         
         #Cambiar la información con la nueva de la iteración
         changedhome = change_info_req6(teams, poshome, 'home', result)
@@ -675,13 +690,13 @@ def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
     #Ciclo para obtener el mejor jugador en cada equipo
     for team in lt.iterator(sublist):
 
-        merg.sort(team['scorers'], cmp_top_scorer)
-        team['top_scorer'] = lt.getElement(team['scorers'], 1)
+        if lt.size(team['scorers']) > 0:
+            merg.sort(team['scorers'], cmp_top_scorer)
+            team['top_scorer'] = lt.getElement(team['scorers'], 1)
 
     return sublist, n_teams, n_results, n_countries, n_cities, mostmatches
 
-def add_team_req6(data_struct, condition, data):
-    name = data[(condition + '_team')]
+def add_team_req6(data_struct, name):
     posteam = lt.isPresent(data_struct, name)
     if posteam > 0:
         info = lt.getElement(data_struct, posteam)
@@ -697,8 +712,8 @@ def add_team_req6(data_struct, condition, data):
             'losses': 0,
             'goals_for':0,
             'goals_against':0,
-            'top_scorer': {},
-            'scorers': lt.newList("ARRAY_LIST", cmpfunction=compare_team),
+            'top_scorer': {'name': '', 'goals': 0, 'matches': 0, 'avg_time': 0, 'temp_time': 0},
+            'scorers': lt.newList("ARRAY_LIST", cmpfunction=compare_name),
             'own_goals': 0,
             'goal_difference': 0
         }
@@ -713,7 +728,7 @@ def change_info_req6(data_struct, pos, condition, data):
     else:
         againstcondition = 'home'
     changed = lt.getElement(data_struct, pos)
-    name = changed['name']
+    name = data[(condition) + '_team']
     #Total points + Wins + Losses + Draws
     if data[(condition + '_score')] > data[(againstcondition + '_score')]:
         changed['total_points'] += 3
@@ -777,8 +792,8 @@ def req_7(data_structs, fecha_inicial, fecha_final, top_jugadores):
     posend = binary_search_end_date(results, fecha_final)
 
     #Creación de lista donde se guardará la información de cada scorer
-    scorers = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_team)
-    tournaments = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_team)
+    scorers = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_name)
+    tournaments = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_name)
     
     num_partidos = 0
     num_goles = 0
@@ -831,7 +846,7 @@ def add_scorer_req7(data_struct, name):
             'avg_time': 0,
             'total_time': 0,
             'total_tournaments': 0,
-            'tournaments': lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_team),
+            'tournaments': lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_name),
             'scored_in_wins': 0,
             'scored_in_losses': 0,
             'scored_in_draws': 0,
@@ -894,12 +909,56 @@ def change_info_scorer(data_struct, pos, data):
 
     return changed
 
-def req_8(data_structs):
+def req_8(data_structs, equipo1, equipo2, inicial, final):
     """
     Función que soluciona el requerimiento 8
     """
     # TODO: Realizar el requerimiento 8
-    pass
+    official_teams = data_structs['official_teams']
+    
+    sublist1, home1, away1 = req_3({'teams': official_teams}, equipo1, inicial, final)
+    sublist2, home2, away2 = req_3({'teams': official_teams}, equipo2, inicial, final)
+
+    years = {'team1': lt.newList('ARRAY_LIST', cmpfunction=compare_year), 'team2': lt.newList('ARRAY_LIST', cmpfunction=compare_year)}
+
+    for result in lt.iterator(sublist1):
+        year1 = result['date'].year
+        pos_year1 = add_team_req6(years['team1'], year1)
+        if result['home_team'].lower() == equipo1:
+            condition = 'home'
+        else:
+            condition = 'away'
+        changed = change_info_req6(years['team1'], pos_year1, condition, result)
+        lt.changeInfo(years['team1'], pos_year1, changed)
+    
+    for result in lt.iterator(sublist2):
+        year2 = result['date'].year
+        pos_year2 = add_team_req6(years['team2'], year2)
+        if result['home_team'].lower() == equipo2:
+            condition = 'home'
+        else:
+            condition = 'away'
+        changed = change_info_req6(years['team2'], pos_year2, condition, result)
+        lt.changeInfo(years['team2'], pos_year2, changed)
+
+    merg.sort(years['team1'], cmp_year)    
+    merg.sort(years['team2'], cmp_year)
+        
+    for year in lt.iterator(years['team1']):
+
+        if lt.size(year['scorers']) > 0:
+            merg.sort(year['scorers'], cmp_top_scorer)
+            year['top_scorer'] = lt.getElement(year['scorers'], 1)
+
+    for year in lt.iterator(years['team2']):
+
+        if lt.size(year['scorers']) > 0:
+            merg.sort(year['scorers'], cmp_top_scorer)
+            year['top_scorer'] = lt.getElement(year['scorers'], 1)
+
+    return years
+    
+
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -916,7 +975,7 @@ def compare_id(data_1, data_2):
     else:
         return 0
     
-def compare_team(team1, team2):
+def compare_name(team1, team2):
     """
     Función encargada de comparar dos datos por nombre
     """
@@ -930,6 +989,13 @@ def compare_team(team1, team2):
     else:
         return 0
 
+def compare_year(data1, data2):
+    if data1 > data2['name']:
+        return 1
+    elif data1 < data2['name']:
+        return -1
+    else:
+        return 0
 # Funciones de ordenamiento
 
 
@@ -1125,6 +1191,12 @@ def cmp_scorer_points(scorer1, scorer2):
                             return True
                         else:
                             return False                    
+
+def cmp_year(year1, year2):
+    if year1['name'] > year2['name']:
+        return True
+    else:
+        return False
 
 def sort(data_structs, algorithm, file):
     sort_algorithms = {

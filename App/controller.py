@@ -158,8 +158,11 @@ def req_1(control, n_results, team_name, condition):
     Retorna el resultado del requerimiento 1
     """
     # TODO: Modificar el requerimiento 1
+    start_time = get_time()
     filtered_list, total = model.req_1(control['model'], n_results, team_name, condition)
-    return filtered_list, total 
+    end_time = get_time()
+    d_time = delta_time(start_time, end_time)
+    return filtered_list, total, d_time
 
 
 def req_2(control, n_goals, name):
@@ -168,8 +171,11 @@ def req_2(control, n_goals, name):
     """
     # TODO: Modificar el requerimiento 2
     nlower = name.lower()
+    start_time = get_time()
     data, total = model.req_2(control['model'], n_goals, nlower)
-    return data, total
+    end_time = get_time()
+    d_time = delta_time(start_time, end_time)
+    return data, total, d_time
 
 
 def req_3(control, name, inicial, final):
@@ -181,12 +187,17 @@ def req_3(control, name, inicial, final):
     formato_fecha = "%Y-%m-%d"
     inicial = datetime.strptime(inicial, formato_fecha)
     final = datetime.strptime(final, formato_fecha)
+    start_time = get_time()
     if final >= inicial:
         filtered_list, home, away = model.req_3(control['model'], name, inicial, final)
         lt_size = model.lt.size(filtered_list)
-        return filtered_list, lt_size, home, away
+        end_time = get_time()
+        d_time = delta_time(start_time, end_time)
+        return filtered_list, lt_size, home, away, d_time
     else:
-        return (None, 0, 0, 0)
+        end_time = get_time()
+        d_time = delta_time(start_time, end_time)
+        return (None, 0, 0, 0, d_time)
 
 
 def req_4(control, nombre_torneo, fecha_inicial, fecha_final ):
@@ -194,8 +205,11 @@ def req_4(control, nombre_torneo, fecha_inicial, fecha_final ):
     Retorna el resultado del requerimiento 4
     """
     # TODO: Modificar el requerimiento 4
+    start_time = get_time()
     data, ciudades, paises, total_matches, penaltis = model.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
-    return data, ciudades, paises, total_matches, penaltis
+    end_time = get_time()
+    d_time = delta_time(start_time, end_time)
+    return data, ciudades, paises, total_matches, penaltis, d_time
 
 
 def req_5(control):
@@ -213,8 +227,11 @@ def req_6(control, n_equipos, torneo, fecha_inicial, fecha_final):
     formato_fecha = "%Y-%m-%d"
     inicial = datetime.strptime(fecha_inicial, formato_fecha)
     final = datetime.strptime(fecha_final, formato_fecha)
+    start_time = get_time()
+    end_time = get_time()
     data, n_teams, n_results, n_countries, n_cities, mostmatches = model.req_6(control['model'], n_equipos, torneo, inicial, final)
-    return data, n_teams, n_results, n_countries, n_cities, mostmatches
+    d_time = delta_time(start_time, end_time)
+    return data, n_teams, n_results, n_countries, n_cities, mostmatches, d_time
 
 
 def req_7(control, fecha_inicial, fecha_final, top_jugadores):
@@ -224,17 +241,27 @@ def req_7(control, fecha_inicial, fecha_final, top_jugadores):
     formato_fecha = "%Y-%m-%d"
     inicial = datetime.strptime(fecha_inicial, formato_fecha)
     final = datetime.strptime(fecha_final, formato_fecha)
+    start_time = get_time()
     sublist, num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, num_tourns = model.req_7(control['model'], inicial, final, top_jugadores)
-    return sublist, num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, num_tourns
+    end_time = get_time()
+    d_time = delta_time(start_time, end_time)
+    return sublist, num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, num_tourns, d_time
     
 
 
-def req_8(control):
+def req_8(control, equipo1, equipo2, fecha_inicial, fecha_final):
     """
     Retorna el resultado del requerimiento 8
     """
     # TODO: Modificar el requerimiento 8
-    pass
+    formato_fecha = "%Y-%m-%d"
+    inicial = datetime.strptime(fecha_inicial, formato_fecha)
+    final = datetime.strptime(fecha_final, formato_fecha)
+    equipo1 = equipo1.lower()
+    equipo2 = equipo2.lower()
+    data = model.req_8(control['model'], equipo1, equipo2, inicial, final)
+    return data
+    
 
 def get_first_last_three(list):
     data = model.get_first_last_three(list)

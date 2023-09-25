@@ -222,7 +222,7 @@ def print_req_1(control, n_results, team_name, condition):
         Función que imprime la solución del Requerimiento 1 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 1
-    list, total = controller.req_1(control, n_results, team_name, condition)
+    list, total, d_time = controller.req_1(control, n_results, team_name, condition)
     print(("="*15) + "Req No. 1 Inputs" + ("="*15))
     print('Team name:', team_name)
     print('Team condition:', condition + '\n')
@@ -234,17 +234,22 @@ def print_req_1(control, n_results, team_name, condition):
     columns = ['date', 'home_team', 'away_team', 'home_score', 'away_score', 'country', 'city', 'tournament']
     table = print_tabulate(list, columns)
     print(table)
+    print('')
+    d_time = f'{d_time:.3f}'
+    print('Tiempo de ejecución:', str(d_time), 'ms')
 
 def print_req_2(control, n_goals, name):
     """
         Función que imprime la solución del Requerimiento 2 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 2
-    data, total = controller.req_2(control, n_goals, name)
+    data, total, d_time = controller.req_2(control, n_goals, name)
     keys = ['date', 'home_team', 'away_team', 'team', 'scorer', 'minute', 'own_goal', 'penalty']
     table = print_tabulate(data, keys)
     print('Total scorers found:', total, '\n')
     print(table)
+    d_time = f'{d_time:.3f}'
+    print('Tiempo de ejecución:', str(d_time), 'ms')
 
 
 def print_req_3(control, name, inicial, final):
@@ -252,7 +257,7 @@ def print_req_3(control, name, inicial, final):
         Función que imprime la solución del Requerimiento 3 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 3
-    list, size, home, away = controller.req_3(control, name, inicial, final)
+    list, size, home, away,d_time = controller.req_3(control, name, inicial, final)
     print(("="*15) + "Req No. 3 Inputs" + ("="*15))
     print('Team name:', name)
     print('Start date:', inicial)
@@ -266,6 +271,8 @@ def print_req_3(control, name, inicial, final):
     columns = ['date', 'home_score', 'away_score', 'home_team', 'away_team', 'country', 'city', 'tournament', 'penalty', 'own_goal']
     table = print_tabulate(list, columns)
     print(table)
+    d_time = f'{d_time:.3f}'
+    print('Tiempo de ejecución:', str(d_time), 'ms')
 
 
 def print_req_4(control):
@@ -303,7 +310,7 @@ def print_req_6(control, n_equipos, torneo, fecha_inicial, fecha_final):
         Función que imprime la solución del Requerimiento 6 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 6
-    data, n_teams, n_results, n_countries, n_cities, mostmatches = controller.req_6(control, n_equipos, torneo, fecha_inicial, fecha_final)
+    data, n_teams, n_results, n_countries, n_cities, mostmatches,d_time = controller.req_6(control, n_equipos, torneo, fecha_inicial, fecha_final)
     keys = ['name', 'total_points', 'goal_difference', 'penalty_points', 'matches', 'wins', 'draws', 'losses', 'goals_for', 'goals_against', 'top_scorer']
     print(torneo, 'Total teams:', str(n_teams))
     print(torneo, 'Total matches:', str(n_results))
@@ -312,27 +319,33 @@ def print_req_6(control, n_equipos, torneo, fecha_inicial, fecha_final):
     print(torneo, 'with most matches:', mostmatches)
     table = print_tabulate(data, keys)
     print(table)
+    d_time = f'{d_time:.3f}'
+    print('Tiempo de ejecución:', str(d_time), 'ms')  
 
 
-def print_req_7(control):
+def print_req_7(control, fecha_inicial, fecha_final, top_jugadores):
     """
         Función que imprime la solución del Requerimiento 7 en consola
     """
-    top_jugadores = 17 #input("Diga el número (N) de jugadores para consulta: ")
-    fecha_inicial =  "2002-03-25" #input("Ingrese la fecha inicial: ")
-    fecha_final = "2021-11-23" #input("Ingrese la fecha final: ")
-    sublist, num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, num_tourns = controller.req_7(control, fecha_inicial, fecha_final, top_jugadores)
+    sublist, num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, num_tourns, d_time = controller.req_7(control, fecha_inicial, fecha_final, top_jugadores)
     keys = ['name', 'total_points', 'total_goals', 'penalty_goals', 'own_goals', 'avg_time', 'total_tournaments', 'scored_in_wins', 'scored_in_losses', 'scored_in_draws', 'last_goal']
     table = print_tabulate(sublist, keys)
     print(table)
+    d_time = f'{d_time:.3f}'
+    print('Tiempo de ejecución:', str(d_time), 'ms')
 
 
-def print_req_8(control):
+def print_req_8(control, equipo1, equipo2, inicial, final):
     """
         Función que imprime la solución del Requerimiento 8 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 8
-    pass
+    data = controller.req_8(control, equipo1, equipo2, inicial, final)
+    keys = ['name', 'total_points', 'goal_difference', 'penalty_points', 'matches', 'wins', 'draws', 'losses', 'goals_for', 'goals_against', 'top_scorer']
+    tableteam1 = print_tabulate(data['team1'], keys)
+    tableteam2 = print_tabulate(data['team2'], keys)
+    print(tableteam1)
+    print(tableteam2)
 
 
  # Se crea el controlador asociado a la vista
@@ -357,13 +370,12 @@ def menu_cycle(control, file_size, adt, sort):
         print_menu()
         inputs = input('\nSeleccione una opción para continuar: ')
         if int(inputs) == 1:
-
             if file_size == None:
-                file_size = choose_size()
+                file_size = 'small'
             if adt == None:
-                adt = choose_adt()
+                adt = 'ARRAY_LIST'
             if sort == None:
-                sort = choose_sort()
+                sort = 'merge'
 
             if file_size != None and sort != None and sort != None:
 
@@ -419,22 +431,33 @@ def menu_cycle(control, file_size, adt, sort):
         elif int(inputs) == 7:
             n_equipos = int(input('Digite la cantidad de equipos para la consulta: '))
             torneo = input('Escriba el nombre del torneo: ')
+            print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
             inicial = input('Ingrese la fecha inicial: ')
             final = input('Ingrese la fecha final: ')
             print_req_6(control, n_equipos, torneo, inicial, final)
 
         elif int(inputs) == 8:
-            print_req_7(control)
+            top_jugadores = 17 #input("Diga el número (N) de jugadores para consulta: ")
+            #print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
+            fecha_inicial =  "2002-03-25" #input("Ingrese la fecha inicial: ")
+            fecha_final = "2021-11-23" #input("Ingrese la fecha final: ")
+            print_req_7(control, fecha_inicial, fecha_final, top_jugadores)
 
         elif int(inputs) == 9:
+            equipo1 = input('Nombre del primer equipo: ')
+            equipo2 = input('Nombre del segundo equipo: ')
+            print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
+            inicial = input('Ingrese la fecha inicial: ')
+            final = input('Ingrese la fecha final: ')
+
+            print_req_8(control, equipo1, equipo2, inicial, final)
+
+        elif int(inputs) == 10:
             file_size = choose_size()
             adt = choose_adt()
             sort = choose_sort()
 
             print('\n' + "-"*10 + 'Ejecuta la opción 1 para actualizar los cambios' + '-'*10 + '\n')
-
-        elif int(inputs) == 10:
-            print_req_8(control)
 
         elif int(inputs) == 0:
             working = False
