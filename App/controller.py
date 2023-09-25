@@ -259,8 +259,8 @@ def req_8(control, equipo1, equipo2, fecha_inicial, fecha_final):
     final = datetime.strptime(fecha_final, formato_fecha)
     equipo1 = equipo1.lower()
     equipo2 = equipo2.lower()
-    data = model.req_8(control['model'], equipo1, equipo2, inicial, final)
-    return data
+    data, common, new1, new2, nc, infot1, infot2, infocommon = model.req_8(control['model'], equipo1, equipo2, inicial, final)
+    return data, common, new1, new2, nc,infot1, infot2, infocommon
     
 
 def get_first_last_three(list):

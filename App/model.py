@@ -747,7 +747,7 @@ def change_info_req6(data_struct, pos, condition, data):
     #Matches
     changed['matches'] += 1
     #Own goal points
-    if data['own_goal'] == 'True' and data['team'] == data[(againstcondition + '_team')]:
+    if data['own_goal'] == 'True':
         changed['own_goal_points'] += 1
     else:
         changed['own_goals'] += 1
@@ -822,8 +822,8 @@ def req_7(data_structs, fecha_inicial, fecha_final, top_jugadores):
             if postournament != 0:
                 lt.addLast(tournaments, {'name': result['tournament']})
     
-    for scorer in lt.iterator(scorers):
-        scorer
+    # for scorer in lt.iterator(scorers):
+    #     scorer
 
     merg.sort(scorers, cmp_scorer_points)
     sublist = lt.subList(scorers, 1, top_jugadores)
@@ -919,6 +919,17 @@ def req_8(data_structs, equipo1, equipo2, inicial, final):
     sublist1, home1, away1 = req_3({'teams': official_teams}, equipo1, inicial, final)
     sublist2, home2, away2 = req_3({'teams': official_teams}, equipo2, inicial, final)
 
+    newest1 = lt.newList('ARRAY_LIST')
+    newest2 = lt.newList('ARRAY_LIST')
+    n1 = lt.getElement(sublist1, 1)
+    n2 = lt.getElement(sublist2, 1)
+    lt.addLast(newest1, n1)
+    lt.addLast(newest2, n2)
+
+    common_history = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_id)
+
+    infocommon = {'matches': 0, 'wins1': 0, 'wins2': 0, 'losses1': 0, 'losses2': 0, 'draws': 0}
+
     years = {'team1': lt.newList('ARRAY_LIST', cmpfunction=compare_year), 'team2': lt.newList('ARRAY_LIST', cmpfunction=compare_year)}
 
     for result in lt.iterator(sublist1):
@@ -936,10 +947,38 @@ def req_8(data_structs, equipo1, equipo2, inicial, final):
         pos_year2 = add_team_req6(years['team2'], year2)
         if result['home_team'].lower() == equipo2:
             condition = 'home'
+            againstcondition = 'away'
         else:
             condition = 'away'
+            againstcondition = 'home'
+        
+        if result[(condition) + '_team'].lower() == equipo2 and result[(againstcondition) + '_team'].lower() == equipo1:
+            lt.addLast(common_history, result) 
+            infocommon['matches'] += 1
+            if result['home_team'].lower() == equipo1:
+                if result['home_score'] > result['away_score']:
+                    infocommon['wins1'] += 1
+                    infocommon['losses2'] += 1
+                elif result['home_score'] < result['away_score']:
+                    infocommon['wins2'] += 1
+                    infocommon['losses1'] += 1
+                else:
+                    infocommon['draws'] += 1
+            else:
+                if result['home_score'] > result['away_score']:
+                    infocommon['wins2'] += 1
+                    infocommon['losses1'] += 1
+                elif result['home_score'] < result['away_score']:
+                    infocommon['wins1'] += 1
+                    infocommon['losses2'] += 1
+                else:
+                    infocommon['draws'] += 1
+
+
         changed = change_info_req6(years['team2'], pos_year2, condition, result)
         lt.changeInfo(years['team2'], pos_year2, changed)
+
+
 
     merg.sort(years['team1'], cmp_year)    
     merg.sort(years['team2'], cmp_year)
@@ -956,7 +995,15 @@ def req_8(data_structs, equipo1, equipo2, inicial, final):
             merg.sort(year['scorers'], cmp_top_scorer)
             year['top_scorer'] = lt.getElement(year['scorers'], 1)
 
-    return years
+    newestcommon = lt.newList('ARRAY_LIST')
+    nc = lt.getElement(common_history, 1)
+    lt.addLast(newestcommon, nc)
+
+    infot1 = {'years': lt.size(years['team1']), 'matches': lt.size(sublist1), 'home': home1, 'away': away1, 'oldest': (lt.lastElement(sublist1))['date']}
+    infot2 = {'years': lt.size(years['team2']), 'matches': lt.size(sublist2), 'home': home2, 'away': away2, 'oldest': (lt.lastElement(sublist2))['date']}
+
+
+    return years, common_history, newest1, newest2, newestcommon, infot1, infot2, infocommon
     
 
 

@@ -180,6 +180,7 @@ def print_tabulate(data_struct, columns):
     #Filtrar solo ultimos y primeros 3 datos si es muy grande la lista
     if lt.size(data_struct) > 6:
         data = controller.get_first_last_three(data_struct)
+        print('Se encontraron más de 6 resultados...')
 
     #Lista vacía para crear la tabla
     reduced = []
@@ -311,7 +312,7 @@ def print_req_6(control, n_equipos, torneo, fecha_inicial, fecha_final):
     """
     # TODO: Imprimir el resultado del requerimiento 6
     data, n_teams, n_results, n_countries, n_cities, mostmatches,d_time = controller.req_6(control, n_equipos, torneo, fecha_inicial, fecha_final)
-    keys = ['name', 'total_points', 'goal_difference', 'penalty_points', 'matches', 'wins', 'draws', 'losses', 'goals_for', 'goals_against', 'top_scorer']
+    keys = ['name', 'total_points', 'goal_difference', 'penalty_points', 'matches', 'own_goal_points', 'wins', 'draws', 'losses', 'goals_for', 'goals_against', 'top_scorer']
     print(torneo, 'Total teams:', str(n_teams))
     print(torneo, 'Total matches:', str(n_results))
     print(torneo, 'Total countries:', str(n_countries))
@@ -340,13 +341,32 @@ def print_req_8(control, equipo1, equipo2, inicial, final):
         Función que imprime la solución del Requerimiento 8 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 8
-    data = controller.req_8(control, equipo1, equipo2, inicial, final)
+    data, common, new1, new2, nc, infot1, infot2, infocommon = controller.req_8(control, equipo1, equipo2, inicial, final)
     keys = ['name', 'total_points', 'goal_difference', 'penalty_points', 'matches', 'wins', 'draws', 'losses', 'goals_for', 'goals_against', 'top_scorer']
+    keysn1 = ['date', 'home_team', 'away_team', 'home_score', 'away_score', 'country', 'city', 'tournament']
+
+    tablen1 = print_tabulate(new1, keysn1)
+    tablen2 = print_tabulate(new2, keysn1)
     tableteam1 = print_tabulate(data['team1'], keys)
     tableteam2 = print_tabulate(data['team2'], keys)
-    print(tableteam1)
-    print(tableteam2)
+    tablecommon = print_tabulate(common, keysn1)
+    tablenc = print_tabulate(nc, keysn1)
 
+    print('-'*10, equipo1, 'Statistics', '-'*10)
+    print('Years:', str(infot1['years']))
+    print('Total matches:', str(infot1['matches']))
+    print('Total home matches:', str(infot1['home']))
+    print('Total away matches:', str(infot1['away']))
+    print('Oldest match date:', infot1['oldest'], '\n')
+
+    print(tablen1, '\n')
+    print('+'*10, 'yearly statistics', '+'*10)
+    print(tableteam1, '\n')
+
+    print(tablen2)
+    print(tableteam2)
+    print(tablenc)
+    print(tablecommon)
 
  # Se crea el controlador asociado a la vista
 control = None
