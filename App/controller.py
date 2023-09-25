@@ -210,7 +210,7 @@ def req_4(control, nombre_torneo, fecha_inicial, fecha_final ):
     final = datetime.strptime(fecha_final, formato_fecha)
     start_time = get_time()
     if final >= inicial:
-        data, ciudades, paises, total_matches, penaltis = model.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
+        data, ciudades, paises, total_matches, penaltis = model.req_4(control, nombre_torneo, inicial, final)
         end_time = get_time()
         d_time = delta_time(start_time, end_time)
     return data, ciudades, paises, total_matches, penaltis, d_time

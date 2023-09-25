@@ -284,7 +284,7 @@ def print_req_4(control):
     nombre_torneo = "Copa América" #input("Diga el nombre del torneo: ")
     fecha_inicial =  "1955-06-01" #input("Ingrese la fecha inicial: ")
     fecha_final = "2022-06-30" #input("Ingrese la fecha final: ")
-    data, ciudades, paises, total_matches, penaltis = controller.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
+    data, ciudades, paises, total_matches, penaltis, d_time = controller.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
     partidos = lt.size(data)
     
     lista_llaves = ["date", "tournament", "country", "city", "home_team", "away_team", "home_score", "away_score", "winner"]
@@ -295,7 +295,7 @@ def print_req_4(control):
     print('Paises:',paises)
     print('Ciudades:', ciudades)
     print("Penaltis: ", penaltis)
-    print(tabulate(lista_ultimate, headers=lista_llaves, tablefmt="grid"))
+    print(lista_ultimate)
 
 
 def print_req_5(control):
