@@ -434,7 +434,7 @@ def menu_cycle(control, file_size, adt, sort):
 
         elif int(inputs) == 3:
             n_goals = 50 #int(input('Numero de goles: '))
-            name = 'Michael Ballack' #input('Nombre completo del jugador: ')
+            name = 'Lionel Messi' #input('Nombre completo del jugador: ')
             print_req_2(control, n_goals, name)
 
         elif int(inputs) == 4:
