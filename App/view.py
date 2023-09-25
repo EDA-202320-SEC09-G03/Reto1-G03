@@ -286,16 +286,18 @@ def print_req_4(control):
     fecha_final = "2022-06-30" #input("Ingrese la fecha final: ")
     data, ciudades, paises, total_matches, penaltis, d_time = controller.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
     partidos = lt.size(data)
-    
-    lista_llaves = ["date", "tournament", "country", "city", "home_team", "away_team", "home_score", "away_score", "winner"]
-    lista_ultimate = print_tabulate(data, lista_llaves)
-# Se filtran los datos para que queden en orden como en el pdf 
 
     print("Partidos: ", partidos)
     print('Paises:',paises)
     print('Ciudades:', ciudades)
     print("Penaltis: ", penaltis)
+
+    # Se filtran los datos para que queden en orden como en el pdf 
+    lista_llaves = ["date", "tournament", "country", "city", "home_team", "away_team", "home_score", "away_score", "winner"]
+    lista_ultimate = print_tabulate(data, lista_llaves)
     print(lista_ultimate)
+    d_time = f'{d_time:.3f}'
+    print('Tiempo de ejecución:', str(d_time), 'ms')
 
 
 def print_req_5(control):
