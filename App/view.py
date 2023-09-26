@@ -61,8 +61,8 @@ def print_menu():
     print("6- Ejecutar Requerimiento 5")
     print("7- Ejecutar Requerimiento 6")
     print("8- Ejecutar Requerimiento 7")
-    print("9- Cambiar tamaño, ADT y algoritmo de ordenamiento")
-    print("10- Ejecutar Requerimiento 8")
+    print("9- Ejecutar Requerimiento 8")
+    print("10- Cambiar tamaño, ADT y algoritmo de ordenamiento")
     print("0- Salir")
 
 
@@ -176,6 +176,9 @@ def choose_sort():
     
 def print_tabulate(data_struct, columns):
     data = data_struct
+
+    if data == None:
+        return 'No hay datos'
 
     #Filtrar solo ultimos y primeros 3 datos si es muy grande la lista
     if lt.size(data_struct) > 6:

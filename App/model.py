@@ -352,6 +352,9 @@ def binary_search_start_date(data_structs, start):
     recent = (lt.firstElement(data_structs))['date']
     oldest = (lt.lastElement(data_structs))['date']
     i = lt.size(data_structs)
+    
+    if start > recent:
+        return -1
 
     #Confirmar que la fecha está en la lista
     if start >= oldest and start <= recent:
@@ -382,12 +385,16 @@ def binary_search_start_date(data_structs, start):
             result = lt.getElement(data_structs, i)
             date = result['date']
             if date >= start:
+                #Se encuentra la fecha
                 return i
             else:
+                #Se sigue iterando
                 i -= 1
-            if i == 0:
-                find = True
+
+            if i <= 0:
+                return -1
     else:
+        #Retornar último elemento
         return lt.size(data_structs)
 
 def binary_search_end_date(data_structs, end):
@@ -400,7 +407,8 @@ def binary_search_end_date(data_structs, end):
     recent = (lt.firstElement(data_structs))['date']
     oldest = (lt.lastElement(data_structs))['date']
 
-    i = 1
+    if end < oldest:
+        return -1
 
     #Confirmar que la fecha está en la lista
     if end >= oldest and end <= recent:
@@ -445,8 +453,18 @@ def binary_search_end_date(data_structs, end):
 
 
 def req_1(data_structs, n_results, team_name, condition):
-    """
-    Función que soluciona el requerimiento 1
+    """Función que resuelve el requerimiento 1, encuentra los últimos N partidos jugados en local, visitante
+
+    Args:
+        data_structs (ARRAY_LIST): _description_
+        n_results (int): Cantidad de partidos a encontrar
+        team_name (str): Nombre del equipo del que se quiere la información
+        condition (str): Condición entre local, visitante o neutro para devolver la información
+
+    Returns:
+        sublist(ARRAY_LIST): Sublista con los últimos N partidos
+        total (int): Cantidad de partidos encontrados
+
     """
     # TODO: Realizar el requerimiento 1
     t_name = team_name.lower()
@@ -483,8 +501,16 @@ def req_1(data_structs, n_results, team_name, condition):
 
 
 def req_2(data_structs, n_goals, name):
-    """
-    Función que soluciona el requerimiento 2
+    """Función que encuentra los últimos N goles anotados por un jugador específico
+
+    Args:
+        data_structs (ARRAY_LIST): Catálogo con la información de los partidos
+        n_goals (int): Cantidad de anotaciones para buscar
+        name (str): Nombre del jugador que se desea buscar
+
+    Returns:
+        goals (ARRAY_LIST): Lista con los datos encontrados
+        lt.size(goals) (int): Cantidad de resultados encontrados
     """
     # TODO: Realizar el requerimiento 2
 
@@ -505,12 +531,22 @@ def req_2(data_structs, n_goals, name):
         else:
             result = lt.getElement(results, i)
             lt.addLast(goals, result)
-    return None, -1
+    return goals, lt.size(goals)
 
 
 def req_3(data_structs, name, inicial, final):
-    """
-    Función que soluciona el requerimiento 3
+    """Función que consulta los partidos que jugó un equipo durante un periodo específico
+
+    Args:
+        data_structs (ARRAY_LIST): Catálogo con la información de los resultados
+        name (str): Nombre del jugador que se desea buscar
+        inicial (datetime): Fecha mínima de búsqueda
+        final (datetime): Fecha máxima de búsqueda
+
+    Returns:
+        sublist: Lista con los partidos que jugó el jugador
+        home: Cantidad de partidos como local
+        away: Cantidad de partidos como visitante
     """
     # TODO: Realizar el requerimiento 3
 
@@ -519,11 +555,17 @@ def req_3(data_structs, name, inicial, final):
 
     #Búsqueda del equipo deseado
     pos_team = binary_search_by_name(teams, name)
+    if pos_team == -1:
+        return None, 0, 0
     results_team = (lt.getElement(teams, pos_team))['results']
 
     #Búsqueda de rangos de fechas
     pos_date_inicial = binary_search_start_date(results_team, inicial)
     pos_date_final = binary_search_end_date(results_team, final)
+
+    #No se encontraron las fechas
+    if pos_date_final == -1 or pos_date_inicial == -1:
+        return None, 0, 0
 
     #Iniciar contadores de local y visitante
     home = 0
@@ -546,8 +588,20 @@ def req_3(data_structs, name, inicial, final):
     return (sublist, home, away)
 
 def req_4(control, nombre_torneo, fecha_inicial, fecha_final):
-    """
-    Función que soluciona el requerimiento 4
+    """Partidos relacionados con un torneo durante un periodo específico
+
+    Args:
+        control (dict): Catálogo que contiene los ADT con la información de resultados
+        nombre_torneo (str): Nombre del torneo que se quiere buscar
+        fecha_inicial (datetime): Fecha mínima de búsqueda
+        fecha_final (datetime): Fecha máxima de búsqueda
+
+    Returns:
+        lista_final_results: Lista con los resultados de la búsqueda
+        num_ciudades (int): Total de ciudades donde se disputaron partidos del torneo
+        num_paises (int): Total de paises donde se disputaron los partidos del torneo
+        total_matches (int): Cantidad de partidos encontrados
+        penalties (int): Total de partidos definidos por cobros de penal
     """
     lista_results = control["model"]["results"]
     lista_shootouts = control["model"]["shootouts"]
@@ -602,8 +656,22 @@ def req_5(data_structs):
 
 
 def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
-    """
-    Función que soluciona el requerimiento 6
+    """Función que clasifica los N mejores equipos de un torneo en un periodo específico
+
+    Args:
+        data_structs (dict): Catálogo con los ADT con la información de los partidos
+        n_equipos (int): Cantidad de N mejores equipos para consultar
+        torneo (str): Nombre del torneo que se desea consultar
+        fecha_inicial (datetime): Fecha mínima de búsqueda
+        fecha_final (datetime): Fecha máxima de búsqueda
+
+    Returns:
+        sublist (ARRAY_LIST): Lista de los equipos que conforman el torneo ordenada
+        n_teams (int): Cantidad de equipos involucrados en el torneo
+        n_results (int): Cantidad de encuentros disputados en el periodo de tiempo
+        n_countries (int): Total de países involucrados en el torneo
+        n_cities (int): Total de ciudades involucrados en el torneo
+        mostmatches (str): Nombre de la ciudad donde se disputó mayor cantidad de partidos
     """
     # TODO: Realizar el requerimiento 6
 
@@ -699,6 +767,15 @@ def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
     return sublist, n_teams, n_results, n_countries, n_cities, mostmatches
 
 def add_team_req6(data_struct, name):
+    """Función que encuentra la información de las estadísticas de un elemento, y en caso de no existir se crea un esqueleto en 0
+
+    Args:
+        data_struct (ARRAY_LIST): Lista con la información de las estadísticas
+        name (str): Nombre del elemento a buscar/crear
+
+    Returns:
+        posteam (int): Posiciónn en la lista donde se encuentra el elemento
+    """
     posteam = lt.isPresent(data_struct, name)
     if posteam > 0:
         info = lt.getElement(data_struct, posteam)
@@ -724,6 +801,17 @@ def add_team_req6(data_struct, name):
     return posteam
 
 def change_info_req6(data_struct, pos, condition, data):
+    """Función que cambia la información de las estadísticas con la nueva información de cada iteración
+
+    Args:
+        data_struct (ARRAY_LIST): Lista con las estadísticas de cada elemento
+        pos (int): Posición donde se encuentra el elemento a cambiar
+        condition (str): Condición del equipo a cambiar, puede ser 'home' o 'away'
+        data (dict): Información del partido
+
+    Returns:
+        changed(dict): Diccionario con la información actualizada
+    """
     againstcondition = None
     if condition == 'home':
         againstcondition = 'away'
@@ -782,8 +870,22 @@ def change_info_req6(data_struct, pos, condition, data):
     return changed
 
 def req_7(data_structs, fecha_inicial, fecha_final, top_jugadores):
-    """
-    Función que soluciona el requerimiento 7
+    """Función que clasifica los N mejores anotadores en partidos oficiales en un periodo específico
+
+    Args:
+        data_structs (dict): Catálogo con los ADT que contienen la información de los partidos
+        fecha_inicial (datetime): Fecha mínima de búsqueda
+        fecha_final (datetime): Fecha máxima de búsqueda
+        top_jugadores (int): Cantidad N de jugadores para filtrar
+
+    Returns:
+        sublist(ARRAY_LIST): Lista filtrada con los N mejores jugadores en el periodo especificado
+        num_jugadores (int): Cantidad de jugadores encontrados
+        num_partidos (int): Total de partidos en que participaron los anotadores
+        num_goles(int): Total de goles durante el periodo de tiempo
+        num_penales (int): Total de goles por penal durante el periodo de tiempo
+        num_autogoles (int): Total de autogoles por los jugadores en ese periodo
+        num_tourns (int): Total de torneos donde participaron los anotadores
     """
    
     #Data_struct con solo torneos oficiales
@@ -823,9 +925,6 @@ def req_7(data_structs, fecha_inicial, fecha_final, top_jugadores):
             postournament = lt.isPresent(tournaments, result['tournament'])
             if postournament != 0:
                 lt.addLast(tournaments, {'name': result['tournament']})
-    
-    # for scorer in lt.iterator(scorers):
-    #     scorer
 
     merg.sort(scorers, cmp_scorer_points)
     sublist = lt.subList(scorers, 1, top_jugadores)
@@ -836,6 +935,15 @@ def req_7(data_structs, fecha_inicial, fecha_final, top_jugadores):
     return sublist, num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, num_tourns
 
 def add_scorer_req7(data_struct, name):
+    """Función que encuentra la información de las estadísticas de un jugador, y en caso de no existir se crea un esqueleto en 0
+
+    Args:
+        data_struct (ARRAY_LIST): Lista con la información de las estadísticas
+        name (str): Nombre del jugador a buscar/crear
+
+    Returns:
+        posscorer (int): Posición en la lista donde se encuentra el jugador
+    """
     posscorer = lt.isPresent(data_struct, name)
     if posscorer <= 0:
         #Esqueleto scorer desde 0
@@ -859,6 +967,16 @@ def add_scorer_req7(data_struct, name):
     return posscorer
 
 def change_info_scorer(data_struct, pos, data):
+    """Función que cambia la información del jugador en cada iteración con la información del partido
+
+    Args:
+        data_struct (ARRAY_LIST): Lista con la información de los jugadores
+        pos (int): Posición del jugador en la lista
+        data (dict): Información del partido
+
+    Returns:
+        changed: Diccionario con la información actualizada del jugador
+    """
     changed = lt.getElement(data_struct, pos)
 
     #penalty_points
