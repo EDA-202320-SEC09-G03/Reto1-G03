@@ -400,13 +400,15 @@ def binary_search_end_date(data_structs, end):
     recent = (lt.firstElement(data_structs))['date']
     oldest = (lt.lastElement(data_structs))['date']
 
+    i = 1
+
     #Confirmar que la fecha está en la lista
     if end >= oldest and end <= recent:
 
         #Buscar un día después para evitar errores no encontrar la fecha máxima que coincide
         next = end + timedelta(days=1)
 
-        next_id = None
+        next_id = 1
         while low <= high:
             mid = (low + high) // 2
             team = lt.getElement(data_structs, mid)
@@ -429,11 +431,14 @@ def binary_search_end_date(data_structs, end):
 
         #Iterar hacia adelante para encontrar la primera fecha que coincide
         while not find:
-            date = (lt.getElement(data_structs, i))['date']
-            if date <= end:
-                return i
+            if i > 0 and i < lt.size(data_structs):
+                date = (lt.getElement(data_structs, i))['date']
+                if date <= end:
+                    return i
+                else:
+                    i += 1
             else:
-                i += 1
+                return 1
     else:
         return 1
 
