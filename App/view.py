@@ -444,10 +444,10 @@ def menu_cycle(control, file_size, adt, sort):
             print_req_2(control, n_goals, name)
 
         elif int(inputs) == 4:
-            name = 'Germany' #input('Ingrese el nombre del equipo: ')
+            name = 'Pepito' #input('Ingrese el nombre del equipo: ')
             print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
-            inicial = '1939-01-01'# input('Ingrese la fecha inicial: ')
-            final = '2022-12-31'#input('Ingrese la fecha final: ')
+            inicial = '2022-12-31'#input('Ingrese la fecha final: ')
+            final = '1939-01-01'# input('Ingrese la fecha inicial: ')
             print_req_3(control, name, inicial, final)
 
         elif int(inputs) == 5:
@@ -460,8 +460,8 @@ def menu_cycle(control, file_size, adt, sort):
             n_equipos = 50#int(input('Digite la cantidad de equipos para la consulta: '))
             torneo = 'Copa América'#input('Escriba el nombre del torneo: ')
             print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
-            inicial = '1950-03-25'#input('Ingrese la fecha inicial: ')
-            final = '2021-11-23'#input('Ingrese la fecha final: ')
+            inicial = '2021-11-23'#input('Ingrese la fecha final: ')
+            final = '1950-03-25'#input('Ingrese la fecha inicial: ')
             print_req_6(control, n_equipos, torneo, inicial, final)
 
         elif int(inputs) == 8:

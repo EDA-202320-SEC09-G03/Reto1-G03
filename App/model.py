@@ -1050,16 +1050,28 @@ def req_8(data_structs, equipo1, equipo2, inicial, final):
     sublist1, home1, away1 = req_3({'teams': official_teams}, equipo1, inicial, final)
     sublist2, home2, away2 = req_3({'teams': official_teams}, equipo2, inicial, final)
 
-    newest1 = lt.newList('ARRAY_LIST')
-    newest2 = lt.newList('ARRAY_LIST')
-    n1 = lt.getElement(sublist1, 1)
-    n2 = lt.getElement(sublist2, 1)
-    lt.addLast(newest1, n1)
-    lt.addLast(newest2, n2)
-
-    common_history = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_id)
+    if sublist1 != None:
+        n1 = lt.getElement(sublist1, 1)
+        newest1 = lt.newList('ARRAY_LIST')
+        lt.addLast(newest1, n1)
+    else:
+        n1 = ''
+        newest1 = None
+    
+    if sublist2 != None:
+        n2 = lt.getElement(sublist2, 1)
+        newest2 = lt.newList('ARRAY_LIST')
+        lt.addLast(newest2, n2)
+    else:
+        n2 = ''
+        newest2 = None
 
     infocommon = {'matches': 0, 'wins1': 0, 'wins2': 0, 'losses1': 0, 'losses2': 0, 'draws': 0}
+
+    if sublist1 == None and sublist2 == None:
+        return None, None, None, None, None, {}, {}, {}
+
+    common_history = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_id)
 
     years = {'team1': lt.newList('ARRAY_LIST', cmpfunction=compare_year), 'team2': lt.newList('ARRAY_LIST', cmpfunction=compare_year)}
 
