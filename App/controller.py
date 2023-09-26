@@ -73,12 +73,10 @@ def load_results(data_structs, file_size):
 
         changed = change_type(result)
         changed['id'] = id
-        changed['team'] = 'Unknown'
-        changed['scorer'] = 'Unknown'
-        changed['minute'] = 'Unknown'
+        changed['scorers'] = 'Unknown'
+        changed['winner'] = 'Unknown'
         changed['penalty'] = 'Unknown'
         changed['own_goal'] = 'Unknown'
-        changed['winner'] = 'Unknown'
         model.add_results(data_structs, changed)
         id += 1
 
@@ -233,8 +231,8 @@ def req_6(control, n_equipos, torneo, fecha_inicial, fecha_final):
     inicial = datetime.strptime(fecha_inicial, formato_fecha)
     final = datetime.strptime(fecha_final, formato_fecha)
     start_time = get_time()
-    end_time = get_time()
     data, n_teams, n_results, n_countries, n_cities, mostmatches = model.req_6(control['model'], n_equipos, torneo, inicial, final)
+    end_time = get_time()
     d_time = delta_time(start_time, end_time)
     return data, n_teams, n_results, n_countries, n_cities, mostmatches, d_time
 

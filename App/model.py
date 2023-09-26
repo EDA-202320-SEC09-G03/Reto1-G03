@@ -97,19 +97,36 @@ def add_goalscorers(data_structs, data):
     hometeam = data['home_team'].lower()
     awayteam = data['away_team'].lower()
 
+    if data['scorer'] == '' or data['scorer'] == None:
+        return data_structs
+
     #Posición del partido que coincide en results
     pos_result = binary_search_general(data_structs['results'], date, hometeam, awayteam)
     if pos_result != -1:
 
         #Cambio de datos según los obtenidos en goalscorers
         result = lt.getElement(data_structs['results'], pos_result)
-        result['team'] = data['team']
-        result['scorer'] = data['scorer']
-        result['minute'] = data['minute']
-        result['own_goal'] = data['own_goal']
-        result['penalty'] = data['penalty']
 
-        #Añadir la información en results
+        scorer = {'team': data['team'], 'name': data['scorer'], 'minute': data['minute'], 'own_goal': data['own_goal'], 'penalty': data['penalty']}
+        if result['scorers'] == 'Unknown' and data['scorer'] != '':
+            result['scorers'] = lt.newList('ARRAY_LIST', cmpfunction=compare_name)
+
+        lt.addLast(result['scorers'], scorer)
+
+        #Cambiar penalty si hay información
+        if result['penalty'] == 'Unknown':
+            result['penalty'] = scorer['penalty']
+        else:
+            if result['penalty'] == 'False' and scorer['penalty'] == 'True':
+                result['penalty'] == 'True'
+        
+        #Cambiar own_goal si hay información
+        if result['own_goal'] == 'Unknown':
+            result['own_goal'] = scorer['own_goal']
+        else:
+            if result['own_goal'] == 'False' and scorer['own_goal'] == 'True':
+                result['own_goal'] == 'True'
+        
         lt.changeInfo(data_structs['results'], pos_result, result)
     return data_structs
 
@@ -146,8 +163,9 @@ def load_auxiliar(data_structs, algorithm):
     for data in lt.iterator(data_structs['results']):
 
         #Partidos por goleador
-        if data['scorer'] != 'Unknown':
-            add_scorer(data_structs, data['scorer'], data)
+        if data['scorers'] != 'Unknown':
+            for scorer in lt.iterator(data['scorers']):
+                add_scorer(data_structs, scorer, data)
 
         #Partidos por equipos
         add_teams(data_structs, data['home_team'], data)
@@ -169,19 +187,23 @@ def load_auxiliar(data_structs, algorithm):
     merg.sort(data_structs['official_results'], cmp_partidos_by_fecha_y_pais)
     merg.sort(data_structs['official_teams'], cmp_name)
 
-def add_scorer(catalog, name, data):
+def add_scorer(catalog, scorerinfo, data):
     """
     Función para agregar nuevos elementos a la lista separada por goleadores
     """
 
     scorers = catalog['scorers']
-    posscorer = lt.isPresent(scorers, name)
+    posscorer = lt.isPresent(scorers, scorerinfo['name'])
     if posscorer > 0:
         scorer = lt.getElement(scorers, posscorer)
     else:
-        scorer = new_scorer(name)
+        scorer = new_scorer(scorerinfo['name'])
         lt.addLast(scorers, scorer)
-
+    data['scorer'] = scorerinfo['name']
+    data['team'] = scorerinfo['team']
+    data['minute'] = scorerinfo['minute']
+    data['own_goal'] = scorerinfo['own_goal']
+    data['penalty'] = scorerinfo['penalty']
     lt.addLast(scorer['results'], data)
     return catalog
 
@@ -369,7 +391,8 @@ def binary_search_start_date(data_structs, start):
             mid_date = team['date']
             if mid_date == prev:
                 i = mid
-                pass
+                #Salir de un bucle infinito que no cambia el low
+                low = lt.size(data_structs) + 1
             elif mid_date > prev:
                 low = mid + 1
             else:
@@ -840,40 +863,44 @@ def change_info_req6(data_struct, pos, condition, data):
     changed['goals_for'] += data[(condition) + '_score']
     changed['goals_against'] += data[(againstcondition) + '_score']
     #Penalty points
-    if data['winner'] == name or (data['penalty'] == "True" and data['team'] == name):
+    if data['winner'] == name:
         changed['penalty_points'] += 1
     #Matches
     changed['matches'] += 1
-    #Own goal points
-    if data['own_goal'] == 'True':
-        changed['own_goal_points'] += 1
-    else:
-        changed['own_goals'] += 1
     #Goal difference
     changed['goal_difference'] = changed['goals_for'] - changed['goals_against']
 
     #Change Info Scorers
-    if data['scorer'] != 'Unknown' and data['team'] == name:
+    if data['scorers'] != 'Unknown':
 
-        #Encontrar / crear el goleador
-        scorers = changed['scorers']
-        posscorer = lt.isPresent(scorers, data['scorer'])
+        for scorerinfo in lt.iterator(data['scorers']):
 
-        if posscorer > 0:
-            infoscorer = lt.getElement(scorers, posscorer)
-        else:
-            infoscorer = {'name': data['scorer'], 'goals': 0, 'matches': 0, 'avg_time': 0, 'temp_time': 0}
-            lt.addLast(scorers, infoscorer)
-            posscorer = lt.size(scorers)
+            #Own goal and penalty points
+            if scorerinfo['penalty'] == 'True':
+                changed['penalty_points'] += 1
+            if scorerinfo['own_goal'] == 'True':
+                changed['own_goal_points'] += 1
 
-        
-        scorer = lt.getElement(scorers, posscorer)
-        changedscorer = scorer
-        changedscorer['matches'] += 1
-        changedscorer['goals'] += 1
-        changedscorer['temp_time'] += data['minute']
-        changedscorer['avg_time'] = changedscorer['temp_time'] / changedscorer['matches']
-        lt.changeInfo(scorers, posscorer, changedscorer)
+            #Encontrar / crear el goleador
+            scorers = changed['scorers']
+            posscorer = lt.isPresent(scorers, data['scorer'])
+
+            if posscorer > 0:
+                infoscorer = lt.getElement(scorers, posscorer)
+            else:
+                infoscorer = {'name': scorerinfo['name'], 'goals': 0, 'matches': 0, 'avg_time': 0, 'temp_time': 0}
+                lt.addLast(scorers, infoscorer)
+                posscorer = lt.size(scorers)
+
+            
+            scorer = lt.getElement(scorers, posscorer)
+            changedscorer = scorer
+            changedscorer['matches'] += 1
+            changedscorer['goals'] += 1
+            changedscorer['temp_time'] += scorerinfo['minute']
+            changedscorer['avg_time'] = changedscorer['temp_time'] / changedscorer['matches']
+            lt.changeInfo(scorers, posscorer, changedscorer)
+
     
     return changed
 
@@ -917,21 +944,22 @@ def req_7(data_structs, fecha_inicial, fecha_final, top_jugadores):
     #Iterar solo en el rango de fechas
     for i in range(posend, posstart + 1):
         result = lt.getElement(results, i)
-        if result['scorer'] != 'Unknown':
+        if result['scorers'] != 'Unknown':
+            for scorer in lt.iterator(result['scorers']):
 
-            posscorer = add_scorer_req7(scorers, result['scorer'])
-            #Cambio de información en la iteración
-            changed = change_info_scorer(scorers, posscorer, result)
-            lt.changeInfo(scorers, posscorer, changed)
+                posscorer = add_scorer_req7(scorers, scorer['name'])
+                #Cambio de información en la iteración
+                changed = change_info_scorer(scorers, posscorer, result)
+                lt.changeInfo(scorers, posscorer, changed)
 
+                if scorer['penalty'] == 'True':
+                    num_penales += 1
+                if scorer['own_goal'] == 'True':
+                    num_autogoles += 1
+                
             #Cambiar datos
             num_partidos += 1
             num_goles += result['home_score'] + result['away_score']
-            if result['penalty'] == 'True':
-                num_penales += 1
-            if result['own_goal'] == 'True':
-                num_autogoles += 1
-            
             #Añadir si es necesario el torneo para obtener el total de torneos
             postournament = lt.isPresent(tournaments, result['tournament'])
             if postournament != 0:

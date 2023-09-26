@@ -443,8 +443,8 @@ def print_req_8(control, equipo1, equipo2, inicial, final):
  # Se crea el controlador asociado a la vista
 control = None
 file_size = None
-adt = None
-sort = None
+adt = 'ARRAY_LIST'
+sort = 'merge'
 
 # main del reto
 def menu_cycle(control, file_size, adt, sort):
@@ -463,11 +463,7 @@ def menu_cycle(control, file_size, adt, sort):
         inputs = input('\nSeleccione una opción para continuar: ')
         if int(inputs) == 1:
             if file_size == None:
-                file_size = 'small'
-            if adt == None:
-                adt = 'ARRAY_LIST'
-            if sort == None:
-                sort = 'merge'
+                file_size = choose_size()
 
             if file_size != None and sort != None and sort != None:
 
@@ -486,13 +482,13 @@ def menu_cycle(control, file_size, adt, sort):
                 print('Por favor selecciona una opción válida')
 
         elif int(inputs) == 2: 
-            n_results = int(input('Numero de partidos de consulta: '))
-            team_name = input('Ingrese el nombre del equipo: ')
+            n_results = 50 #int(input('Numero de partidos de consulta: '))
+            team_name = 'Colombia' #input('Ingrese el nombre del equipo: ')
             print('Por favor elija alguna de las siguientes opciones:')
             print('1. Local')
             print('2. Visitante')
             print('3. Indiferente')
-            condition = int(input('Digite su opción: '))
+            condition = 3 #int(input('Digite su opción: '))
             if condition == 1:
                 print_req_1(control, n_results, team_name, 'local')
             elif condition == 2:
@@ -504,7 +500,7 @@ def menu_cycle(control, file_size, adt, sort):
 
         elif int(inputs) == 3:
             n_goals = 50 #int(input('Numero de goles: '))
-            name = 'Lionel Messi' #input('Nombre completo del jugador: ')
+            name = 'Michael Ballack' #input('Nombre completo del jugador: ')
             print_req_2(control, n_goals, name)
 
         elif int(inputs) == 4:
@@ -521,17 +517,17 @@ def menu_cycle(control, file_size, adt, sort):
             print_req_5(control)
 
         elif int(inputs) == 7:
-            n_equipos = 50#int(input('Digite la cantidad de equipos para la consulta: '))
-            torneo = 'Copa América'#input('Escriba el nombre del torneo: ')
+            n_equipos = 11#int(input('Digite la cantidad de equipos para la consulta: '))
+            torneo = 'UEFA Euro qualification'#input('Escriba el nombre del torneo: ')
             print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
-            inicial = '1950-03-25'#input('Ingrese la fecha inicial: ')
+            inicial = '2002-03-25'#input('Ingrese la fecha inicial: ')
             final = '2021-11-23'#input('Ingrese la fecha final: ')
             print_req_6(control, n_equipos, torneo, inicial, final)
 
         elif int(inputs) == 8:
-            top_jugadores = 60 #input("Diga el número (N) de jugadores para consulta: ")
+            top_jugadores = 17 #input("Diga el número (N) de jugadores para consulta: ")
             #print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
-            fecha_inicial =  "1950-03-25" #input("Ingrese la fecha inicial: ")
+            fecha_inicial =  "2002-01-25" #input("Ingrese la fecha inicial: ")
             fecha_final = "2021-11-23" #input("Ingrese la fecha final: ")
             print_req_7(control, fecha_inicial, fecha_final, top_jugadores)
 
@@ -546,10 +542,13 @@ def menu_cycle(control, file_size, adt, sort):
 
         elif int(inputs) == 10:
             file_size = choose_size()
-            adt = choose_adt()
-            sort = choose_sort()
-
-            print('\n' + "-"*10 + 'Ejecuta la opción 1 para actualizar los cambios' + '-'*10 + '\n')
+            print('\n Cargando la información...')
+            print('Tamaño de archivo:', file_size)
+            print('ADT:', adt)
+            print('Algoritmo de ordenamiento:', sort)
+            d_time = load_data(control, file_size, sort)
+            d_time = f'{d_time:.3f}'
+            print('Tiempo de ordenamiento:', d_time)
 
         elif int(inputs) == 0:
             working = False
