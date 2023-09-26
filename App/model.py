@@ -351,17 +351,17 @@ def binary_search_start_date(data_structs, start):
 
     recent = (lt.firstElement(data_structs))['date']
     oldest = (lt.lastElement(data_structs))['date']
-    i = lt.size(data_structs)
     
     if start > recent:
         return -1
 
-    #Confirmar que la fecha está en la lista
-    if start >= oldest and start <= recent:
+    #Confirmar que la fecha está en la lista en una posición intermedia
+    if start >= oldest:
 
         #Buscar un día antes para evitar errores no encontrar la fecha mínima que coincide
         prev = start - timedelta(days=1)
 
+        i = lt.size(data_structs)
         #Busqueda binaria
         while low <= high:
             mid = (low + high) // 2
@@ -394,7 +394,7 @@ def binary_search_start_date(data_structs, start):
             if i <= 0:
                 return -1
     else:
-        #Retornar último elemento
+        #Retornar posición de la fecha más antigua
         return lt.size(data_structs)
 
 def binary_search_end_date(data_structs, end):
@@ -407,11 +407,12 @@ def binary_search_end_date(data_structs, end):
     recent = (lt.firstElement(data_structs))['date']
     oldest = (lt.lastElement(data_structs))['date']
 
+    #Confirmar si la fecha existe en el rango de la estructura
     if end < oldest:
         return -1
 
-    #Confirmar que la fecha está en la lista
-    if end >= oldest and end <= recent:
+    #Confirmar que la fecha está en una posición intermedia
+    if  end <= recent:
 
         #Buscar un día después para evitar errores no encontrar la fecha máxima que coincide
         next = end + timedelta(days=1)
@@ -439,9 +440,12 @@ def binary_search_end_date(data_structs, end):
 
         #Iterar hacia adelante para encontrar la primera fecha que coincide
         while not find:
+            #Confirmar que el indice existe
             if i > 0 and i < lt.size(data_structs):
+
                 date = (lt.getElement(data_structs, i))['date']
                 if date <= end:
+
                     return i
                 else:
                     i += 1
@@ -450,7 +454,7 @@ def binary_search_end_date(data_structs, end):
     else:
         return 1
 
-
+# Requerimientos
 
 def req_1(data_structs, n_results, team_name, condition):
     """Función que resuelve el requerimiento 1, encuentra los últimos N partidos jugados en local, visitante
@@ -493,12 +497,13 @@ def req_1(data_structs, n_results, team_name, condition):
             lt.addLast(filtered_list, result)
 
     #Filtrar ultimos N partidos
-    sublist = lt.subList(filtered_list, 1, n_results)
     total = lt.size(filtered_list)
+    if n_results <= lt.size(filtered_list):
+        sublist = lt.subList(filtered_list, 1, n_results)
+        return sublist, total
+    else:
+        return filtered_list, total
     
-    return sublist, total
-
-
 
 def req_2(data_structs, n_goals, name):
     """Función que encuentra los últimos N goles anotados por un jugador específico
@@ -517,6 +522,8 @@ def req_2(data_structs, n_goals, name):
     #Filtrar los partidos del jugador
     scorers = data_structs['scorers']
     posscorer = binary_search_by_name(scorers, name)
+    if posscorer == -1:
+        return None, 0
     results = (lt.getElement(scorers, posscorer))['results']
 
     #Lista auxiliar
@@ -532,7 +539,6 @@ def req_2(data_structs, n_goals, name):
             result = lt.getElement(results, i)
             lt.addLast(goals, result)
     return goals, lt.size(goals)
-
 
 def req_3(data_structs, name, inicial, final):
     """Función que consulta los partidos que jugó un equipo durante un periodo específico
@@ -645,15 +651,12 @@ def req_4(control, nombre_torneo, fecha_inicial, fecha_final):
 
     return lista_final_results, num_ciudades, num_paises, total_matches, penaltis
     
-
-
 def req_5(data_structs):
     """
     Función que soluciona el requerimiento 5
     """
     # TODO: Realizar el requerimiento 5
     pass
-
 
 def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
     """Función que clasifica los N mejores equipos de un torneo en un periodo específico
@@ -688,6 +691,9 @@ def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
     pos_start = binary_search_start_date(results, fecha_inicial)
     pos_end = binary_search_end_date(results, fecha_final)
 
+    #Casos de error
+    if pos_start == -1 or pos_end == -1 or pos_start < pos_end:
+        return None, 0, 0, 0, 0, ''
 
     #Listas auxiliares
     meetings = {'cities' : lt.newList('ARRAY_LIST', cmpfunction=compare_name), 'countries': lt.newList('ARRAY_LIST', cmpfunction=compare_name)}
@@ -755,7 +761,9 @@ def req_6(data_structs, n_equipos, torneo, fecha_inicial, fecha_final):
     mostmatches = (lt.getElement(meetings['cities'], 1))['name']
 
     #Sublista con los N mejores equipos
-    sublist = lt.subList(teams, 1, n_equipos)
+    sublist = teams
+    if n_equipos <= lt.size(teams):
+        sublist = lt.subList(teams, 1, n_equipos)
 
     #Ciclo para obtener el mejor jugador en cada equipo
     for team in lt.iterator(sublist):
@@ -894,6 +902,9 @@ def req_7(data_structs, fecha_inicial, fecha_final, top_jugadores):
     #Encontrar rangos de fechas
     posstart = binary_search_start_date(results, fecha_inicial)
     posend = binary_search_end_date(results, fecha_final)
+
+    if posstart == -1 or posend == -1 or posstart < posend:
+        return None, 0, 0, 0, 0, 0, 0
 
     #Creación de lista donde se guardará la información de cada scorer
     scorers = lt.newList(datastructure='ARRAY_LIST', cmpfunction=compare_name)
@@ -1125,9 +1136,6 @@ def req_8(data_structs, equipo1, equipo2, inicial, final):
 
     return years, common_history, newest1, newest2, newestcommon, infot1, infot2, infocommon
     
-
-
-
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 def compare_id(data_1, data_2):
@@ -1163,8 +1171,8 @@ def compare_year(data1, data2):
         return -1
     else:
         return 0
-# Funciones de ordenamiento
 
+# Funciones de ordenamiento
 
 def cmp_partidos_by_fecha_y_pais(result1, result2):
     """

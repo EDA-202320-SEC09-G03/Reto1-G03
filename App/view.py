@@ -458,7 +458,7 @@ def menu_cycle(control, file_size, adt, sort):
 
         elif int(inputs) == 7:
             n_equipos = 50#int(input('Digite la cantidad de equipos para la consulta: '))
-            torneo = 'UEFA Euro qualification'#input('Escriba el nombre del torneo: ')
+            torneo = 'Copa América'#input('Escriba el nombre del torneo: ')
             print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
             inicial = '1950-03-25'#input('Ingrese la fecha inicial: ')
             final = '2021-11-23'#input('Ingrese la fecha final: ')
