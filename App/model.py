@@ -860,7 +860,7 @@ def change_info_req6(data_struct, pos, condition, data):
         posscorer = lt.isPresent(scorers, data['scorer'])
 
         if posscorer > 0:
-            infoscorer = lt.getElement(data_struct, posscorer)
+            infoscorer = lt.getElement(scorers, posscorer)
         else:
             infoscorer = {'name': data['scorer'], 'goals': 0, 'matches': 0, 'avg_time': 0, 'temp_time': 0}
             lt.addLast(scorers, infoscorer)

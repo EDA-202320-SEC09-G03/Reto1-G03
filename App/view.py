@@ -250,7 +250,15 @@ def print_req_2(control, n_goals, name):
     data, total, d_time = controller.req_2(control, n_goals, name)
     keys = ['date', 'home_team', 'away_team', 'team', 'scorer', 'minute', 'own_goal', 'penalty']
     table = print_tabulate(data, keys)
+
+    #Prints
+    print(("="*15) + "Req No. 2 Inputs" + ("="*15))
+    print('Number of scores:', str(n_goals))
+    print('Player name:', name, '\n')
+
+    print(("="*15) + "Req No. 2 Results" + ("="*15))
     print('Total scorers found:', total, '\n')
+
     print(table)
     d_time = f'{d_time:.3f}'
     print('Tiempo de ejecución:', str(d_time), 'ms')
@@ -316,13 +324,23 @@ def print_req_6(control, n_equipos, torneo, fecha_inicial, fecha_final):
         Función que imprime la solución del Requerimiento 6 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 6
+
+    #Prints inputs
+    print(("="*15) + "Req No. 6 Inputs" + ("="*15))
+    print('Tournament name:', torneo)
+    print('Start date:', fecha_inicial)
+    print('End date:', fecha_final, '\n')
+
     data, n_teams, n_results, n_countries, n_cities, mostmatches,d_time = controller.req_6(control, n_equipos, torneo, fecha_inicial, fecha_final)
     keys = ['name', 'total_points', 'goal_difference', 'penalty_points', 'matches', 'own_goal_points', 'wins', 'draws', 'losses', 'goals_for', 'goals_against', 'top_scorer']
+    
+    
+    print(("="*15) + "Req No. 6 Results" + ("="*15))
     print(torneo, 'Total teams:', str(n_teams))
     print(torneo, 'Total matches:', str(n_results))
     print(torneo, 'Total countries:', str(n_countries))
     print(torneo, 'Total cities:', str(n_cities))
-    print(torneo, 'with most matches:', mostmatches)
+    print(torneo, 'with most matches:', mostmatches, '\n')
     table = print_tabulate(data, keys)
     print(table)
     d_time = f'{d_time:.3f}'
@@ -333,9 +351,23 @@ def print_req_7(control, fecha_inicial, fecha_final, top_jugadores):
     """
         Función que imprime la solución del Requerimiento 7 en consola
     """
+
+    print(("="*15) + "Req No. 7 Inputs" + ("="*15))
+    print('TOP', str(top_jugadores), 'scorer ranking')
+    print('Start date:', fecha_inicial)
+    print('End date:', fecha_final, '\n')
+
     sublist, num_jugadores, num_partidos, num_goles, num_penales, num_autogoles, num_tourns, d_time = controller.req_7(control, fecha_inicial, fecha_final, top_jugadores)
     keys = ['name', 'total_points', 'total_goals', 'penalty_goals', 'own_goals', 'avg_time', 'total_tournaments', 'scored_in_wins', 'scored_in_losses', 'scored_in_draws', 'last_goal']
     table = print_tabulate(sublist, keys)
+
+    print(("="*15) + "Req No. 7 Results" + ("="*15))
+    print('Official tournaments total players:', str(num_jugadores))
+    print('Official tournaments total matches:', str(num_partidos))
+    print('Official tournaments total goals:', str(num_goles))
+    print('Official tournaments total penalties:', str(num_penales))
+    print('Official tournaments total own goals:', str(num_autogoles))
+    print('Official tournaments total tournaments:', str(num_tourns), '\n')
     print(table)
     d_time = f'{d_time:.3f}'
     print('Tiempo de ejecución:', str(d_time), 'ms')
@@ -346,6 +378,13 @@ def print_req_8(control, equipo1, equipo2, inicial, final):
         Función que imprime la solución del Requerimiento 8 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 8
+
+    print(("="*15) + "Req No. 8 Inputs" + ("="*15))
+    print('Team 1 name:', equipo1)
+    print('Team 2 name:', equipo2)
+    print('Start date:', inicial)
+    print('End date:', final)
+
     data, common, new1, new2, nc, infot1, infot2, infocommon, d_time = controller.req_8(control, equipo1, equipo2, inicial, final)
     keys = ['name', 'total_points', 'goal_difference', 'penalty_points', 'matches', 'wins', 'draws', 'losses', 'goals_for', 'goals_against', 'top_scorer']
     keysn1 = ['date', 'home_team', 'away_team', 'home_score', 'away_score', 'country', 'city', 'tournament']
@@ -357,6 +396,8 @@ def print_req_8(control, equipo1, equipo2, inicial, final):
     tablecommon = print_tabulate(common, keysn1)
     tablenc = print_tabulate(nc, keysn1)
 
+
+    print(("="*15) + "Req No. 8 Results" + ("="*15))
     print('-'*10, equipo1, 'Statistics', '-'*10)
     print('Years:', str(infot1['years']))
     print('Total matches:', str(infot1['matches']))
@@ -364,13 +405,36 @@ def print_req_8(control, equipo1, equipo2, inicial, final):
     print('Total away matches:', str(infot1['away']))
     print('Oldest match date:', infot1['oldest'], '\n')
 
+    print('+'*5, 'Newest match data', '+'*5, '\n')
     print(tablen1, '\n')
     print('+'*10, 'yearly statistics', '+'*10)
     print(tableteam1, '\n')
 
-    print(tablen2)
-    print(tableteam2)
+    print('-'*10, equipo2, 'Statistics', '-'*10)
+    print('Years:', str(infot2['years']))
+    print('Total matches:', str(infot2['matches']))
+    print('Total home matches:', str(infot2['home']))
+    print('Total away matches:', str(infot2['away']))
+    print('Oldest match date:', infot2['oldest'], '\n')
+    
+    print('+'*5, 'Newest match data', '+'*5, '\n')
+    print(tablen2, '\n')
+    print('+'*10, 'yearly statistics', '+'*10)
+    print(tableteam2, '\n')
+
+
+    print('-'*10, equipo1, 'vs', equipo2, 'Statistics', '-'*10)
+    print('Total matches:', str(infocommon['matches']))
+    print('Total wins for', equipo1 +':', str(infocommon['wins1']))
+    print('Total losses for', equipo1 +':', str(infocommon['losses1']))
+    print('Total wins for', equipo2 +':', str(infocommon['wins2']))
+    print('Total losses for', equipo2 +':', str(infocommon['losses2']))
+    print('Total draws:', infocommon['draws'])
+
+    print('+'*5, 'Newest match data', '+'*5, '\n')
     print(tablenc)
+    
+    print('+'*5, 'Match scorers', '+'*5, '\n')
     print(tablecommon)
 
     d_time = f'{d_time:.3f}'
