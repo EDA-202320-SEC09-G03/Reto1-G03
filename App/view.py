@@ -451,7 +451,7 @@ def menu_cycle(control, file_size, adt, sort):
             print_req_5(control)
 
         elif int(inputs) == 7:
-            n_equipos = 11#int(input('Digite la cantidad de equipos para la consulta: '))
+            n_equipos = 50#int(input('Digite la cantidad de equipos para la consulta: '))
             torneo = 'UEFA Euro qualification'#input('Escriba el nombre del torneo: ')
             print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
             inicial = '1950-03-25'#input('Ingrese la fecha inicial: ')
@@ -459,7 +459,7 @@ def menu_cycle(control, file_size, adt, sort):
             print_req_6(control, n_equipos, torneo, inicial, final)
 
         elif int(inputs) == 8:
-            top_jugadores = 17 #input("Diga el número (N) de jugadores para consulta: ")
+            top_jugadores = 60 #input("Diga el número (N) de jugadores para consulta: ")
             #print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
             fecha_inicial =  "1950-03-25" #input("Ingrese la fecha inicial: ")
             fecha_final = "2021-11-23" #input("Ingrese la fecha final: ")
