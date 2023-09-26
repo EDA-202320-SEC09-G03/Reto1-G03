@@ -343,7 +343,7 @@ def print_req_8(control, equipo1, equipo2, inicial, final):
         Función que imprime la solución del Requerimiento 8 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 8
-    data, common, new1, new2, nc, infot1, infot2, infocommon = controller.req_8(control, equipo1, equipo2, inicial, final)
+    data, common, new1, new2, nc, infot1, infot2, infocommon, d_time = controller.req_8(control, equipo1, equipo2, inicial, final)
     keys = ['name', 'total_points', 'goal_difference', 'penalty_points', 'matches', 'wins', 'draws', 'losses', 'goals_for', 'goals_against', 'top_scorer']
     keysn1 = ['date', 'home_team', 'away_team', 'home_score', 'away_score', 'country', 'city', 'tournament']
 
@@ -369,6 +369,9 @@ def print_req_8(control, equipo1, equipo2, inicial, final):
     print(tableteam2)
     print(tablenc)
     print(tablecommon)
+
+    d_time = f'{d_time:.3f}'
+    print('Tiempo de ejecución:', str(d_time), 'ms')
 
  # Se crea el controlador asociado a la vista
 control = None
