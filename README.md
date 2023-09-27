@@ -34,7 +34,6 @@ The students edit this section to add their names, Uniandes emails, and specify 
 
 1. **Req No 3**, Daniel Camilo Quimbay Velásquez, <d.quimbay@uniandes.edu.co>, 202313861
 1. **Req No 4**, Julián David Contreras Pinilla, <j.contrerasp@uniandes.edu.co>, 202223394
-1. **Req No 5**, Santiago Yepes Gaona, <s.yepesg@uniandes.edu.co>, 202116813
 
 [Back to top](#challenge-template)
 
