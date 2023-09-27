@@ -119,10 +119,11 @@ def change_type(data):
     changed = data
     formato_fecha = "%Y-%m-%d"
     changed['date'] = datetime.strptime(data['date'], formato_fecha)
-    if changed.get('home_score', False):
+    if changed.get('home_score'):
         changed['home_score'] = int(data['home_score']) 
         changed['away_score'] = int(data['away_score'])
-    if changed.get('scorer', False):
+        
+    if changed.get('scorer'):
         if changed['minute'] != 'Unknown':
             changed['minute'] = float(data['minute'])
     

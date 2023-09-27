@@ -292,9 +292,9 @@ def print_req_4(control):
         Función que imprime la solución del Requerimiento 4 en consola
     """
     # TODO: Imprimir el resultado del requerimiento 4
-    nombre_torneo = "Copa América" #input("Diga el nombre del torneo: ")
-    fecha_inicial =  "1955-06-01" #input("Ingrese la fecha inicial: ")
-    fecha_final = "2022-06-30" #input("Ingrese la fecha final: ")
+    nombre_torneo = input("Diga el nombre del torneo: ")
+    fecha_inicial =  input("Ingrese la fecha inicial: ")
+    fecha_final = input("Ingrese la fecha final: ")
     data, ciudades, paises, total_matches, penaltis, d_time = controller.req_4(control, nombre_torneo, fecha_inicial, fecha_final)
     partidos = lt.size(data)
 
@@ -482,13 +482,13 @@ def menu_cycle(control, file_size, adt, sort):
                 print('Por favor selecciona una opción válida')
 
         elif int(inputs) == 2: 
-            n_results = 50 #int(input('Numero de partidos de consulta: '))
-            team_name = 'Colombia' #input('Ingrese el nombre del equipo: ')
+            n_results = int(input('Numero de partidos de consulta: '))
+            team_name = input('Ingrese el nombre del equipo: ')
             print('Por favor elija alguna de las siguientes opciones:')
             print('1. Local')
             print('2. Visitante')
             print('3. Indiferente')
-            condition = 3 #int(input('Digite su opción: '))
+            condition = int(input('Digite su opción: '))
             if condition == 1:
                 print_req_1(control, n_results, team_name, 'local')
             elif condition == 2:
@@ -499,15 +499,15 @@ def menu_cycle(control, file_size, adt, sort):
                 print("Por favor seleccione una opción válida")
 
         elif int(inputs) == 3:
-            n_goals = 50 #int(input('Numero de goles: '))
-            name = 'Michael Ballack' #input('Nombre completo del jugador: ')
+            n_goals = int(input('Numero de goles: '))
+            name = input('Nombre completo del jugador: ')
             print_req_2(control, n_goals, name)
 
         elif int(inputs) == 4:
-            name = 'Germany' #input('Ingrese el nombre del equipo: ')
+            name = input('Ingrese el nombre del equipo: ')
             print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
-            inicial = '1939-01-01'# input('Ingrese la fecha inicial: ')
-            final = '2022-12-31'#input('Ingrese la fecha final: ')
+            inicial = input('Ingrese la fecha inicial: ')
+            final = input('Ingrese la fecha final: ')
             print_req_3(control, name, inicial, final)
 
         elif int(inputs) == 5:
@@ -517,26 +517,26 @@ def menu_cycle(control, file_size, adt, sort):
             print_req_5(control)
 
         elif int(inputs) == 7:
-            n_equipos = 11#int(input('Digite la cantidad de equipos para la consulta: '))
-            torneo = 'UEFA Euro qualification'#input('Escriba el nombre del torneo: ')
+            n_equipos = int(input('Digite la cantidad de equipos para la consulta: '))
+            torneo = input('Escriba el nombre del torneo: ')
             print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
-            inicial = '2002-03-25'#input('Ingrese la fecha inicial: ')
-            final = '2021-11-23'#input('Ingrese la fecha final: ')
+            inicial = input('Ingrese la fecha inicial: ')
+            final = input('Ingrese la fecha final: ')
             print_req_6(control, n_equipos, torneo, inicial, final)
 
         elif int(inputs) == 8:
-            top_jugadores = 17 #input("Diga el número (N) de jugadores para consulta: ")
-            #print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
-            fecha_inicial =  "2002-01-25" #input("Ingrese la fecha inicial: ")
-            fecha_final = "2021-11-23" #input("Ingrese la fecha final: ")
+            top_jugadores = input("Diga el número (N) de jugadores para consulta: ")
+            print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
+            fecha_inicial =  input("Ingrese la fecha inicial: ")
+            fecha_final = input("Ingrese la fecha final: ")
             print_req_7(control, fecha_inicial, fecha_final, top_jugadores)
 
         elif int(inputs) == 9:
-            equipo1 = 'Argentina'#input('Nombre del primer equipo: ')
-            equipo2 = 'Chile'#input('Nombre del segundo equipo: ')
+            equipo1 = input('Nombre del primer equipo: ')
+            equipo2 = input('Nombre del segundo equipo: ')
             print('Por favor coloque las fechas en el siguiente formato: YYYY-MM-DD')
-            inicial = '1950-01-01'#input('Ingrese la fecha inicial: ')
-            final = '2022-12-30'#input('Ingrese la fecha final: ')
+            inicial = input('Ingrese la fecha inicial: ')
+            final = input('Ingrese la fecha final: ')
 
             print_req_8(control, equipo1, equipo2, inicial, final)
 

@@ -345,12 +345,10 @@ def binary_search_by_name(data_structs, name):
     """
     Busqueda binaria para encontrar un nombre en una lista
     """
-
     low = 1
     high = lt.size(data_structs)
 
     while low <= high:
-
         mid = (low + high) // 2
         team = lt.getElement(data_structs, mid)
         mid_name = team['name'].lower()
@@ -360,8 +358,7 @@ def binary_search_by_name(data_structs, name):
         elif mid_name < name:
             low = mid + 1
         else:
-            high = mid - 1
-    
+            high = mid - 1    
     return -1
 
 def binary_search_start_date(data_structs, start):
@@ -433,13 +430,10 @@ def binary_search_end_date(data_structs, end):
     #Confirmar si la fecha existe en el rango de la estructura
     if end < oldest:
         return -1
-
     #Confirmar que la fecha está en una posición intermedia
     if  end <= recent:
-
         #Buscar un día después para evitar errores no encontrar la fecha máxima que coincide
         next = end + timedelta(days=1)
-
         next_id = 1
         while low <= high:
             mid = (low + high) // 2
@@ -448,19 +442,15 @@ def binary_search_end_date(data_structs, end):
             if mid_date == next:
                 next_id = mid
                 pass
-
             elif mid_date > next:
                 low = mid + 1
             else:
                 high = mid - 1
-            
             if low == high:
                 next_id = mid
                 pass
-        
         find = False
         i = next_id
-
         #Iterar hacia adelante para encontrar la primera fecha que coincide
         while not find:
             #Confirmar que el indice existe
@@ -491,8 +481,7 @@ def req_1(data_structs, n_results, team_name, condition):
     Returns:
         sublist(ARRAY_LIST): Sublista con los últimos N partidos
         total (int): Cantidad de partidos encontrados
-
-    """
+    """ 
     # TODO: Realizar el requerimiento 1
     t_name = team_name.lower()
 
@@ -540,7 +529,6 @@ def req_2(data_structs, n_goals, name):
         goals (ARRAY_LIST): Lista con los datos encontrados
         lt.size(goals) (int): Cantidad de resultados encontrados
     """
-    # TODO: Realizar el requerimiento 2
 
     #Filtrar los partidos del jugador
     scorers = data_structs['scorers']
